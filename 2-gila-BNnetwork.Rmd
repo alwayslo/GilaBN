@@ -1,0 +1,137 @@
+---
+title: "Upper Gila Watershed Bayesian Network Construction"
+author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
+date: "1/8/2019"
+update: "1/28/2019"
+output: html_notebook
+---
+
+This R notebook is used to used to build and Bayesian network used to infer recruitment potential. Conditional probabilities for each node are populated using results from the "1-gila-preprocessing.Rmd".**Bayesian networks** are a class of graphical models that allow a concise representation of the probabilistic dependencies between a given set of random variables as a **directed acyclic graph** where each node represents a random variable.
+
+###Model Development###
+This first code chunck clears the environment, installs all the necessary packages, and returns the current working directory to ensure filespaths will execute properly.This code chunck loads and attaches the add-on packages *bnlearn*,*readr*,and *Rgraphviz*.*Rgraphviz* requires additional packages *BioGenerics* and graph to run  It also clears the the global environment of any previous data.
+```{r}
+#rm(list=ls())
+
+library("bnlearn")
+library("readr")
+library("Rgraphviz")
+library("xts")
+library("prob")
+library("TTR")
+library("bigmemory")
+library("zoo")
+library("raster")
+library("sp")
+library("rgdal")
+library("rasterVis")
+library("ggplot2")
+library("rgdal")
+library("dplyr")
+require("BiocGenerics")
+require("graph")
+
+getwd()
+```
+
+####Creating Network Structure#### 
+There are several approaches to creating a network structure in R, this code chunck creates a new bn object by creating an empty graph using using our variables established in dag and directed arcs using by using *set.arc*. These directed arcs can be modified if expert knowedge suggests a different relationship using *drop.arc*,and *rev.arc*.
+
+Below generates the network structure as presented in Figure 4 of 2014 Morrison et al.
+```{r}
+nodes <- c("TIMING","INUN","RECESSION RATE","HYDRO","GW","RECRUIT")
+
+dag = empty.graph(nodes,num=1)
+dag = set.arc(dag, "TIMING", "INUN", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "TIMING", "RECESSION RATE", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "INUN", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "RECESSION RATE", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "GW", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "HYDRO", "RECRUIT", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+```
+
+###Plotting Network Structure: Advanced Bayesian Network Plot###
+Visualization of the generated graph allows us to view and confirm the relationships (dependencies, direction, children, parents, etc).The following code chunck plots the network structure using *graphviz.plot*. The graph layout options for *graphviz.plot* include dot, neato, twopi, circo, and fdp.
+```{r}
+
+graphviz.plot(dag, highlight = NULL, layout = "dot",shape = "rectangle", main = "Gila Bayesian Network Structure", sub = NULL)
+
+```
+###Topological Ordering and Investigating the Properities of a BN
+
+The topological ordering of the nodes is important to this project specifically because it is a causal model. The ordering can be determined using *node.ordering*.The neighborhood *nbr* and Markov blanket *mb* of a node is a synthetic discription of the local dependence structure.
+
+*parents* and *children* are used to show the children and parents of a particular node given the established network structure.*vstructs* show the series of converging connections in the network. The converging connections are displayed in a matrix and the nodes listed column X and Y are converging towardsthe node listed in Z column. 
+
+*cextend* prints a summary of the network including number of nodes, number of arcs (undirected and directed), the average markov blanket size, average neighborhood size, and average branching factor. In any BN, the markov blanket of a node is the set of parents of that node, the children of that node, and all other nodes sharing a child with that node. The neighborhood size is the number of adjacent nodes. The branching factor is the number of children for a node in the network.
+
+*directed.arcs* is a way of verifying which arcs are directed and from "" to "". 
+```{r}
+node.ordering(dag)
+
+nbr(dag, "TIMING")
+mb(dag, "TIMING")
+
+nbr(dag, "INUN")
+nbr(dag, "GW")
+
+mb(dag, "INUN")
+mb(dag, "GW")
+
+parents(dag, "GW")
+parents(dag, "INUN")
+
+children(dag, "GW")
+children(dag, "INUN")
+
+vstructs(dag, moral = TRUE)
+
+cextend(dag)
+
+directed.arcs(dag)
+```
+
+#### Discrete States ####
+The discrete states for each BN node is established below which part of the discrete static Bayesian network infered from expert knowledge and literature. The values below are representative of various sets of keys. The node discrete state keys are as follows: 
+
+TIMING key: 1 = May-June; 2 = July-August, 3 = September-October
+INUN key: Y = yes; N = no
+RECESSION_RATE key: 1 = <0cm/d; 2 = 0 to 1 cm/d; 3 = 1 to 3 cm/d; 4 = 3 to 6 cm/d; 5= >6 cm/d
+GW key: 1 = < 50 cm; 2 = 50-200 cm; 3 = > 200 cm
+HYDRO key:L=low; H=high
+RECRUIT key:Y = yes; N = no
+
+```{r}
+dimTIMING<- c(1,2,3)
+dimINUN<- c("Y","N")
+dimRECESSION_RATE<- c(1,2,3,4,5)
+dimGW<- c(1,2,3)
+dimHYDRO<- c("L","H")
+dim_RECRUIT<-c("Y","N")
+```
+
+#### CPT Assignments ####
+The conditional probability tables were developed in "1-gila-preprocessin.Rmd" and are presented here.
+```{r}
+
+cpt_TIMING <- c(0.65,.25,0.1)
+cpt_INUN <- c(q_prob_natural_discrete, q_prob_scenario1_discrete, q_prob_scenario2_discrete)
+cpt_RECESSION_RATE <- c(rr_14d_prob_natural_discrete,rr_14d_prob_scenario1_discrete, rr_14d_prob_scenario2_discrete)
+
+```
+
+####R Notebooks####
+Execute code chunks by clicking the *Run* button within the chunk or by placing the cursor inside it and pressing *Cmd+Shift+Enter*. Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*. Whenthe notebook is saved, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+####References ####
+Gentleman R, Whalen E, Huber W and Falcon S (2017). graph: graph: A package to handle graph data structures. R package version 1.54.0.
+
+Hansen KD, Gentry J, Long L, Gentleman R, Falcon S, Hahne F and Sarkar D (2017). Rgraphviz: Provides plotting capabilities for R graph objects. R package version 2.20.0.
+
+Huber, W., Carey, J. V, Gentleman, R., Anders, S., Carlson, M., Carvalho, S. B, Bravo, C. H, Davis, S., Gatto, L., Girke, T., Gottardo, R., Hahne, F., Hansen, D. K, Irizarry, A. R, Lawrence, M., Love, I. M, MacDonald, J., Obenchain, V., Ole's, K. A, Pag'es, H., Reyes, A., Shannon, P., Smyth, K. G, Tenenbaum, D., Waldron, L., Morgan and M. (2015). “Orchestrating high-throughput genomic analysis with Bioconductor.” Nature Methods, 12(2), pp. 115–121. http://www.nature.com/nmeth/journal/v12/n2/full/nmeth.3252.html.
+
+Koller D, Friedman N (2009). Probabilistic Graphical Models: Principles and Techniques. MIT Press.
+
+Pearl J (2009). Causality: Models, Reasoning and Inference. Cambridge University Press, 2nd edition.
+
+Nagarajan, Radhakrishnan, Marco Scutari, and Sophie Lèbre. Bayesian Networks in R. New York, NY: Springer New York, 2013. http://link.springer.com/10.1007/978-1-4614-6446-4.
