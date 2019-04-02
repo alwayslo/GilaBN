@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Bayesian Network Structure"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "1/8/2019"
-update: "1/28/2019"
+update: "4/2/2019"
 output: html_notebook
 ---
 
@@ -28,6 +28,7 @@ library("rasterVis")
 library("ggplot2")
 library("rgdal")
 library("dplyr")
+library("methods")
 require("BiocGenerics")
 require("graph")
 
@@ -39,13 +40,13 @@ There are several approaches to creating a network structure in R, this code chu
 
 Below generates the network structure as presented in Figure 4 of 2014 Morrison et al.
 ```{r}
-nodes <- c("TIMING","INUN","RECESSION RATE","HYDRO","GW","RECRUIT")
+nodes <- c("TIMING","INUN","RECESSION_RATE","HYDRO","GW","RECRUIT")
 
 dag = empty.graph(nodes,num=1)
 dag = set.arc(dag, "TIMING", "INUN", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
-dag = set.arc(dag, "TIMING", "RECESSION RATE", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "TIMING", "RECESSION_RATE", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
 dag = set.arc(dag, "INUN", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
-dag = set.arc(dag, "RECESSION RATE", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
+dag = set.arc(dag, "RECESSION_RATE", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
 dag = set.arc(dag, "GW", "HYDRO", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
 dag = set.arc(dag, "HYDRO", "RECRUIT", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)
 ```
@@ -92,32 +93,122 @@ directed.arcs(dag)
 ```
 
 #### Discrete States ####
-The discrete states for each BN node is established below which part of the discrete static Bayesian network infered from expert knowledge and literature. The values below are representative of various sets of keys. The node discrete state keys are as follows: 
-
-TIMING key: 1 = May-June; 2 = July-August, 3 = September-October
-INUN key: Y = yes; N = no
-RECESSION_RATE key: 1 = <0cm/d; 2 = 0 to 1 cm/d; 3 = 1 to 3 cm/d; 4 = 3 to 6 cm/d; 5= >6 cm/d
-GW key: 1 = < 50 cm; 2 = 50-200 cm; 3 = > 200 cm
-HYDRO key:L=low; H=high
-RECRUIT key:Y = yes; N = no
-
-```{r}
-dimTIMING<- c(1,2,3)
-dimINUN<- c("Y","N")
-dimRECESSION_RATE<- c(1,2,3,4,5)
-dimGW<- c(1,2,3)
-dimHYDRO<- c("L","H")
-dim_RECRUIT<-c("Y","N")
-```
+The discrete mutually exclusice values or states for each BN node is established below which is part of the discrete static Bayesian network infered from expert knowledge and literature. 
 
 #### CPT Assignments ####
-The conditional probability tables were developed in "1-gila-preprocessin.Rmd" and are presented here.
+The unconditional and conditional probability tables are generated below. The unconditional probability table (upt) for the root node, TIMING, was developed based on the historical dataset (need to verify). The CPTs for each node must share the levels of its parents. The number of elements needed for the array/matrix must be equal the product of the number of states of the parent nodes and the current node.  
+
+cpt_HYDRO was populated using the expert knowledge and informed from the probabilities from 2014 Morrison & Stone.
+
+The conditional probability tables were developed in "1-gila-preprocessing.Rmd" and are presented here.
+
+CPT Assignments were specified seperately for each scenario (i.e. natural, scenario 1, scenario 2).
+
+Natural Scenario Assignments
 ```{r}
+upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
-cpt_TIMING <- c(0.65,.25,0.1)
-cpt_INUN <- c(q_prob_natural_discrete, q_prob_scenario1_discrete, q_prob_scenario2_discrete)
-cpt_RECESSION_RATE <- c(rr_14d_prob_natural_discrete,rr_14d_prob_scenario1_discrete, rr_14d_prob_scenario2_discrete)
+cpt_INUN = t(matrix(data = c(q_prob_natural_discrete) , nrow = 3 , ncol = 8, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"))))
 
+cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_natural_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+
+cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
+
+cpt_HYDRO = array(data = c(1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0) , 
+              dim = c(2,8,5,3), 
+              dimnames =list('HYDRO'= c("LOW","HIGH"),
+                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"),
+                           'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"),
+                           'GW'= c("<50cm", "50-200cm", "> 200cm")))
+  
+cpt_RECRUIT = matrix(data=c(0.5,0.5,0.5,0.5), nrow = 2, ncol = 2, dimnames = list('RECRUIT'=c("YES","NO"),
+                                                                                  'HYDRO'= c("LOW","HIGH")))
+```
+
+Scenario 1 Assignments
+```{r}
+upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
+
+cpt_INUN = t(matrix(data = c(q_prob_scenario1_discrete) , nrow = 3 , ncol = 8, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"))))
+
+cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_scenario1_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+
+cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
+
+cpt_HYDRO = array(data = c(1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0) , 
+              dim = c(2,8,5,3), 
+              dimnames =list('HYDRO'= c("LOW","HIGH"),
+                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"),
+                           'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"),
+                           'GW'= c("<50cm", "50-200cm", "> 200cm")))
+  
+cpt_RECRUIT = matrix(data=c(0.5,0.5,0.5,0.5), nrow = 2, ncol = 2, dimnames = list('RECRUIT'=c("YES","NO"),
+                                                                                  'HYDRO'= c("LOW","HIGH")))
+```
+
+
+Scenario 2 Assignments
+```{r}
+upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
+
+cpt_INUN = t(matrix(data = c(q_prob_scenario2_discrete) , nrow = 3 , ncol = 8, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"))))
+
+cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_scenario2_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+
+cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
+
+cpt_HYDRO = array(data = c(1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0,
+              1, 0, 1, 0, 0.05, 0.95, 1, 0, 0.1, 0.9, 1, 0, 0.3, 0.7, 1, 0, 0.9, 0.1, 1, 0) , 
+              dim = c(2,8,5,3), 
+              dimnames =list('HYDRO'= c("LOW","HIGH"),
+                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"),
+                           'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"),
+                           'GW'= c("<50cm", "50-200cm", "> 200cm")))
+  
+cpt_RECRUIT = matrix(data=c(0.5,0.5,0.5,0.5), nrow = 2, ncol = 2, dimnames = list('RECRUIT'=c("YES","NO"),
+                                                                                  'HYDRO'= c("LOW","HIGH")))
+```
+
+The following assigns the established conditional probability tables (CPTs) to each node.
+```{r}
+bnfit = custom.fit(dag,dist = list (TIMING = upt_TIMING,
+                                    INUN = cpt_INUN,
+                                    RECESSION_RATE = cpt_RECESSION_RATE,
+                                    GW = cpt_GW,
+                                    HYDRO=cpt_HYDRO,
+                                    RECRUIT = cpt_RECRUIT))
 ```
 
 ####R Notebooks####
@@ -134,4 +225,9 @@ Koller D, Friedman N (2009). Probabilistic Graphical Models: Principles and Tech
 
 Pearl J (2009). Causality: Models, Reasoning and Inference. Cambridge University Press, 2nd edition.
 
-Nagarajan, Radhakrishnan, Marco Scutari, and Sophie Lèbre. Bayesian Networks in R. New York, NY: Springer New York, 2013. http://link.springer.com/10.1007/978-1-4614-6446-4.
+Nagarajan, Radhakrishnan, Marco Scutari, and Sophie Lèbre. Bayesian Networks in R. New York, NY: Springer New York, 2013. http://link.springer.com/10.1007/978-1-4614-6446-4. 
+http://www.bnlearn.com
+
+Scutari, Marco (2018). bnlearn: Bayesian Network Structure Learning, Parameter Learning and Inference. R package version 4.4 https://cran.r-project.org/web/packages/bnlearn/
+
+https://stackoverflow.com/questions/40364458/r-some-conditional-probability-distributions-of-node-do-not-sum-to-one
