@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Preprocessing"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "11/29/2018"
-update: "1/28/2019"
+update: "3/28/2019"
 output: html_notebook
 ---
 
@@ -187,7 +187,7 @@ q_prob_yr <- rbind(q_prob_natural_yr,q_prob_scenario1_yr,q_prob_scenario2_yr)
 row.names(q_prob_yr) <- c("natural","scenario 1","scenario 2")
 ```
 
-Calculates the probability of a bin flood event occuring for the natural flow scenario for discrete time states (April-May, June-July, August-September).
+Calculates the probability of a bin flood event occuring for the natural flow scenario for discrete time states (April-May, June-July, August-September). Each flow scenario corrects the probability distribution for error by normalizing the probabilities (i.e. ensuring the distribution sums to 1).
 ```{r}
 
 q_bin_natural$date<-as.Date(q_bin_natural$date, format="%m/%d/%Y")
@@ -231,7 +231,7 @@ colnames(q_prob_natural_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","
 
 q_prob_natural_discrete <- rbind(q_prob_natural_apr_may,q_prob_natural_jun_jul,q_prob_natural_aug_sep)
 row.names(q_prob_natural_discrete) <- c("apr_may","jun_jul","aug_sep")
-
+q_prob_natural_discrete <- q_prob_natural_discrete/rowSums(q_prob_natural_discrete)
 ```
 
 Calculates the probability of a bin flood event occuring for the scenario 1 flow scenario for discrete time states (April-May, June-July, August-September).
@@ -277,6 +277,7 @@ colnames(q_prob_scenario1_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4"
 
 q_prob_scenario1_discrete <- rbind(q_prob_scenario1_apr_may,q_prob_scenario1_jun_jul,q_prob_scenario1_aug_sep)
 row.names(q_prob_scenario1_discrete) <- c("apr_may","jun_jul","aug_sep")
+q_prob_scenario1_discrete <- q_prob_scenario1_discrete/rowSums(q_prob_scenario1_discrete)
 ```
 
 Calculates the probability of a bin flood event occuring for the scenario 2 flow scenario for discrete time states (April-May, June-July, August-September).
@@ -308,6 +309,7 @@ q_prob_scenario2_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/length(jun_
                                        length(which(jun_jul_bin$q_bin_8))/length(jun_jul_bin$q_bin_8))
 
 colnames(q_prob_scenario2_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+q_prob_scenario2_jun_jul <- q_prob_scenario2_jun_jul/rowSums(q_prob_scenario2_jun_jul)
 
 q_prob_scenario2_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/length(aug_sep_bin$q_bin_1),
                                        length(which(aug_sep_bin$q_bin_2))/length(aug_sep_bin$q_bin_2),
@@ -322,6 +324,7 @@ colnames(q_prob_scenario2_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4"
 
 q_prob_scenario2_discrete <- rbind(q_prob_scenario2_apr_may,q_prob_scenario2_jun_jul,q_prob_scenario2_aug_sep)
 row.names(q_prob_scenario2_discrete) <- c("apr_may","jun_jul","aug_sep")
+q_prob_scenario2_discrete <- q_prob_scenario2_discrete/rowSums(q_prob_scenario2_discrete)
 ```
 
 #### Process recession rate bins ####
@@ -484,7 +487,7 @@ colnames(rr_14d_prob_natural_aug_sep) <- c("recessionrate_bin_1",
 
 rr_14d_prob_natural_discrete <- rbind(rr_14d_prob_natural_apr_may,rr_14d_prob_natural_jun_jul,rr_14d_prob_natural_aug_sep)
 row.names(rr_14d_prob_natural_discrete) <- c("apr_may","jun_jul","aug_sep")
-
+rr_14d_prob_natural_discrete <- rr_14d_prob_natural_discrete/rowSums(rr_14d_prob_natural_discrete)
 ```
 
 Calculates the probability of 14-day recession rate ranges for the scenario 1 flow scenario and discrete time state (April-May, June-July, August-September).
@@ -532,7 +535,7 @@ colnames(rr_14d_prob_scenario1_aug_sep) <- c("recessionrate_bin_1",
 
 rr_14d_prob_scenario1_discrete <- rbind(rr_14d_prob_scenario1_apr_may,rr_14d_prob_scenario1_jun_jul,rr_14d_prob_scenario1_aug_sep)
 row.names(rr_14d_prob_scenario1_discrete) <- c("apr_may","jun_jul","aug_sep")
-
+rr_14d_prob_scenario1_discrete <- rr_14d_prob_scenario1_discrete/rowSums(rr_14d_prob_scenario1_discrete)
 ```
 
 Calculates the probability of 14-day recession rate ranges for the scenario 2 flow scenario and discrete time state (April-May, June-July, August-September).
@@ -580,6 +583,7 @@ colnames(rr_14d_prob_scenario2_aug_sep) <- c("recessionrate_bin_1",
 
 rr_14d_prob_scenario2_discrete <- rbind(rr_14d_prob_scenario2_apr_may,rr_14d_prob_scenario2_jun_jul,rr_14d_prob_scenario2_aug_sep)
 row.names(rr_14d_prob_scenario2_discrete) <- c("apr_may","jun_jul","aug_sep")
+rr_14d_prob_scenario2_discrete <- rr_14d_prob_scenario2_discrete/rowSums(rr_14d_prob_scenario2_discrete)
 ```
 
 ## 30-day recession rate bin and probabilities##
@@ -734,7 +738,7 @@ colnames(rr_30d_prob_natural_aug_sep) <- c("recessionrate_bin_1",
 
 rr_30d_prob_natural_discrete <- rbind(rr_30d_prob_natural_apr_may,rr_30d_prob_natural_jun_jul,rr_30d_prob_natural_aug_sep)
 row.names(rr_30d_prob_natural_discrete) <- c("apr_may","jun_jul","aug_sep")
-
+rr_30d_prob_natural_discrete <- rr_30d_prob_natural_discrete/rowSums(rr_30d_prob_natural_discrete)
 ```
 
 Calculates the probability of 30-day recession rate ranges for the scenario 1 flow scenario and discrete time state (April-May, June-July, August-September).
@@ -782,7 +786,7 @@ colnames(rr_30d_prob_scenario1_aug_sep) <- c("recessionrate_bin_1",
 
 rr_30d_prob_scenario1_discrete <- rbind(rr_30d_prob_scenario1_apr_may,rr_30d_prob_scenario1_jun_jul,rr_30d_prob_scenario1_aug_sep)
 row.names(rr_30d_prob_scenario1_discrete) <- c("apr_may","jun_jul","aug_sep")
-
+rr_30d_prob_scenario1_discrete <- rr_30d_prob_scenario1_discrete/rowSums(rr_30d_prob_scenario1_discrete)
 ```
 
 Calculates the probability of 30-day recession rate ranges for the scenario 2 flow scenario and discrete time state (April-May, June-July, August-September).
@@ -830,6 +834,7 @@ colnames(rr_30d_prob_scenario2_aug_sep) <- c("recessionrate_bin_1",
 
 rr_30d_prob_scenario2_discrete <- rbind(rr_30d_prob_scenario2_apr_may,rr_30d_prob_scenario2_jun_jul,rr_30d_prob_scenario2_aug_sep)
 row.names(rr_30d_prob_scenario2_discrete) <- c("apr_may","jun_jul","aug_sep")
+rr_30d_prob_scenario2_discrete <- rr_30d_prob_scenario2_discrete/rowSums(rr_30d_prob_scenario2_discrete)
 ```
 
 #### Calculate probabilities for bed shear/scour####
