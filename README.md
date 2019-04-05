@@ -20,4 +20,5 @@ This R notebook is used to process the existing hydrology (Gila at Gila River US
 This R notebook is used to used to build and Bayesian network used to infer recruitment potential. Conditional probabilities for each node are populated using results from the "1-gila-preprocessing.Rmd".**Bayesian networks** are a class of graphical models that allow a concise representation of the probabilistic dependencies between a given set of random variables as a **directed acyclic graph** where each node represents a random variable.
 
 #3-gila-Implement.Rmd#
+
 This R notebook is used to used to implement the constructed Bayesian network for riparian recruitment for various scenarios (natural, scenario 1, and scenario 2). These scenarios corresponde to the CUFA.
