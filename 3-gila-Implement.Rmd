@@ -37,7 +37,6 @@ getwd()
 ###Import SRH-2D model results###
 This code chunck calls the txt file that includes the inundation stats for each inundated cell in the hydrodynamic model mesh. This calls the data for one of 5 sites.
 
-The 
 ```{r}
 q_cells <- read.table("data/site1_1000_to_4000.txt",header = FALSE)
 data.frame(q_cells)
@@ -235,85 +234,24 @@ for (i in 1:(nrow(Evidence_q8)))
                                         method = "lw"))}
 ```
 
-
+Result files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).
 ```{r}
-Recruit_prob <- data.frame()
-Recruit_prob <- cbind(Recruit_prob,mean(Recruit_q1[,1]),mean(Recruit_q2[,1]),mean(Recruit_q3[,1]),mean(Recruit_q4[,1]),mean(Recruit_q5[,1]),mean(Recruit_q6[,1]),mean(Recruit_q7[,1]),mean(Recruit_q8[,1])))
+Recruit_prob <- c(mean(Recruit_q1[,1]),mean(Recruit_q2[,1]),mean(Recruit_q3[,1]),mean(Recruit_q4[,1]),mean(Recruit_q5[,1]),mean(Recruit_q6[,1]),mean(Recruit_q7[,1]),mean(Recruit_q8[,1]))
+Recruit_prob<-data.frame(Recruit_prob)
+dimnames(Recruit_prob) = list("bin"=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"),"Recruit")
 
+q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
+                    ifelse(q_cells$bin =="bin_2",Recruit_prob[2,],
+                    ifelse(q_cells$bin =="bin_3",Recruit_prob[3,],
+                    ifelse(q_cells$bin =="bin_4",Recruit_prob[4,],
+                    ifelse(q_cells$bin =="bin_5",Recruit_prob[5,],
+                    ifelse(q_cells$bin =="bin_6",Recruit_prob[6,],
+                    ifelse(q_cells$bin =="bin_7",Recruit_prob[7,],
+                    Recruit_prob[8,])))))))
+
+write.csv(Recruit_prob,file = "recruit_prob.csv")
+write.csv(q_cells,file = "q_cells_recruit.csv",row.names= FALSE)
 ```
-
-### Export File###
-write.csv(E_q_all_prob_mn, file="output/site3/E_q_all_prob_mn.csv")
-E_q_all_prob_mn2 <- read.csv("output/site3/E_q_all_prob_mn.csv")
-colnames(E_q_all_prob_mn2) <- c("cell","mean_prob")
-E_q_all_prob_mn2 <- E_q_all_prob_mn2[order(E_q_all_prob_mn2$cell),]
-write.csv(E_q_all_prob_mn2, file="output/site3/E_q_all_prob_mn.csv", row.names=FALSE)
-
-#### Calculate recruitment probability by instantiating the BN with evidence ####
-system.time(E_q1_cell_probs <- lapply(E_evidence1, apply, 1, function(x) cpquery(riparian.fit1, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q1_cell_probs, file="output/site3/E_q1_cell_probs.Rdata")
-system.time(E_q2_cell_probs <- lapply(E_evidence2, apply, 1, function(x) cpquery(riparian.fit2, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q2_cell_probs, file="output/site3/E_q2_cell_probs.Rdata")
-system.time(E_q3_cell_probs <- lapply(E_evidence3, apply, 1, function(x) cpquery(riparian.fit3, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q3_cell_probs, file="output/site3/E_q3_cell_probs.Rdata")
-system.time(E_q4_cell_probs <- lapply(E_evidence4, apply, 1, function(x) cpquery(riparian.fit4, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q4_cell_probs, file="output/site3/E_q4_cell_probs.Rdata")
-system.time(E_q5_cell_probs <- lapply(E_evidence5, apply, 1, function(x) cpquery(riparian.fit5, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q5_cell_probs, file="output/site3/E_q5_cell_probs.Rdata")
-system.time(E_q6_cell_probs <- lapply(E_evidence6, apply, 1, function(x) cpquery(riparian.fit6, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q6_cell_probs, file="output/site3/E_q6_cell_probs.Rdata")
-system.time(E_q7_cell_probs <- lapply(E_evidence7, apply, 1, function(x) cpquery(riparian.fit7, (POTENTIAL=="Y"), evidence=as.list(x), method="lw")))
-save(E_q7_cell_probs, file="output/site3/E_q7_cell_probs.Rdata")
-
-E_q1_cell_prob_mn <- t(data.frame(lapply(E_q1_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-E_q2_cell_prob_mn <- t(data.frame(lapply(E_q2_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-E_q3_cell_prob_mn <- t(data.frame(lapply(E_q3_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-E_q4_cell_prob_mn <- t(data.frame(lapply(E_q4_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-E_q5_cell_prob_mn <- t(data.frame(lapply(E_q5_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-E_q6_cell_prob_mn <- t(data.frame(lapply(E_q6_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-E_q7_cell_prob_mn <- t(data.frame(lapply(E_q7_cell_probs, mean, na.rm=TRUE), check.names=FALSE))
-if (exists("E_q7_cell_prob_mn")) E_q_all_prob_mn <- rbind(E_q1_cell_prob_mn, E_q2_cell_prob_mn, E_q3_cell_prob_mn, E_q4_cell_prob_mn, E_q5_cell_prob_mn, E_q6_cell_prob_mn, E_q7_cell_prob_mn)
-if (!exists("E_q7_cell_prob_mn")) E_q_all_prob_mn <- rbind(E_q1_cell_prob_mn, E_q2_cell_prob_mn, E_q3_cell_prob_mn, E_q4_cell_prob_mn, E_q5_cell_prob_mn, E_q6_cell_prob_mn)
-
-# q1_norm <- normalize(hydro_states, q1_cell_probs)
-# q2_norm <- normalize(hydro_states, q2_cell_probs)
-# q3_norm <- normalize(hydro_states, q3_cell_probs)
-# q4_norm <- normalize(hydro_states, q4_cell_probs)
-# q5_norm <- normalize(hydro_states, q5_cell_probs)
-# q6_norm <- normalize(hydro_states, q6_cell_probs)
-
-# q1_prob_mn_norm <- q1_cell_prob_mn * q1_norm
-# q2_prob_mn_norm <- q2_cell_prob_mn * q2_norm
-# q3_prob_mn_norm <- q3_cell_prob_mn * q3_norm
-# q4_prob_mn_norm <- q4_cell_prob_mn * q4_norm
-# q5_prob_mn_norm <- q5_cell_prob_mn * q5_norm
-# q6_prob_mn_norm <- q6_cell_prob_mn * q6_norm
-
-# row.names(q1_prob_mn_norm) <- row.names(q1_cell_prob_mn)
-# row.names(q2_prob_mn_norm) <- row.names(q2_cell_prob_mn)
-# row.names(q3_prob_mn_norm) <- row.names(q3_cell_prob_mn)
-# row.names(q4_prob_mn_norm) <- row.names(q4_cell_prob_mn)
-# row.names(q5_prob_mn_norm) <- row.names(q5_cell_prob_mn)
-# row.names(q6_prob_mn_norm) <- row.names(q6_cell_prob_mn)
-
-# if (exists("q6_prob_mn_norm")) q_all_mn_norm_e <- rbind(q1_prob_mn_norm, q2_prob_mn_norm, q3_prob_mn_norm, q4_prob_mn_norm, q5_prob_mn_norm, q6_prob_mn_norm)
-# if (!exists("q6_prob_mn_norm")) q_all_mn_norm_e <- rbind(q1_prob_mn_norm, q2_prob_mn_norm, q3_prob_mn_norm, q4_prob_mn_norm, q5_prob_mn_norm)
-
-#### Write csv file output ####
-# write.csv(q1_prob_mn_norm, file="output/site3/q1_prob_mn_norm_e.csv")
-# write.csv(q2_prob_mn_norm, file="output/site3/q2_prob_mn_norm_e.csv")
-# write.csv(q3_prob_mn_norm, file="output/site3/q3_prob_mn_norm_e.csv")
-# write.csv(q4_prob_mn_norm, file="output/site3/q4_prob_mn_norm_e.csv")
-# write.csv(q5_prob_mn_norm, file="output/site3/q5_prob_mn_norm_e.csv")
-# write.csv(q6_prob_mn_norm, file="output/site3/q6_prob_mn_norm_e.csv")
-
-# Export File
-write.csv(E_q_all_prob_mn, file="output/site3/E_q_all_prob_mn.csv")
-E_q_all_prob_mn2 <- read.csv("output/site3/E_q_all_prob_mn.csv")
-colnames(E_q_all_prob_mn2) <- c("cell","mean_prob")
-E_q_all_prob_mn2 <- E_q_all_prob_mn2[order(E_q_all_prob_mn2$cell),]
-write.csv(E_q_all_prob_mn2, file="output/site3/E_q_all_prob_mn.csv", row.names=FALSE)
-
 
 ####R Notebooks####
 Execute code chunks by clicking the *Run* button within the chunk or by placing the cursor inside it and pressing *Cmd+Shift+Enter*. Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*. Whenthe notebook is saved, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
