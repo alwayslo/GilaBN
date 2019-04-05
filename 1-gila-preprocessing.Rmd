@@ -84,7 +84,7 @@ for (i in 1:(nrow(head_cm_s1)))
                                                   (head_cm_s1[i,3]-head_cm_s1[13+i,3])/14))}
 
 recessionrate_14d <- cbind(hydro[,1],recessionrate_14d)
-recessionrate_14d <- setNames(recessionrate_14d,c("date","natural stage (cm/d)","scenario 1 stage (cm/d)","scenario 2 stage (cm/d)"))
+recessionrate_14d <- setNames(recessionrate_14d,c("date","natural recessionrate (cm/d)","scenario 1 recessionrate (cm/d)","scenario 2 recessionrate (cm/d)"))
 recessionrate_14d<-na.omit(recessionrate_14d)
 ```
 
