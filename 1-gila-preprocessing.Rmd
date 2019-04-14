@@ -35,7 +35,7 @@ data.frame(hydro)
 hydro <- setNames(hydro, c("date","natural (cfs)", "scenario 1 (cfs)","scenario 2 (cfs)"))
 ```
 
-This project includes five study sites. This code chunck adds the stage (both ft and cm) for each site based on the flowrate and previously developed regression equations for each site. concatenation
+This project includes five study sites. This code chunck adds the stage (both ft and cm) for each site based on the flowrate and previously developed regression equations for each site.
 ```{r}
 
 head_conv_s1 <- data.frame(0.0011*hydro[2], 0.0011*hydro[3],0.0011*hydro[4])

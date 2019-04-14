@@ -234,7 +234,7 @@ for (i in 1:(nrow(Evidence_q8)))
                                         method = "lw"))}
 ```
 
-Result files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).
+Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).The file path can also be changed as needed.
 ```{r}
 Recruit_prob <- c(mean(Recruit_q1[,1]),mean(Recruit_q2[,1]),mean(Recruit_q3[,1]),mean(Recruit_q4[,1]),mean(Recruit_q5[,1]),mean(Recruit_q6[,1]),mean(Recruit_q7[,1]),mean(Recruit_q8[,1]))
 Recruit_prob<-data.frame(Recruit_prob)
@@ -249,8 +249,8 @@ q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
                     ifelse(q_cells$bin =="bin_7",Recruit_prob[7,],
                     Recruit_prob[8,])))))))
 
-write.csv(Recruit_prob,file = "recruit_prob.csv")
-write.csv(q_cells,file = "q_cells_recruit.csv",row.names= FALSE)
+write.csv(Recruit_prob,file = "/Volumes/LoBear/BN/Gila/bn_master/output/old_natural2_recruit_prob.csv")
+write.csv(q_cells,file = "/Volumes/LoBear/BN/Gila/bn_master/output/old_natural2_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 ####R Notebooks####
