@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1555688398626.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "102810323",
+    "id" : "B749CD4",
+    "lastKnownWriteTime" : 1555705513,
+    "last_content_update" : 1555705513728,
+    "path" : "~/GilaBN/1-gila-preprocessing_old.Rmd",
+    "project_path" : "1-gila-preprocessing_old.Rmd",
+    "properties" : {
+        "chunk_output_type" : "inline",
+        "cursorPosition" : "93,48",
+        "scrollLine" : "74"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

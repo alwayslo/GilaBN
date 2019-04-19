@@ -1,0 +1,4 @@
+"0","scenario1_recruit$mean_diff <- mean(natural_recruit$recruit - scenario1_recruit$recruit)"
+"2","Error in mean(natural_recruit$recruit - scenario1_recruit$recruit) : 
+  object 'natural_recruit' not found
+"

@@ -1,0 +1,125 @@
+---
+title: "Upper Gila Watershed Bayesian Network Results Analysis"
+author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
+date: "4/5/2019"
+update: "4/5/2019"
+output: html_notebook
+---
+
+This R notebook is used to used to analyze the results from the BN model.
+
+###Result Analysis###
+```{r}
+#rm(list=ls())
+
+library("bnlearn")
+library("readr")
+library("Rgraphviz")
+library("xts")
+library("prob")
+library("TTR")
+library("bigmemory")
+library("zoo")
+library("raster")
+library("sp")
+library("rgdal")
+library("rasterVis")
+library("ggplot2")
+library("rgdal")
+library("dplyr")
+library("methods")
+require("BiocGenerics")
+require("graph")
+
+getwd()
+```
+
+Load scenario results to be used for analysis.
+```{r}
+natural_recruit <- read.csv(file ="/Volumes/LoBear/BN/Gila/bn_master/output/old_natural2_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+  
+scenario1_recruit <-read.csv(file ="/Volumes/LoBear/BN/Gila/bn_master/output/old_scenario1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+
+scenario2_recruit <- read.csv(file ="/Volumes/LoBear/BN/Gila/bn_master/output/old_scenario2_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+
+recruitStack <- c(natural_recruit,scenario1_recruit,scenario2_recruit)
+
+```
+
+# Calculate the mean and standard devation of probability differences between existing conditions and each scenario
+
+```{r}
+scenario1_recruit$mean_diff <- mean(natural_recruit$recruit - scenario1_recruit$recruit)
+scenario2_recruit$mean_diff <- mean(natural_recruit$recruit - scenario2_recruit$recruit)
+  
+scenario1_recruit$std_diff <- stdev(natural_recruit$recruit - scenario1_recruit$recruit)
+scenario2_recruit$std_diff <- stdev(natural_recruit$recruit - scenario2_recruit$recruit)
+
+max(scenario1_recruit$mean_diff)
+min(scenario1_recruit$mean_diff)
+
+max(scenario2_recruit$mean_diff)
+min(scenario2_recruit$mean_diff)
+
+max(scenario1_recruit$std_diff)
+min(scenario1_recruit$std_diff)
+
+max(scenario2_recruit$std_diff)
+min(scenario2_recruit$std_diff)
+
+
+```
+
+# Plot mean and standard devation of changes in probabilities for each scenario
+
+```{r}
+
+
+```
+
+# Calculate the average number of events during each time state
+
+```{r}
+
+
+```
+
+# Calculate difference in events each season for each scenario
+
+```{r}
+
+
+```
+
+
+# Plot the number of events in each month
+
+```{r}
+
+
+```
+
+#Plot the mean probability at each site
+
+```{r}
+ncell(natural_recruit)
+
+hist(natural_recruit, 
+     maxpixels=ncell(natural_recruit),
+     main="Distribution of DSM Values\n All Pixel Values Included\n NEON Harvard Forest Field Site",
+     xlab="DSM Elevation Value (m)",
+     ylab="Frequency",
+     col="yellow")
+```
+
+```
+
+# Plot the mean probability at each site
+
+```{r}
+
+
+```
+
+##References##
+

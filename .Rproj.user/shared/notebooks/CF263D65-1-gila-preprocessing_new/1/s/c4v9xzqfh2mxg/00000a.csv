@@ -1,0 +1,8 @@
+"0","# average_stage_14_day <-sum(stage_cm_s1[1:14,1])/14"
+"0","# recession_rate_14_day <- (stage_cm_s1[1,1] - stage_cm_s1[14,1])/14"
+"0","usgs_recessionrate_14d<- data.frame()"
+"0","for (i in 1:(nrow(stage_cm_s1))) "
+"0","  {usgs_recessionrate_14d <- rbind(usgs_recessionrate_14d,(stage_cm_s1[i,1]-stage_cm_s1[13+i,1])/14)}"
+"0","usgs_recessionrate_14d <- cbind(usgs_hydro[,3],usgs_recessionrate_14d)"
+"0","usgs_recessionrate_14d <- setNames(usgs_recessionrate_14d,c(""date"",""recessionrate (cm/d)""))"
+"0","usgs_recessionrate_14d<-na.omit(usgs_recessionrate_14d)"

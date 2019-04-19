@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1555700712196.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "993DA997",
+    "lastKnownWriteTime" : 1555703998,
+    "last_content_update" : 1555703998,
+    "path" : "~/GilaBN/output/old_scenario1_recruit_prob.csv",
+    "project_path" : "output/old_scenario1_recruit_prob.csv",
+    "properties" : {
+        "cursorPosition" : "0,0",
+        "scrollLine" : "0"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

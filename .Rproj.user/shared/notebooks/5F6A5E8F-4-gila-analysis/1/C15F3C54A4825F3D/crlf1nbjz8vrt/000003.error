@@ -1,0 +1,1 @@
+{"frames":[{"character_number":0,"end_character_number":0,"end_line_number":0,"file":"","func":"mean(natural_recruit$recruit - scenario1_recruit$recruit)","line_number":0}],"message":"Error in mean(natural_recruit$recruit - scenario1_recruit$recruit) : \n  object 'natural_recruit' not found\n"}

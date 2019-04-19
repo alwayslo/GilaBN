@@ -1,0 +1,7 @@
+"0","natural_recruit <- read.csv(file =""/Users/lohebert/GilaBN/output/old_natural_q_cells_recruit.csv"", header=TRUE, sep="","", col.names = c(""cell"",""flow"",""bin"",""recruit""))"
+"0","  "
+"0","scenario1_recruit <-read.csv(file =""/Users/lohebert/GilaBN/output/old_scenario1_q_cells_recruit.csv"", header=TRUE, sep="","", col.names = c(""cell"",""flow"",""bin"",""recruit""))"
+"0","scenario2_recruit <- read.csv(file =""/Users/lohebert/GilaBN/output/old_scenario2_q_cells_recruit.csv"", header=TRUE, sep="","", col.names = c(""cell"",""flow"",""bin"",""recruit""))"
+"2","cannot open file '/Users/lohebert/GilaBN/output/old_scenario2_q_cells_recruit.csv': No such file or directory"
+"2","Error in file(file, ""rt"") : cannot open the connection
+"
