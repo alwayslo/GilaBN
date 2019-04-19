@@ -92,34 +92,44 @@ Evidence <- Evidence[-1:-7]
 ```{r}
 Evidence <- c(hydro[1:nrow(recessionrate_14d),],recessionrate_14d[,2:4])
 Evidence <-data.frame(Evidence)
-Evidence$TIMING <- NA
-Evidence$INUN <- NA
-Evidence$RECESSION_RATE<- NA
+Evidence$TIMING <- rep("apr_may",nrow(recessionrate_14d))
+Evidence$INUN <- rep("bin_4",nrow(recessionrate_14d))
+Evidence$RECESSION_RATE<- rep("bin_5",nrow(recessionrate_14d))
 Evidence <- setNames(Evidence, c("date","q_natural", "q_scenario1","q_scenario2","rr_natural", "rr_scenario1","rr_scenario2", "TIMING","INUN","RECESSION_RATE"))
-
-Evidence$date<-as.Date(Evidence$date, format="%m/%d/%Y")
-
-Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
-                    ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
-                    ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
-
-Evidence$INUN <-    ifelse(Evidence$q_scenario1<= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[7],"bin_7",
-                    ifelse(Evidence$q_scenario1>q_bin[7],"bin_8","blah"))))))))
-
-
-Evidence$RECESSION_RATE <- ifelse(Evidence$rr_natural <= recessionrate_bin[1],"bin_1",
-                           ifelse(recessionrate_bin[1]< Evidence$rr_natural & Evidence$rr_natural <=recessionrate_bin[2],"bin_2",
-                           ifelse(recessionrate_bin[2]< Evidence$rr_natural & Evidence$rr_natural <=recessionrate_bin[3],"bin_3",
-                           ifelse(recessionrate_bin[3]< Evidence$rr_natural & Evidence$rr_natural <=recessionrate_bin[4],"bin_4",
-                           ifelse(Evidence$rr_natural > recessionrate_bin[4],"bin_5","blah")))))  
+ 
 
 Evidence <- Evidence[-1:-7]
+
+# Evidence <- c(hydro[1:nrow(recessionrate_14d),],recessionrate_14d[,2:4])
+# Evidence <-data.frame(Evidence)
+# Evidence$TIMING <- NA
+# Evidence$INUN <- NA
+# Evidence$RECESSION_RATE<- NA
+# Evidence <- setNames(Evidence, c("date","q_natural", "q_scenario1","q_scenario2","rr_natural", "rr_scenario1","rr_scenario2", "TIMING","INUN","RECESSION_RATE"))
+# 
+# Evidence$date<-as.Date(Evidence$date, format="%m/%d/%Y")
+# 
+# Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
+#                     ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
+#                     ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
+# 
+# Evidence$INUN <-    ifelse(Evidence$q_scenario1<= q_bin[1],"bin_1",
+#                     ifelse(q_bin[1]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[2],"bin_2",
+#                     ifelse(q_bin[2]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[3],"bin_3",
+#                     ifelse(q_bin[3]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[4],"bin_4",
+#                     ifelse(q_bin[4]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[5],"bin_5",
+#                     ifelse(q_bin[5]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[6],"bin_6",
+#                     ifelse(q_bin[6]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[7],"bin_7",
+#                     ifelse(Evidence$q_scenario1>q_bin[7],"bin_8","blah"))))))))
+# 
+# 
+# Evidence$RECESSION_RATE <- ifelse(Evidence$rr_natural <= recessionrate_bin[1],"bin_1",
+#                            ifelse(recessionrate_bin[1]< Evidence$rr_natural & Evidence$rr_natural <=recessionrate_bin[2],"bin_2",
+#                            ifelse(recessionrate_bin[2]< Evidence$rr_natural & Evidence$rr_natural <=recessionrate_bin[3],"bin_3",
+#                            ifelse(recessionrate_bin[3]< Evidence$rr_natural & Evidence$rr_natural <=recessionrate_bin[4],"bin_4",
+#                            ifelse(Evidence$rr_natural > recessionrate_bin[4],"bin_5","blah")))))  
+# 
+# Evidence <- Evidence[-1:-7]
 ```
 
 ##Scenario 2 Evidence##
@@ -249,8 +259,8 @@ q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
                     ifelse(q_cells$bin =="bin_7",Recruit_prob[7,],
                     Recruit_prob[8,])))))))
 
-write.csv(Recruit_prob,file = "/Volumes/LoBear/BN/Gila/bn_master/output/old_natural2_recruit_prob.csv")
-write.csv(q_cells,file = "/Volumes/LoBear/BN/Gila/bn_master/output/old_natural2_q_cells_recruit.csv",row.names= FALSE)
+write.csv(Recruit_prob,file = "/Users/lohebert/GilaBN/output/old_scenario1_recruit_prob.csv")
+write.csv(q_cells,file = "/Users/lohebert/GilaBN/output/old_scenario1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 ####R Notebooks####
