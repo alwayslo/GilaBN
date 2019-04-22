@@ -1,8 +1,0 @@
-"0","Evidence_q1 <- Evidence[Evidence[2] ==""bin_1"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q2 <- Evidence[Evidence[2] ==""bin_2"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q3 <- Evidence[Evidence[2] ==""bin_3"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q4 <- Evidence[Evidence[2] ==""bin_4"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q5 <- Evidence[Evidence[2] ==""bin_5"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q6 <- Evidence[Evidence[2] ==""bin_6"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q7 <- Evidence[Evidence[2] ==""bin_7"" & Evidence[1]!=""blah"",]"
-"0","Evidence_q8 <- Evidence[Evidence[2] ==""bin_8"" & Evidence[1]!=""blah"",]"

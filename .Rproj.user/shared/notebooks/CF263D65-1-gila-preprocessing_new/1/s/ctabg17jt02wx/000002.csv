@@ -1,3 +1,0 @@
-"0","hydro <- read.csv(""data/scenarios_new.csv"", skip=1,header = TRUE)"
-"0","hydro <- setNames(hydro, c(""date"",""natural"", ""current_operations"",""combined_operations"",""combined_operations+AWSA""))"
-"0","hydro$date<-as.Date(hydro$date, format=""%m/%d/%Y"")"

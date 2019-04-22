@@ -1,2 +1,0 @@
-"0","rr_14d_prob_yr <- rbind(rr_14d_prob_natural_yr,rr_14d_prob_scenario1_yr,rr_14d_prob_scenario2_yr, rr_14d_prob_scenario3_yr)"
-"0","row.names(rr_14d_prob_yr) <- c(""natural"", ""current_operations"", ""combined_operations"", ""combined_operations+AWSA"")"
