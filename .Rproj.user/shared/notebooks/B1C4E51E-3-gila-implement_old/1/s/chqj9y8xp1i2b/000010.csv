@@ -1,2 +1,0 @@
-"0","q_cells <- read.table(""data/site1_1000_to_4000.txt"",header = FALSE)"
-"0","data.frame(q_cells)"

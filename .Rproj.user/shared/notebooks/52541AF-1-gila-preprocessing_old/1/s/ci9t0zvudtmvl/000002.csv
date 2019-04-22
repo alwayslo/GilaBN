@@ -1,2 +1,0 @@
-"0","rr_14d_prob_yr <- rbind(rr_14d_prob_natural_yr,rr_14d_prob_scenario1_yr,rr_14d_prob_scenario2_yr)"
-"0","row.names(rr_14d_prob_yr) <- c(""natural"",""scenario 1"",""scenario 2"")"

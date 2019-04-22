@@ -1,2 +1,0 @@
-"0","write.csv(Recruit_prob,file = ""output/old_natural_recruit_prob.csv"")"
-"0","write.csv(q_cells,file = ""output/old_natural_q_cells_recruit.csv"",row.names= FALSE)"

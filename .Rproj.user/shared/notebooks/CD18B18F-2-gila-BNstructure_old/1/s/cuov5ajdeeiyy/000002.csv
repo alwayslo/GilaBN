@@ -1,8 +1,0 @@
-"0","nodes <- c(""TIMING"",""INUN"",""RECESSION_RATE"",""HYDRO"",""GW"",""RECRUIT"")"
-"0","dag = empty.graph(nodes,num=1)"
-"0","dag = set.arc(dag, ""TIMING"", ""INUN"", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)"
-"0","dag = set.arc(dag, ""TIMING"", ""RECESSION_RATE"", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)"
-"0","dag = set.arc(dag, ""INUN"", ""HYDRO"", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)"
-"0","dag = set.arc(dag, ""RECESSION_RATE"", ""HYDRO"", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)"
-"0","dag = set.arc(dag, ""GW"", ""RECRUIT"", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)"
-"0","dag = set.arc(dag, ""HYDRO"", ""RECRUIT"", check.cycles = TRUE, check.illegal = TRUE, debug = FALSE)"
