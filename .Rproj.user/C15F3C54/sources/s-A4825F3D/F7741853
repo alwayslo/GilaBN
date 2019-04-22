@@ -5,7 +5,7 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "4121616724",
+    "hash" : "0",
     "id" : "F7741853",
     "lastKnownWriteTime" : 1555705513,
     "last_content_update" : 1555705513847,
@@ -13,8 +13,8 @@
     "project_path" : "3-gila-implement_old.Rmd",
     "properties" : {
         "chunk_output_type" : "inline",
-        "cursorPosition" : "125,0",
-        "scrollLine" : "88"
+        "cursorPosition" : "260,0",
+        "scrollLine" : "247"
     },
     "relative_order" : 3,
     "source_on_save" : false,
