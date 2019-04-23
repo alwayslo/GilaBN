@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Bayesian Network Implementation"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "4/2/2019"
-update: "4/18/2019"
+update: "4/22/2019"
 output: html_notebook
 ---
 
@@ -307,10 +307,28 @@ q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
                     ifelse(q_cells$bin =="bin_6",Recruit_prob[6,],
                     ifelse(q_cells$bin =="bin_7",Recruit_prob[7,],
                     Recruit_prob[8,])))))))
-
-write.csv(Recruit_prob,file = "/Users/lohebert/GilaBN/output/old_scenario1_recruit_prob.csv")
-write.csv(q_cells,file = "/Users/lohebert/GilaBN/output/old_scenario1_q_cells_recruit.csv",row.names= FALSE)
 ```
+
+```{r}
+write.csv(Recruit_prob,file = "output/nb_natural_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/nb_natural_s1_q_cells_recruit.csv",row.names= FALSE)
+```
+
+```{r}
+write.csv(Recruit_prob,file = "output/nb_scenario1_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/nb_scenario1_s1_q_cells_recruit.csv",row.names= FALSE)
+```
+
+```{r}
+write.csv(Recruit_prob,file = "output/nb_scenario2_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/nb_scenario2_s1_q_cells_recruit.csv",row.names= FALSE)
+```
+
+```{r}
+write.csv(Recruit_prob,file = "output/new_scenario3_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/nb_scenario3_s1_q_cells_recruit.csv",row.names= FALSE)
+```
+
 
 ####R Notebooks####
 Execute code chunks by clicking the *Run* button within the chunk or by placing the cursor inside it and pressing *Cmd+Shift+Enter*. Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*. Whenthe notebook is saved, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).

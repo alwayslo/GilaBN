@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Bayesian Network Results Analysis"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "4/5/2019"
-update: "4/18/2019"
+update: "4/22/2019"
 output: html_notebook
 ---
 
@@ -33,6 +33,34 @@ require("graph")
 
 getwd()
 ```
+
+Load and plot all flow scenarios modeled.
+```{r}
+hydro <- read.csv("data/scenarios_new.csv", skip=1,header = TRUE)
+hydro <- setNames(hydro, c("date","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+hydro$date <-as.Date(hydro$date, format="%m/%d/%Y")
+hydro$julian <- format(hydro$date, "%j")
+
+ggplot(hydro, aes(x=julian)) + 
+  geom_line(aes(y = natural, color = "natural")) + 
+  geom_line(aes(y = current_operations, color = "current operations"))+
+  geom_line(aes(y = combined_operations, color = "combined operations"))+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"))+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  labs(color="scenario")+
+  scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
+
+ggplot(hydro, aes(x=julian)) + 
+  geom_point(aes(y = natural, color = "natural"))+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  labs(color="scenario")+
+  scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
+
+```
+
+
 
 Load scenario results to be used for analysis.
 ```{r}
