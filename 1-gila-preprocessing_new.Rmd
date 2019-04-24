@@ -91,8 +91,35 @@ q_bin <- c(300, 500, 700, 900, 1200, 2000, 3000)
 
 Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs).
 ```{r}
+# 
+# q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
+#               q_bin_1 <- usgs_hydro[,4]<= q_bin[1],
+#               q_bin_2 <- q_bin[1]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[2],
+#               q_bin_3 <- q_bin[2]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[3],
+#               q_bin_4 <- q_bin[3]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[4],
+#               q_bin_5 <- q_bin[4]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[5],
+#               q_bin_6 <- q_bin[5]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[6],
+#               q_bin_7 <- q_bin[6]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[7],
+#               q_bin_8 <- usgs_hydro[,4]>q_bin[7])
+# 
+# colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# 
+# q_prob_usgs_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
+#                                        length(which(q_bin_2))/length(q_bin_2),
+#                                        length(which(q_bin_3))/length(q_bin_3),
+#                                        length(which(q_bin_4))/length(q_bin_4),
+#                                        length(which(q_bin_5))/length(q_bin_5),
+#                                        length(which(q_bin_6))/length(q_bin_6),
+#                                       length(which(q_bin_7))/length(q_bin_7),
+#                                        length(which(q_bin_8))/length(q_bin_8))
+# 
+# colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# row.names(q_prob_usgs_yr) <- c("q_prob")
+```
 
-q_bin_usgs <-cbind.data.frame(usgs_hydro$date, 
+Cummulative distribution
+```{r}
+q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
               q_bin_1 <- usgs_hydro[,4]<= q_bin[1],
               q_bin_2 <- q_bin[1]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[2],
               q_bin_3 <- q_bin[2]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[3],
@@ -100,21 +127,49 @@ q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
               q_bin_5 <- q_bin[4]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[5],
               q_bin_6 <- q_bin[5]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[6],
               q_bin_7 <- q_bin[6]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[7],
-              q_bin_8 <- usgs_hydro[4]>q_bin[7])
+              q_bin_8 <- usgs_hydro[,4]>q_bin[7])
 
 colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
 
 q_prob_usgs_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-                                       length(which(q_bin_2))/length(q_bin_2),
-                                       length(which(q_bin_3))/length(q_bin_3),
-                                       length(which(q_bin_4))/length(q_bin_4),
-                                       length(which(q_bin_5))/length(q_bin_5),
-                                       length(which(q_bin_6))/length(q_bin_6),
-                                      length(which(q_bin_7))/length(q_bin_7),
-                                       length(which(q_bin_8))/length(q_bin_8))
+                                       sum(c(q_bin_1,q_bin_2), na.rm = TRUE)/length(q_bin_2),
+                                       sum(c(q_bin_1,q_bin_2,q_bin_3), na.rm = TRUE)/length(q_bin_3),
+                                       sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4), na.rm = TRUE)/length(q_bin_4),
+                                       sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4,q_bin_5), na.rm = TRUE)/length(q_bin_5),
+                                       sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6), na.rm = TRUE)/length(q_bin_6),
+                                       sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_7),
+                                       sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7,q_bin_8), na.rm = TRUE)/length(q_bin_8))
 
 colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
 row.names(q_prob_usgs_yr) <- c("q_prob")
+```
+
+Calculates the cumulative annual probability of a bin flood event occuring for the historical dataset (usgs).
+```{r}
+# 
+# q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
+#               q_bin_1 <- usgs_hydro[,4]<= q_bin[1],
+#               q_bin_2 <- q_bin[1] & usgs_hydro[,4]<=q_bin[2],
+#               q_bin_3 <- q_bin[2] & usgs_hydro[,4]<=q_bin[3],
+#               q_bin_4 <- q_bin[3] & usgs_hydro[,4]<=q_bin[4],
+#               q_bin_5 <- q_bin[4] & usgs_hydro[,4]<=q_bin[5],
+#               q_bin_6 <- q_bin[5] & usgs_hydro[,4]<=q_bin[6],
+#               q_bin_7 <- q_bin[6] & usgs_hydro[,4]<=q_bin[7],
+#               q_bin_8 <- usgs_hydro[,4]>0)
+# 
+# colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# 
+# q_prob_usgs_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
+#                                        length(which(q_bin_2))/length(q_bin_2),
+#                                        length(which(q_bin_3))/length(q_bin_3),
+#                                        length(which(q_bin_4))/length(q_bin_4),
+#                                        length(which(q_bin_5))/length(q_bin_5),
+#                                        length(which(q_bin_6))/length(q_bin_6),
+#                                       length(which(q_bin_7))/length(q_bin_7),
+#                                        length(which(q_bin_8))/length(q_bin_8))
+# 
+# colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# row.names(q_prob_usgs_yr) <- c("q_prob")
 ```
 
 Calculates the probability of a bin flood event occuring for historical dataset (usgs) for discrete time states (April-May, June-July, August-September). Each flow scenario corrects the probability distribution for error by normalizing the probabilities (i.e. ensuring the distribution sums to 1).
