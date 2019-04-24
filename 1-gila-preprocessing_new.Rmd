@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Preprocessing"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "11/29/2018"
-update: "4/22/2019"
+update: "4/24/2019"
 output: html_notebook
 ---
 
@@ -85,35 +85,87 @@ usgs_recessionrate_14d<-na.omit(usgs_recessionrate_14d)
 Establishes model q-bins and calculates the probability of discharge range for any given entire year and discrete time state (April-May, June-July, August-September).Model Q-bins were selected so that inundation areas increased by less than 15% between the discharge associated with each bin (i.e. 1000 cfs, 1500 cfs, 2000 cfs, 2500 cfs, 3000 cfs, 3500 cfs, 4000 cfs). 
 
 ```{r}
-q_bin <- c(300, 500, 700, 900, 1200, 2000, 3000)
+q_bin <- c(1000, 1500, 2000, 2500, 3000, 3500, 4000)
 
 ```
 
 Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs).
 ```{r}
+# 
+# q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
+#               q_bin_1 <- usgs_hydro[,4]<= q_bin[1],
+#               q_bin_2 <- q_bin[1]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[2],
+#               q_bin_3 <- q_bin[2]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[3],
+#               q_bin_4 <- q_bin[3]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[4],
+#               q_bin_5 <- q_bin[4]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[5],
+#               q_bin_6 <- q_bin[5]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[6],
+#               q_bin_7 <- q_bin[6]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[7],
+#               q_bin_8 <- usgs_hydro[,4]>q_bin[7])
+# 
+# colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# 
+# q_prob_usgs_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
+#                                        length(which(q_bin_2))/length(q_bin_2),
+#                                        length(which(q_bin_3))/length(q_bin_3),
+#                                        length(which(q_bin_4))/length(q_bin_4),
+#                                        length(which(q_bin_5))/length(q_bin_5),
+#                                        length(which(q_bin_6))/length(q_bin_6),
+#                                       length(which(q_bin_7))/length(q_bin_7),
+#                                        length(which(q_bin_8))/length(q_bin_8))
+# 
+# colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# row.names(q_prob_usgs_yr) <- c("q_prob")
+```
 
-q_bin_usgs <-cbind.data.frame(usgs_hydro$date, 
-              q_bin_1 <- usgs_hydro[,4]<= q_bin[1],
-              q_bin_2 <- q_bin[1]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[2],
-              q_bin_3 <- q_bin[2]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[3],
-              q_bin_4 <- q_bin[3]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[4],
-              q_bin_5 <- q_bin[4]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[5],
-              q_bin_6 <- q_bin[5]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[6],
-              q_bin_7 <- q_bin[6]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[7],
-              q_bin_8 <- usgs_hydro[4]>q_bin[7])
+Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs).
+```{r}
+# q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
+#               q_bin_0 <- usgs_hydro[,4]< q_bin[1],
+#               q_bin_1 <- q_bin[1]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[2],
+#               q_bin_2 <- q_bin[2]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[3],
+#               q_bin_3 <- q_bin[3]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[4],
+#               q_bin_4 <- q_bin[4]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[5],
+#               q_bin_5 <- q_bin[5]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[6],
+#               q_bin_6 <- q_bin[6]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[7],
+#               q_bin_7 <- usgs_hydro[,4]>q_bin[7])
+# 
+# colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+# 
+# q_prob_usgs_yr <- cbind(sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
+#                         sum(c(q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
+#                         sum(c(q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
+#                         sum(c(q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
+#                         sum(c(q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
+#                         sum(c(q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
+#                         sum(c(q_bin_7), na.rm = TRUE)/length(q_bin_1))
+# 
+# colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
+# row.names(q_prob_usgs_yr) <- c("q_prob")
+```
 
-colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs) excluding flow events less than the minimum innundation value. Essentially only capturing the probability of events that would innundate the floodplain/riparian zone by removing flow events that are less than that of the lower boundary of flow bin 1.
+```{r}
+q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
+              q_bin_0 <- usgs_hydro[,4]< q_bin[1],
+              q_bin_1 <- q_bin[1]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[2],
+              q_bin_2 <- q_bin[2]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[3],
+              q_bin_3 <- q_bin[3]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[4],
+              q_bin_4 <- q_bin[4]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[5],
+              q_bin_5 <- q_bin[5]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[6],
+              q_bin_6 <- q_bin[6]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[7],
+              q_bin_7 <- usgs_hydro[,4]>q_bin[7])
 
-q_prob_usgs_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-                                       length(which(q_bin_2))/length(q_bin_2),
-                                       length(which(q_bin_3))/length(q_bin_3),
-                                       length(which(q_bin_4))/length(q_bin_4),
-                                       length(which(q_bin_5))/length(q_bin_5),
-                                       length(which(q_bin_6))/length(q_bin_6),
-                                      length(which(q_bin_7))/length(q_bin_7),
-                                       length(which(q_bin_8))/length(q_bin_8))
+colnames(q_bin_usgs) <- c("date","q_bin_0","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+q_prob_usgs_yr <- cbind(length(which(q_bin_1))/(length(q_bin_1)-length(which(q_bin_0))),
+                                       length(which(q_bin_2))/(length(q_bin_2)-length(which(q_bin_0))),
+                                       length(which(q_bin_3))/(length(q_bin_3)-length(which(q_bin_0))),
+                                       length(which(q_bin_4))/(length(q_bin_4)-length(which(q_bin_0))),
+                                       length(which(q_bin_5))/(length(q_bin_5)-length(which(q_bin_0))),
+                                       length(which(q_bin_6))/(length(q_bin_6)-length(which(q_bin_0))),
+                                      length(which(q_bin_7))/(length(q_bin_7)-length(which(q_bin_0))))
+
+colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 row.names(q_prob_usgs_yr) <- c("q_prob")
 ```
 
@@ -123,38 +175,35 @@ apr_may_bin <- q_bin_usgs[months(q_bin_usgs$date) %in% month.name[4:5],]
 jun_jul_bin <- q_bin_usgs[months(q_bin_usgs$date) %in% month.name[6:7],]
 aug_sep_bin <- q_bin_usgs[months(q_bin_usgs$date) %in% month.name[8:9],]
 
-q_prob_usgs_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/length(apr_may_bin$q_bin_1),
-                                       length(which(apr_may_bin$q_bin_2))/length(apr_may_bin$q_bin_2),
-                                       length(which(apr_may_bin$q_bin_3))/length(apr_may_bin$q_bin_3),
-                                       length(which(apr_may_bin$q_bin_4))/length(apr_may_bin$q_bin_4),
-                                       length(which(apr_may_bin$q_bin_5))/length(apr_may_bin$q_bin_5),
-                                       length(which(apr_may_bin$q_bin_6))/length(apr_may_bin$q_bin_6),
-                                       length(which(apr_may_bin$q_bin_7))/length(apr_may_bin$q_bin_7),
-                                       length(which(apr_may_bin$q_bin_8))/length(apr_may_bin$q_bin_8))
+q_prob_usgs_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/(length(apr_may_bin$q_bin_1)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_2))/(length(apr_may_bin$q_bin_2)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_3))/(length(apr_may_bin$q_bin_3)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_4))/(length(apr_may_bin$q_bin_4)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_5))/(length(apr_may_bin$q_bin_5)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_6))/(length(apr_may_bin$q_bin_6)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_7))/(length(apr_may_bin$q_bin_7)-length(which(apr_may_bin$q_bin_0))))
 
-colnames(q_prob_usgs_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_usgs_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_usgs_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/length(jun_jul_bin$q_bin_1),
-                                       length(which(jun_jul_bin$q_bin_2))/length(jun_jul_bin$q_bin_2),
-                                       length(which(jun_jul_bin$q_bin_3))/length(jun_jul_bin$q_bin_3),
-                                       length(which(jun_jul_bin$q_bin_4))/length(jun_jul_bin$q_bin_4),
-                                       length(which(jun_jul_bin$q_bin_5))/length(jun_jul_bin$q_bin_5),
-                                       length(which(jun_jul_bin$q_bin_6))/length(jun_jul_bin$q_bin_6),
-                                       length(which(jun_jul_bin$q_bin_7))/length(jun_jul_bin$q_bin_7),
-                                       length(which(jun_jul_bin$q_bin_8))/length(jun_jul_bin$q_bin_8))
+q_prob_usgs_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/(length(jun_jul_bin$q_bin_1)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_2))/(length(jun_jul_bin$q_bin_2)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_3))/(length(jun_jul_bin$q_bin_3)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_4))/(length(jun_jul_bin$q_bin_4)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_5))/(length(jun_jul_bin$q_bin_5)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_6))/(length(jun_jul_bin$q_bin_6)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_7))/(length(jun_jul_bin$q_bin_7)-length(which(jun_jul_bin$q_bin_0))))
 
-colnames(q_prob_usgs_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_usgs_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_usgs_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/length(aug_sep_bin$q_bin_1),
-                                       length(which(aug_sep_bin$q_bin_2))/length(aug_sep_bin$q_bin_2),
-                                       length(which(aug_sep_bin$q_bin_3))/length(aug_sep_bin$q_bin_3),
-                                       length(which(aug_sep_bin$q_bin_4))/length(aug_sep_bin$q_bin_4),
-                                       length(which(aug_sep_bin$q_bin_5))/length(aug_sep_bin$q_bin_5),
-                                       length(which(aug_sep_bin$q_bin_6))/length(aug_sep_bin$q_bin_6),
-                                       length(which(aug_sep_bin$q_bin_7))/length(aug_sep_bin$q_bin_7),
-                                       length(which(aug_sep_bin$q_bin_8))/length(aug_sep_bin$q_bin_8))
+q_prob_usgs_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/(length(aug_sep_bin$q_bin_1)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_2))/(length(aug_sep_bin$q_bin_2)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_3))/(length(aug_sep_bin$q_bin_3)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_4))/(length(aug_sep_bin$q_bin_4)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_5))/(length(aug_sep_bin$q_bin_5)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_6))/(length(aug_sep_bin$q_bin_6)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_7))/(length(aug_sep_bin$q_bin_7)-length(which(aug_sep_bin$q_bin_0))))
 
-colnames(q_prob_usgs_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_usgs_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
 q_prob_usgs_discrete <- rbind(q_prob_usgs_apr_may,q_prob_usgs_jun_jul,q_prob_usgs_aug_sep)
 row.names(q_prob_usgs_discrete) <- c("apr_may","jun_jul","aug_sep")
@@ -328,93 +377,97 @@ Establishes model q-bins and calculates the probability of discharge range for a
 
 Calculates the annual probability of a bin flood event occuring for all four flow scenarios(i.e.1-natural, 2-current operations, 3-combined operations (Upper Gila + Fort West & Cliff-Gila Ditch), and 4-combined operations + AWSA (Arizona Water Settlement Act).
 ```{r}
-q_bin_natural <-cbind(hydro[1],q_bin_1 <- hydro[2]<= q_bin[1],
-              q_bin_2 <- q_bin[1]< hydro[2] & hydro[2]<=q_bin[2],
-              q_bin_3 <- q_bin[2]< hydro[2] & hydro[2]<=q_bin[3],
-              q_bin_4 <- q_bin[3]< hydro[2] & hydro[2]<=q_bin[4],
-              q_bin_5 <- q_bin[4]< hydro[2] & hydro[2]<=q_bin[5],
-              q_bin_6 <- q_bin[5]< hydro[2] & hydro[2]<=q_bin[6],
-              q_bin_7 <- q_bin[6]< hydro[2] & hydro[2]<=q_bin[7],
-              q_bin_8 <- hydro[2]>q_bin[7])
+q_bin_natural <-cbind.data.frame(hydro$date,
+              q_bin_0 <- hydro[,2]< q_bin[1],
+              q_bin_1 <- q_bin[1]<= hydro[,2] & hydro[,2]<q_bin[2],
+              q_bin_2 <- q_bin[2]<= hydro[,2] & hydro[,2]<q_bin[3],
+              q_bin_3 <- q_bin[3]<= hydro[,2] & hydro[,2]<q_bin[4],
+              q_bin_4 <- q_bin[4]<= hydro[,2] & hydro[,2]<q_bin[5],
+              q_bin_5 <- q_bin[5]<= hydro[,2] & hydro[,2]<q_bin[6],
+              q_bin_6 <- q_bin[6]<= hydro[,2] & hydro[,2]<q_bin[7],
+              q_bin_7 <- hydro[,2]>q_bin[7])
 
-colnames(q_bin_natural) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_bin_natural) <- c("date","q_bin_0","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_natural_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-                                       length(which(q_bin_2))/length(q_bin_2),
-                                       length(which(q_bin_3))/length(q_bin_3),
-                                       length(which(q_bin_4))/length(q_bin_4),
-                                       length(which(q_bin_5))/length(q_bin_5),
-                                       length(which(q_bin_6))/length(q_bin_6),
-                                      length(which(q_bin_7))/length(q_bin_7),
-                                       length(which(q_bin_8))/length(q_bin_8))
+q_prob_natural_yr <- cbind(length(which(q_bin_1))/(length(q_bin_1)-length(which(q_bin_0))),
+                                       length(which(q_bin_2))/(length(q_bin_2)-length(which(q_bin_0))),
+                                       length(which(q_bin_3))/(length(q_bin_3)-length(which(q_bin_0))),
+                                       length(which(q_bin_4))/(length(q_bin_4)-length(which(q_bin_0))),
+                                       length(which(q_bin_5))/(length(q_bin_5)-length(which(q_bin_0))),
+                                       length(which(q_bin_6))/(length(q_bin_6)-length(which(q_bin_0))),
+                                      length(which(q_bin_7))/(length(q_bin_7)-length(which(q_bin_0))))
 
-colnames(q_prob_natural_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_natural_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
+row.names(q_prob_natural_yr) <- c("q_prob")
 
-q_bin_scenario1<-cbind(hydro[1],q_bin_1 <- hydro[3]<= q_bin[1],
-              q_bin_2 <- q_bin[1]< hydro[3] & hydro[3]<=q_bin[2],
-              q_bin_3 <- q_bin[2]< hydro[3] & hydro[3]<=q_bin[3],
-              q_bin_4 <- q_bin[3]< hydro[3] & hydro[3]<=q_bin[4],
-              q_bin_5 <- q_bin[4]< hydro[3] & hydro[3]<=q_bin[5],
-              q_bin_6 <- q_bin[5]< hydro[3] & hydro[3]<=q_bin[6],
-              q_bin_7 <- q_bin[6]< hydro[3] & hydro[3]<=q_bin[7],
-              q_bin_8 <- hydro[3]>q_bin[7])
+q_bin_scenario1 <-cbind.data.frame(hydro$date,
+              q_bin_0 <- hydro[,3]< q_bin[1],
+              q_bin_1 <- q_bin[1]<= hydro[,3] & hydro[,3]<q_bin[2],
+              q_bin_2 <- q_bin[2]<= hydro[,3] & hydro[,3]<q_bin[3],
+              q_bin_3 <- q_bin[3]<= hydro[,3] & hydro[,3]<q_bin[4],
+              q_bin_4 <- q_bin[4]<= hydro[,3] & hydro[,3]<q_bin[5],
+              q_bin_5 <- q_bin[5]<= hydro[,3] & hydro[,3]<q_bin[6],
+              q_bin_6 <- q_bin[6]<= hydro[,3] & hydro[,3]<q_bin[7],
+              q_bin_7 <- hydro[,3]>q_bin[7])
 
-colnames(q_bin_scenario1) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_bin_scenario1) <- c("date","q_bin_0","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario1_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-                                       length(which(q_bin_2))/length(q_bin_2),
-                                       length(which(q_bin_3))/length(q_bin_3),
-                                       length(which(q_bin_4))/length(q_bin_4),
-                                       length(which(q_bin_5))/length(q_bin_5),
-                                       length(which(q_bin_6))/length(q_bin_6),
-                                       length(which(q_bin_7))/length(q_bin_7),
-                                       length(which(q_bin_8))/length(q_bin_8))
+q_prob_scenario1_yr <- cbind(length(which(q_bin_1))/(length(q_bin_1)-length(which(q_bin_0))),
+                                       length(which(q_bin_2))/(length(q_bin_2)-length(which(q_bin_0))),
+                                       length(which(q_bin_3))/(length(q_bin_3)-length(which(q_bin_0))),
+                                       length(which(q_bin_4))/(length(q_bin_4)-length(which(q_bin_0))),
+                                       length(which(q_bin_5))/(length(q_bin_5)-length(which(q_bin_0))),
+                                       length(which(q_bin_6))/(length(q_bin_6)-length(which(q_bin_0))),
+                                      length(which(q_bin_7))/(length(q_bin_7)-length(which(q_bin_0))))
 
-colnames(q_prob_scenario1_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario1_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
+row.names(q_prob_scenario1_yr) <- c("q_prob")
 
-q_bin_scenario2<-cbind(hydro[1],q_bin_1 <- hydro[4]<= q_bin[1],
-              q_bin_2 <- q_bin[1]< hydro[4] & hydro[4]<=q_bin[2],
-              q_bin_3 <- q_bin[2]< hydro[4] & hydro[4]<=q_bin[3],
-              q_bin_4 <- q_bin[3]< hydro[4] & hydro[4]<=q_bin[4],
-              q_bin_5 <- q_bin[4]< hydro[4] & hydro[4]<=q_bin[5],
-              q_bin_6 <- q_bin[5]< hydro[4] & hydro[4]<=q_bin[6],
-              q_bin_7 <- q_bin[6]< hydro[4] & hydro[4]<=q_bin[7],
-              q_bin_8 <- hydro[4]>q_bin[7])
+q_bin_scenario2 <-cbind.data.frame(hydro$date,
+              q_bin_0 <- hydro[,4]< q_bin[1],
+              q_bin_1 <- q_bin[1]<= hydro[,4] & hydro[,4]<q_bin[2],
+              q_bin_2 <- q_bin[2]<= hydro[,4] & hydro[,4]<q_bin[3],
+              q_bin_3 <- q_bin[3]<= hydro[,4] & hydro[,4]<q_bin[4],
+              q_bin_4 <- q_bin[4]<= hydro[,4] & hydro[,4]<q_bin[5],
+              q_bin_5 <- q_bin[5]<= hydro[,4] & hydro[,4]<q_bin[6],
+              q_bin_6 <- q_bin[6]<= hydro[,4] & hydro[,4]<q_bin[7],
+              q_bin_7 <- hydro[,4]>q_bin[7])
 
-colnames(q_bin_scenario2) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_bin_scenario2) <- c("date","q_bin_0","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario2_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-                                       length(which(q_bin_2))/length(q_bin_2),
-                                       length(which(q_bin_3))/length(q_bin_3),
-                                       length(which(q_bin_4))/length(q_bin_4),
-                                       length(which(q_bin_5))/length(q_bin_5),
-                                       length(which(q_bin_6))/length(q_bin_6),
-                                       length(which(q_bin_7))/length(q_bin_7),
-                                       length(which(q_bin_8))/length(q_bin_8))
+q_prob_scenario2_yr <- cbind(length(which(q_bin_1))/(length(q_bin_1)-length(which(q_bin_0))),
+                                       length(which(q_bin_2))/(length(q_bin_2)-length(which(q_bin_0))),
+                                       length(which(q_bin_3))/(length(q_bin_3)-length(which(q_bin_0))),
+                                       length(which(q_bin_4))/(length(q_bin_4)-length(which(q_bin_0))),
+                                       length(which(q_bin_5))/(length(q_bin_5)-length(which(q_bin_0))),
+                                       length(which(q_bin_6))/(length(q_bin_6)-length(which(q_bin_0))),
+                                      length(which(q_bin_7))/(length(q_bin_7)-length(which(q_bin_0))))
 
-colnames(q_prob_scenario2_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario2_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
+row.names(q_prob_scenario2_yr) <- c("q_prob")
 
-q_bin_scenario3 <- cbind(hydro[1],q_bin_1 <- hydro[5]<= q_bin[1],
-              q_bin_2 <- q_bin[1]< hydro[5] & hydro[5]<=q_bin[2],
-              q_bin_3 <- q_bin[2]< hydro[5] & hydro[5]<=q_bin[3],
-              q_bin_4 <- q_bin[3]< hydro[5] & hydro[5]<=q_bin[4],
-              q_bin_5 <- q_bin[4]< hydro[5] & hydro[5]<=q_bin[5],
-              q_bin_6 <- q_bin[5]< hydro[5] & hydro[5]<=q_bin[6],
-              q_bin_7 <- q_bin[6]< hydro[5] & hydro[5]<=q_bin[7],
-              q_bin_8 <- hydro[5]>q_bin[7])
+q_bin_scenario3 <-cbind.data.frame(hydro$date,
+              q_bin_0 <- hydro[,5]< q_bin[1],
+              q_bin_1 <- q_bin[1]<= hydro[,5] & hydro[,5]<q_bin[2],
+              q_bin_2 <- q_bin[2]<= hydro[,5] & hydro[,5]<q_bin[3],
+              q_bin_3 <- q_bin[3]<= hydro[,5] & hydro[,5]<q_bin[4],
+              q_bin_4 <- q_bin[4]<= hydro[,5] & hydro[,5]<q_bin[5],
+              q_bin_5 <- q_bin[5]<= hydro[,5] & hydro[,5]<q_bin[6],
+              q_bin_6 <- q_bin[6]<= hydro[,5] & hydro[,5]<q_bin[7],
+              q_bin_7 <- hydro[,5]>q_bin[7])
 
-colnames(q_bin_scenario3) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_bin_scenario3) <- c("date","q_bin_0","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario3_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-                                       length(which(q_bin_2))/length(q_bin_2),
-                                       length(which(q_bin_3))/length(q_bin_3),
-                                       length(which(q_bin_4))/length(q_bin_4),
-                                       length(which(q_bin_5))/length(q_bin_5),
-                                       length(which(q_bin_6))/length(q_bin_6),
-                                       length(which(q_bin_7))/length(q_bin_7),
-                                       length(which(q_bin_8))/length(q_bin_8))
+q_prob_scenario3_yr <- cbind(length(which(q_bin_1))/(length(q_bin_1)-length(which(q_bin_0))),
+                                       length(which(q_bin_2))/(length(q_bin_2)-length(which(q_bin_0))),
+                                       length(which(q_bin_3))/(length(q_bin_3)-length(which(q_bin_0))),
+                                       length(which(q_bin_4))/(length(q_bin_4)-length(which(q_bin_0))),
+                                       length(which(q_bin_5))/(length(q_bin_5)-length(which(q_bin_0))),
+                                       length(which(q_bin_6))/(length(q_bin_6)-length(which(q_bin_0))),
+                                      length(which(q_bin_7))/(length(q_bin_7)-length(which(q_bin_0))))
 
-colnames(q_prob_scenario3_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario3_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
+row.names(q_prob_scenario3_yr) <- c("q_prob")
 
 q_prob_yr <- rbind(q_prob_natural_yr,q_prob_scenario1_yr,q_prob_scenario1_yr,q_prob_scenario3_yr)
 row.names(q_prob_yr) <- c("natural", "current_operations", "combined_operations", "scenario3")
@@ -426,172 +479,158 @@ apr_may_bin <- q_bin_natural[months(q_bin_natural$date) %in% month.name[4:5],]
 jun_jul_bin <- q_bin_natural[months(q_bin_natural$date) %in% month.name[6:7],]
 aug_sep_bin <- q_bin_natural[months(q_bin_natural$date) %in% month.name[8:9],]
 
-q_prob_natural_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/length(apr_may_bin$q_bin_1),
-                                       length(which(apr_may_bin$q_bin_2))/length(apr_may_bin$q_bin_2),
-                                       length(which(apr_may_bin$q_bin_3))/length(apr_may_bin$q_bin_3),
-                                       length(which(apr_may_bin$q_bin_4))/length(apr_may_bin$q_bin_4),
-                                       length(which(apr_may_bin$q_bin_5))/length(apr_may_bin$q_bin_5),
-                                       length(which(apr_may_bin$q_bin_6))/length(apr_may_bin$q_bin_6),
-                                       length(which(apr_may_bin$q_bin_7))/length(apr_may_bin$q_bin_7),
-                                       length(which(apr_may_bin$q_bin_8))/length(apr_may_bin$q_bin_8))
+q_prob_natural_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/(length(apr_may_bin$q_bin_1)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_2))/(length(apr_may_bin$q_bin_2)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_3))/(length(apr_may_bin$q_bin_3)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_4))/(length(apr_may_bin$q_bin_4)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_5))/(length(apr_may_bin$q_bin_5)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_6))/(length(apr_may_bin$q_bin_6)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_7))/(length(apr_may_bin$q_bin_7)-length(which(apr_may_bin$q_bin_0))))
 
-colnames(q_prob_natural_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_natural_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_natural_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/length(jun_jul_bin$q_bin_1),
-                                       length(which(jun_jul_bin$q_bin_2))/length(jun_jul_bin$q_bin_2),
-                                       length(which(jun_jul_bin$q_bin_3))/length(jun_jul_bin$q_bin_3),
-                                       length(which(jun_jul_bin$q_bin_4))/length(jun_jul_bin$q_bin_4),
-                                       length(which(jun_jul_bin$q_bin_5))/length(jun_jul_bin$q_bin_5),
-                                       length(which(jun_jul_bin$q_bin_6))/length(jun_jul_bin$q_bin_6),
-                                       length(which(jun_jul_bin$q_bin_7))/length(jun_jul_bin$q_bin_7),
-                                       length(which(jun_jul_bin$q_bin_8))/length(jun_jul_bin$q_bin_8))
+q_prob_natural_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/(length(jun_jul_bin$q_bin_1)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_2))/(length(jun_jul_bin$q_bin_2)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_3))/(length(jun_jul_bin$q_bin_3)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_4))/(length(jun_jul_bin$q_bin_4)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_5))/(length(jun_jul_bin$q_bin_5)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_6))/(length(jun_jul_bin$q_bin_6)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_7))/(length(jun_jul_bin$q_bin_7)-length(which(jun_jul_bin$q_bin_0))))
 
-colnames(q_prob_natural_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_natural_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_natural_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/length(aug_sep_bin$q_bin_1),
-                                       length(which(aug_sep_bin$q_bin_2))/length(aug_sep_bin$q_bin_2),
-                                       length(which(aug_sep_bin$q_bin_3))/length(aug_sep_bin$q_bin_3),
-                                       length(which(aug_sep_bin$q_bin_4))/length(aug_sep_bin$q_bin_4),
-                                       length(which(aug_sep_bin$q_bin_5))/length(aug_sep_bin$q_bin_5),
-                                       length(which(aug_sep_bin$q_bin_6))/length(aug_sep_bin$q_bin_6),
-                                       length(which(aug_sep_bin$q_bin_7))/length(aug_sep_bin$q_bin_7),
-                                       length(which(aug_sep_bin$q_bin_8))/length(aug_sep_bin$q_bin_8))
+q_prob_natural_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/(length(aug_sep_bin$q_bin_1)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_2))/(length(aug_sep_bin$q_bin_2)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_3))/(length(aug_sep_bin$q_bin_3)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_4))/(length(aug_sep_bin$q_bin_4)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_5))/(length(aug_sep_bin$q_bin_5)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_6))/(length(aug_sep_bin$q_bin_6)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_7))/(length(aug_sep_bin$q_bin_7)-length(which(aug_sep_bin$q_bin_0))))
 
-colnames(q_prob_natural_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_natural_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
 q_prob_natural_discrete <- rbind(q_prob_natural_apr_may,q_prob_natural_jun_jul,q_prob_natural_aug_sep)
 row.names(q_prob_natural_discrete) <- c("apr_may","jun_jul","aug_sep")
 q_prob_natural_discrete <- q_prob_natural_discrete/rowSums(q_prob_natural_discrete)
 ```
 
-Calculates the probability of a bin flood event occuring for the current operations flow scenario for discrete time states (April-May, June-July, August-September).
+Calculates the probability of a bin flood event occuring for scenario 1 - current operations flow scenario for discrete time states (April-May, June-July, August-September).
 ```{r}                                
 apr_may_bin <- q_bin_scenario1[months(q_bin_scenario1$date) %in% month.name[4:5],]
 jun_jul_bin <- q_bin_scenario1[months(q_bin_scenario1$date) %in% month.name[6:7],]
 aug_sep_bin <- q_bin_scenario1[months(q_bin_scenario1$date) %in% month.name[8:9],]
 
-q_prob_scenario1_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/length(apr_may_bin$q_bin_1),
-                                       length(which(apr_may_bin$q_bin_2))/length(apr_may_bin$q_bin_2),
-                                       length(which(apr_may_bin$q_bin_3))/length(apr_may_bin$q_bin_3),
-                                       length(which(apr_may_bin$q_bin_4))/length(apr_may_bin$q_bin_4),
-                                       length(which(apr_may_bin$q_bin_5))/length(apr_may_bin$q_bin_5),
-                                       length(which(apr_may_bin$q_bin_6))/length(apr_may_bin$q_bin_6),
-                                       length(which(apr_may_bin$q_bin_7))/length(apr_may_bin$q_bin_7),
-                                       length(which(apr_may_bin$q_bin_8))/length(apr_may_bin$q_bin_8))
+q_prob_scenario1_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/(length(apr_may_bin$q_bin_1)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_2))/(length(apr_may_bin$q_bin_2)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_3))/(length(apr_may_bin$q_bin_3)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_4))/(length(apr_may_bin$q_bin_4)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_5))/(length(apr_may_bin$q_bin_5)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_6))/(length(apr_may_bin$q_bin_6)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_7))/(length(apr_may_bin$q_bin_7)-length(which(apr_may_bin$q_bin_0))))
 
-colnames(q_prob_scenario1_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario1_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario1_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/length(jun_jul_bin$q_bin_1),
-                                       length(which(jun_jul_bin$q_bin_2))/length(jun_jul_bin$q_bin_2),
-                                       length(which(jun_jul_bin$q_bin_3))/length(jun_jul_bin$q_bin_3),
-                                       length(which(jun_jul_bin$q_bin_4))/length(jun_jul_bin$q_bin_4),
-                                       length(which(jun_jul_bin$q_bin_5))/length(jun_jul_bin$q_bin_5),
-                                       length(which(jun_jul_bin$q_bin_6))/length(jun_jul_bin$q_bin_6),
-                                       length(which(jun_jul_bin$q_bin_7))/length(jun_jul_bin$q_bin_7),
-                                       length(which(jun_jul_bin$q_bin_8))/length(jun_jul_bin$q_bin_8))
+q_prob_scenario1_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/(length(jun_jul_bin$q_bin_1)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_2))/(length(jun_jul_bin$q_bin_2)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_3))/(length(jun_jul_bin$q_bin_3)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_4))/(length(jun_jul_bin$q_bin_4)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_5))/(length(jun_jul_bin$q_bin_5)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_6))/(length(jun_jul_bin$q_bin_6)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_7))/(length(jun_jul_bin$q_bin_7)-length(which(jun_jul_bin$q_bin_0))))
 
-colnames(q_prob_scenario1_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario1_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario1_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/length(aug_sep_bin$q_bin_1),
-                                       length(which(aug_sep_bin$q_bin_2))/length(aug_sep_bin$q_bin_2),
-                                       length(which(aug_sep_bin$q_bin_3))/length(aug_sep_bin$q_bin_3),
-                                       length(which(aug_sep_bin$q_bin_4))/length(aug_sep_bin$q_bin_4),
-                                       length(which(aug_sep_bin$q_bin_5))/length(aug_sep_bin$q_bin_5),
-                                       length(which(aug_sep_bin$q_bin_6))/length(aug_sep_bin$q_bin_6),
-                                       length(which(aug_sep_bin$q_bin_7))/length(aug_sep_bin$q_bin_7),
-                                       length(which(aug_sep_bin$q_bin_8))/length(aug_sep_bin$q_bin_8))
+q_prob_scenario1_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/(length(aug_sep_bin$q_bin_1)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_2))/(length(aug_sep_bin$q_bin_2)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_3))/(length(aug_sep_bin$q_bin_3)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_4))/(length(aug_sep_bin$q_bin_4)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_5))/(length(aug_sep_bin$q_bin_5)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_6))/(length(aug_sep_bin$q_bin_6)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_7))/(length(aug_sep_bin$q_bin_7)-length(which(aug_sep_bin$q_bin_0))))
 
-colnames(q_prob_scenario1_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario1_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
 q_prob_scenario1_discrete <- rbind(q_prob_scenario1_apr_may,q_prob_scenario1_jun_jul,q_prob_scenario1_aug_sep)
 row.names(q_prob_scenario1_discrete) <- c("apr_may","jun_jul","aug_sep")
 q_prob_scenario1_discrete <- q_prob_scenario1_discrete/rowSums(q_prob_scenario1_discrete)
 ```
 
-Calculates the probability of a bin flood event occuring for the combined operations flow scenario for discrete time states (April-May, June-July, August-September).
+Calculates the probability of a bin flood event occuring for scenario 2 - combined operations flow scenario for discrete time states (April-May, June-July, August-September).
 ```{r} 
 apr_may_bin <- q_bin_scenario2[months(q_bin_scenario2$date) %in% month.name[4:5],]
 jun_jul_bin <- q_bin_scenario2[months(q_bin_scenario2$date) %in% month.name[6:7],]
 aug_sep_bin <- q_bin_scenario2[months(q_bin_scenario2$date) %in% month.name[8:9],]
 
-q_prob_scenario2_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/length(apr_may_bin$q_bin_1),
-                                       length(which(apr_may_bin$q_bin_2))/length(apr_may_bin$q_bin_2),
-                                       length(which(apr_may_bin$q_bin_3))/length(apr_may_bin$q_bin_3),
-                                       length(which(apr_may_bin$q_bin_4))/length(apr_may_bin$q_bin_4),
-                                       length(which(apr_may_bin$q_bin_5))/length(apr_may_bin$q_bin_5),
-                                       length(which(apr_may_bin$q_bin_6))/length(apr_may_bin$q_bin_6),
-                                       length(which(apr_may_bin$q_bin_7))/length(apr_may_bin$q_bin_7),
-                                       length(which(apr_may_bin$q_bin_8))/length(apr_may_bin$q_bin_8))
+q_prob_scenario2_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/(length(apr_may_bin$q_bin_1)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_2))/(length(apr_may_bin$q_bin_2)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_3))/(length(apr_may_bin$q_bin_3)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_4))/(length(apr_may_bin$q_bin_4)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_5))/(length(apr_may_bin$q_bin_5)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_6))/(length(apr_may_bin$q_bin_6)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_7))/(length(apr_may_bin$q_bin_7)-length(which(apr_may_bin$q_bin_0))))
 
-colnames(q_prob_scenario2_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario2_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario2_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/length(jun_jul_bin$q_bin_1),
-                                       length(which(jun_jul_bin$q_bin_2))/length(jun_jul_bin$q_bin_2),
-                                       length(which(jun_jul_bin$q_bin_3))/length(jun_jul_bin$q_bin_3),
-                                       length(which(jun_jul_bin$q_bin_4))/length(jun_jul_bin$q_bin_4),
-                                       length(which(jun_jul_bin$q_bin_5))/length(jun_jul_bin$q_bin_5),
-                                       length(which(jun_jul_bin$q_bin_6))/length(jun_jul_bin$q_bin_6),
-                                       length(which(jun_jul_bin$q_bin_7))/length(jun_jul_bin$q_bin_7),
-                                       length(which(jun_jul_bin$q_bin_8))/length(jun_jul_bin$q_bin_8))
+q_prob_scenario2_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/(length(jun_jul_bin$q_bin_1)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_2))/(length(jun_jul_bin$q_bin_2)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_3))/(length(jun_jul_bin$q_bin_3)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_4))/(length(jun_jul_bin$q_bin_4)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_5))/(length(jun_jul_bin$q_bin_5)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_6))/(length(jun_jul_bin$q_bin_6)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_7))/(length(jun_jul_bin$q_bin_7)-length(which(jun_jul_bin$q_bin_0))))
 
-colnames(q_prob_scenario2_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
-q_prob_scenario2_jun_jul <- q_prob_scenario2_jun_jul/rowSums(q_prob_scenario2_jun_jul)
+colnames(q_prob_scenario2_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario2_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/length(aug_sep_bin$q_bin_1),
-                                       length(which(aug_sep_bin$q_bin_2))/length(aug_sep_bin$q_bin_2),
-                                       length(which(aug_sep_bin$q_bin_3))/length(aug_sep_bin$q_bin_3),
-                                       length(which(aug_sep_bin$q_bin_4))/length(aug_sep_bin$q_bin_4),
-                                       length(which(aug_sep_bin$q_bin_5))/length(aug_sep_bin$q_bin_5),
-                                       length(which(aug_sep_bin$q_bin_6))/length(aug_sep_bin$q_bin_6),
-                                       length(which(aug_sep_bin$q_bin_7))/length(aug_sep_bin$q_bin_7),
-                                       length(which(aug_sep_bin$q_bin_8))/length(aug_sep_bin$q_bin_8))
+q_prob_scenario2_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/(length(aug_sep_bin$q_bin_1)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_2))/(length(aug_sep_bin$q_bin_2)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_3))/(length(aug_sep_bin$q_bin_3)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_4))/(length(aug_sep_bin$q_bin_4)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_5))/(length(aug_sep_bin$q_bin_5)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_6))/(length(aug_sep_bin$q_bin_6)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_7))/(length(aug_sep_bin$q_bin_7)-length(which(aug_sep_bin$q_bin_0))))
 
-colnames(q_prob_scenario2_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario2_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
 q_prob_scenario2_discrete <- rbind(q_prob_scenario2_apr_may,q_prob_scenario2_jun_jul,q_prob_scenario2_aug_sep)
 row.names(q_prob_scenario2_discrete) <- c("apr_may","jun_jul","aug_sep")
 q_prob_scenario2_discrete <- q_prob_scenario2_discrete/rowSums(q_prob_scenario2_discrete)
 ```
 
-Calculates the probability of a bin flood event occuring for the combined operations+AWSA flow scenario for discrete time states (April-May, June-July, August-September).
+Calculates the probability of a bin flood event occuring for scenario 3 - combined operations+AWSA flow scenario for discrete time states (April-May, June-July, August-September).
 ```{r} 
 apr_may_bin <- q_bin_scenario3[months(q_bin_scenario3$date) %in% month.name[4:5],]
 jun_jul_bin <- q_bin_scenario3[months(q_bin_scenario3$date) %in% month.name[6:7],]
 aug_sep_bin <- q_bin_scenario3[months(q_bin_scenario3$date) %in% month.name[8:9],]
 
-q_prob_scenario3_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/length(apr_may_bin$q_bin_1),
-                                       length(which(apr_may_bin$q_bin_2))/length(apr_may_bin$q_bin_2),
-                                       length(which(apr_may_bin$q_bin_3))/length(apr_may_bin$q_bin_3),
-                                       length(which(apr_may_bin$q_bin_4))/length(apr_may_bin$q_bin_4),
-                                       length(which(apr_may_bin$q_bin_5))/length(apr_may_bin$q_bin_5),
-                                       length(which(apr_may_bin$q_bin_6))/length(apr_may_bin$q_bin_6),
-                                       length(which(apr_may_bin$q_bin_7))/length(apr_may_bin$q_bin_7),
-                                       length(which(apr_may_bin$q_bin_8))/length(apr_may_bin$q_bin_8))
+q_prob_scenario3_apr_may <- cbind(length(which(apr_may_bin$q_bin_1))/(length(apr_may_bin$q_bin_1)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_2))/(length(apr_may_bin$q_bin_2)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_3))/(length(apr_may_bin$q_bin_3)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_4))/(length(apr_may_bin$q_bin_4)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_5))/(length(apr_may_bin$q_bin_5)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_6))/(length(apr_may_bin$q_bin_6)-length(which(apr_may_bin$q_bin_0))),
+                                       length(which(apr_may_bin$q_bin_7))/(length(apr_may_bin$q_bin_7)-length(which(apr_may_bin$q_bin_0))))
 
-colnames(q_prob_scenario3_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario3_apr_may) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario3_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/length(jun_jul_bin$q_bin_1),
-                                       length(which(jun_jul_bin$q_bin_2))/length(jun_jul_bin$q_bin_2),
-                                       length(which(jun_jul_bin$q_bin_3))/length(jun_jul_bin$q_bin_3),
-                                       length(which(jun_jul_bin$q_bin_4))/length(jun_jul_bin$q_bin_4),
-                                       length(which(jun_jul_bin$q_bin_5))/length(jun_jul_bin$q_bin_5),
-                                       length(which(jun_jul_bin$q_bin_6))/length(jun_jul_bin$q_bin_6),
-                                       length(which(jun_jul_bin$q_bin_7))/length(jun_jul_bin$q_bin_7),
-                                       length(which(jun_jul_bin$q_bin_8))/length(jun_jul_bin$q_bin_8))
+q_prob_scenario3_jun_jul <- cbind(length(which(jun_jul_bin$q_bin_1))/(length(jun_jul_bin$q_bin_1)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_2))/(length(jun_jul_bin$q_bin_2)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_3))/(length(jun_jul_bin$q_bin_3)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_4))/(length(jun_jul_bin$q_bin_4)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_5))/(length(jun_jul_bin$q_bin_5)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_6))/(length(jun_jul_bin$q_bin_6)-length(which(jun_jul_bin$q_bin_0))),
+                                       length(which(jun_jul_bin$q_bin_7))/(length(jun_jul_bin$q_bin_7)-length(which(jun_jul_bin$q_bin_0))))
 
-colnames(q_prob_scenario3_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
-q_prob_scenario3_jun_jul <- q_prob_scenario3_jun_jul/rowSums(q_prob_scenario3_jun_jul)
+colnames(q_prob_scenario3_jun_jul) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
-q_prob_scenario3_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/length(aug_sep_bin$q_bin_1),
-                                       length(which(aug_sep_bin$q_bin_2))/length(aug_sep_bin$q_bin_2),
-                                       length(which(aug_sep_bin$q_bin_3))/length(aug_sep_bin$q_bin_3),
-                                       length(which(aug_sep_bin$q_bin_4))/length(aug_sep_bin$q_bin_4),
-                                       length(which(aug_sep_bin$q_bin_5))/length(aug_sep_bin$q_bin_5),
-                                       length(which(aug_sep_bin$q_bin_6))/length(aug_sep_bin$q_bin_6),
-                                       length(which(aug_sep_bin$q_bin_7))/length(aug_sep_bin$q_bin_7),
-                                       length(which(aug_sep_bin$q_bin_8))/length(aug_sep_bin$q_bin_8))
+q_prob_scenario3_aug_sep <- cbind(length(which(aug_sep_bin$q_bin_1))/(length(aug_sep_bin$q_bin_1)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_2))/(length(aug_sep_bin$q_bin_2)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_3))/(length(aug_sep_bin$q_bin_3)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_4))/(length(aug_sep_bin$q_bin_4)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_5))/(length(aug_sep_bin$q_bin_5)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_6))/(length(aug_sep_bin$q_bin_6)-length(which(aug_sep_bin$q_bin_0))),
+                                       length(which(aug_sep_bin$q_bin_7))/(length(aug_sep_bin$q_bin_7)-length(which(aug_sep_bin$q_bin_0))))
 
-colnames(q_prob_scenario3_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
+colnames(q_prob_scenario3_aug_sep) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
 
 q_prob_scenario3_discrete <- rbind(q_prob_scenario3_apr_may,q_prob_scenario3_jun_jul,q_prob_scenario3_aug_sep)
 row.names(q_prob_scenario3_discrete) <- c("apr_may","jun_jul","aug_sep")
