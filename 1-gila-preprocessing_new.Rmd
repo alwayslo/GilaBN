@@ -586,11 +586,6 @@ q_prob_scenario3_discrete <- q_prob_scenario3_discrete/rowSums(q_prob_scenario3_
 #### Process recession rate bins ####
 Establishes model recession rate bins and calculates the probability of recession rate ranges for 14-day and 30-day recession rates for any given entire year and discrete time state (April-May, June-July, August-September).
 
-Recession rate bins were selected so that .....???? (i.e. 0 cm/day, 1 cm/day, 3 cm/day, 6 cm/day).
-```{r}
-recessionrate_bin <- c(0,1,3,6)
-```
-
 ## 14-day recession rate bin and probabilities##
 Bins the 14-day recession rates for the natural flow scenario and calculates the probability of the recession rate range for any given year.
 ```{r}
