@@ -42,14 +42,13 @@ This code chunck calls the txt file that includes the inundation stats for each 
 q_cells <- read.table("data/SiteN_Qs.txt",skip=1,header = TRUE)
 q_cells <- setNames(q_cells, c("cell","flow"))
 
-q_cells$bin <-    ifelse(q_cells$flow <= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< q_cells$flow  & q_cells$flow <=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< q_cells$flow  & q_cells$flow <=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< q_cells$flow  & q_cells$flow <=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< q_cells$flow  & q_cells$flow <=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< q_cells$flow  & q_cells$flow <=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< q_cells$flow  & q_cells$flow <=q_bin[7],"bin_7",
-                    ifelse(q_cells$flow >q_bin[7],"bin_8","blah"))))))))
+q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
+                    ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah")))))))                 
 
 ```
 
@@ -58,14 +57,13 @@ q_cells$bin <-    ifelse(q_cells$flow <= q_bin[1],"bin_1",
 q_cells <- read.table("data/SiteM_Qs.txt",skip=1,header = TRUE)
 q_cells <- setNames(q_cells, c("cell","flow"))
 
-q_cells$bin <-    ifelse(q_cells$flow <= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< q_cells$flow  & q_cells$flow <=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< q_cells$flow  & q_cells$flow <=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< q_cells$flow  & q_cells$flow <=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< q_cells$flow  & q_cells$flow <=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< q_cells$flow  & q_cells$flow <=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< q_cells$flow  & q_cells$flow <=q_bin[7],"bin_7",
-                    ifelse(q_cells$flow >q_bin[7],"bin_8","blah"))))))))
+q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
+                    ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah")))))))
 
 ```
 
@@ -74,14 +72,13 @@ q_cells$bin <-    ifelse(q_cells$flow <= q_bin[1],"bin_1",
 q_cells <- read.table("data/SiteS_Qs.txt",skip=1,header = TRUE)
 q_cells <- setNames(q_cells, c("cell","flow"))
 
-q_cells$bin <-    ifelse(q_cells$flow <= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< q_cells$flow  & q_cells$flow <=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< q_cells$flow  & q_cells$flow <=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< q_cells$flow  & q_cells$flow <=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< q_cells$flow  & q_cells$flow <=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< q_cells$flow  & q_cells$flow <=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< q_cells$flow  & q_cells$flow <=q_bin[7],"bin_7",
-                    ifelse(q_cells$flow >q_bin[7],"bin_8","blah"))))))))
+q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
+                    ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah")))))))
 
 ```
 
@@ -99,14 +96,13 @@ Evidence$TIMING <-  ifelse(months.Date(Evidence$date) %in% month.name[4:5],"apr_
                     ifelse(months.Date(Evidence$date) %in% month.name[6:7],"jun_jul",
                     ifelse(months.Date(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
 
-Evidence$INUN <-    ifelse(Evidence$q_natural<= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< Evidence$q_natural & Evidence$q_natural<=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< Evidence$q_natural & Evidence$q_natural<=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< Evidence$q_natural & Evidence$q_natural<=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< Evidence$q_natural & Evidence$q_natural<=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< Evidence$q_natural & Evidence$q_natural<=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< Evidence$q_natural & Evidence$q_natural<=q_bin[7],"bin_7",
-                    ifelse(Evidence$q_natural>q_bin[7],"bin_8","blah"))))))))
+Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_natural & Evidence$q_natural<q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= Evidence$q_natural & Evidence$q_natural<q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= Evidence$q_natural & Evidence$q_natural<q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= Evidence$q_natural & Evidence$q_natural<q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= Evidence$q_natural & Evidence$q_natural<q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= Evidence$q_natural & Evidence$q_natural<q_bin[7],"bin_6",
+                    ifelse(q_bin[6]<= Evidence$q_natural,"bin_7","blah")))))))
 
 
 Evidence$RECESSION_RATE <- ifelse(Evidence$rr_natural <= recessionrate_bin[1],"bin_1",
@@ -131,14 +127,13 @@ Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
                     ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
                     ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
 
-Evidence$INUN <-    ifelse(Evidence$q_scenario1<= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< Evidence$q_scenario1 & Evidence$q_scenario1<=q_bin[7],"bin_7",
-                    ifelse(Evidence$q_scenario1>q_bin[7],"bin_8","blah"))))))))
+Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_natural & Evidence$q_natural<q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= Evidence$q_natural & Evidence$q_natural<q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= Evidence$q_natural & Evidence$q_natural<q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= Evidence$q_natural & Evidence$q_natural<q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= Evidence$q_natural & Evidence$q_natural<q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= Evidence$q_natural & Evidence$q_natural<q_bin[7],"bin_6",
+                    ifelse(q_bin[6]<= Evidence$q_natural,"bin_7","blah")))))))
 
 
 Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario1 <= recessionrate_bin[1],"bin_1",
@@ -163,14 +158,13 @@ Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
                     ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
                     ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
 
-Evidence$INUN <-    ifelse(Evidence$q_scenario2<= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< Evidence$q_scenario2 & Evidence$q_scenario2<=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< Evidence$q_scenario2 & Evidence$q_scenario2<=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< Evidence$q_scenario2 & Evidence$q_scenario2<=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< Evidence$q_scenario2 & Evidence$q_scenario2<=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< Evidence$q_scenario2 & Evidence$q_scenario2<=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< Evidence$q_scenario2 & Evidence$q_scenario2<=q_bin[7],"bin_7",
-                    ifelse(Evidence$q_scenario2>q_bin[7],"bin_8","blah"))))))))
+Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_natural & Evidence$q_natural<q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= Evidence$q_natural & Evidence$q_natural<q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= Evidence$q_natural & Evidence$q_natural<q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= Evidence$q_natural & Evidence$q_natural<q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= Evidence$q_natural & Evidence$q_natural<q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= Evidence$q_natural & Evidence$q_natural<q_bin[7],"bin_6",
+                    ifelse(q_bin[6]<= Evidence$q_natural,"bin_7","blah")))))))
 
 
 Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario2 <= recessionrate_bin[1],"bin_1",
@@ -223,7 +217,6 @@ Evidence_q4 <- Evidence[Evidence[2] =="bin_4" & Evidence[1]!="blah",]
 Evidence_q5 <- Evidence[Evidence[2] =="bin_5" & Evidence[1]!="blah",]
 Evidence_q6 <- Evidence[Evidence[2] =="bin_6" & Evidence[1]!="blah",]
 Evidence_q7 <- Evidence[Evidence[2] =="bin_7" & Evidence[1]!="blah",]
-Evidence_q8 <- Evidence[Evidence[2] =="bin_8" & Evidence[1]!="blah",]
 ```
 
 #### Calculate recruitment probability by instantiating the BN with evidence ####
@@ -235,7 +228,7 @@ for (i in 1:(nrow(Evidence_q1)))
                                                         INUN=Evidence_q1[i,2],
                                                         RECESSION_RATE = Evidence_q1[i,3]), 
                                                         method = "lw",
-                                                        n=50000 ))}
+                                                        n=5000 ))}
 
 Recruit_q2<-data.frame()
 for (i in 1:(nrow(Evidence_q2))) 
@@ -244,7 +237,7 @@ for (i in 1:(nrow(Evidence_q2)))
                                                         INUN=Evidence_q2[i,2],
                                                         RECESSION_RATE = Evidence_q2[i,3]), 
                                                         method = "lw",
-                                                        n=50000 ))}
+                                                        n=5000 ))}
 
 Recruit_q3<-data.frame()
 for (i in 1:(nrow(Evidence_q3))) 
@@ -253,7 +246,7 @@ for (i in 1:(nrow(Evidence_q3)))
                                                         INUN=Evidence_q3[i,2],
                                                         RECESSION_RATE = Evidence_q3[i,3]), 
                                                         method = "lw",
-                                                        n=50000 ))}
+                                                        n=5000 ))}
 
 Recruit_q4<-data.frame()
 for (i in 1:(nrow(Evidence_q4))) 
@@ -270,7 +263,7 @@ for (i in 1:(nrow(Evidence_q5)))
                                                         INUN=Evidence_q5[i,2],
                                                         RECESSION_RATE = Evidence_q5[i,3]), 
                                                         method = "lw",
-                                                        n=50000 ))}
+                                                        n=5000 ))}
 
 Recruit_q6<-data.frame()
 for (i in 1:(nrow(Evidence_q6))) 
@@ -279,7 +272,7 @@ for (i in 1:(nrow(Evidence_q6)))
                                                         INUN=Evidence_q6[i,2],
                                                         RECESSION_RATE = Evidence_q6[i,3]), 
                                                         method = "lw",
-                                                        n=50000 ))}
+                                                        n=5000 ))}
 
 Recruit_q7<-data.frame()
 for (i in 1:(nrow(Evidence_q7))) 
@@ -288,25 +281,17 @@ for (i in 1:(nrow(Evidence_q7)))
                                                         INUN=Evidence_q7[i,2],
                                                         RECESSION_RATE = Evidence_q7[i,3]), 
                                                         method = "lw",
-                                                        n=50000 ))}
+                                                        n=5000 ))}
 
-Recruit_q8<-data.frame()
-for (i in 1:(nrow(Evidence_q8))) 
-{Recruit_q8 <-rbind(Recruit_q8, cpquery(bnfit,event = (RECRUIT =="YES"),
-                                        evidence = list(TIMING=Evidence_q8[i,1],
-                                                        INUN=Evidence_q8[i,2],
-                                                        RECESSION_RATE = Evidence_q8[i,3]), 
-                                                        method = "lw",
-                                                        n=50000 ))}
 ```
 
 Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).The file path can also be changed as needed.
 
 The code chunk below created dataframe Recruit_prob which summarizes the recruitment probability for each q_bin and adds a recruitment probability column to the q_cells dataframe.
 ```{r}
-Recruit_prob <- c(mean(Recruit_q1[,1]),mean(Recruit_q2[,1]),mean(Recruit_q3[,1]),mean(Recruit_q4[,1]),mean(Recruit_q5[,1]),mean(Recruit_q6[,1]),mean(Recruit_q7[,1]),mean(Recruit_q8[,1]))
+Recruit_prob <- c(mean(Recruit_q1[,1]),mean(Recruit_q2[,1]),mean(Recruit_q3[,1]),mean(Recruit_q4[,1]),mean(Recruit_q5[,1]),mean(Recruit_q6[,1]),mean(Recruit_q7[,1]))
 Recruit_prob<-data.frame(Recruit_prob)
-dimnames(Recruit_prob) = list("bin"=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7", "bin_8"),"Recruit")
+dimnames(Recruit_prob) = list("bin"=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"),"Recruit")
 
 q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
                     ifelse(q_cells$bin =="bin_2",Recruit_prob[2,],
@@ -314,8 +299,7 @@ q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
                     ifelse(q_cells$bin =="bin_4",Recruit_prob[4,],
                     ifelse(q_cells$bin =="bin_5",Recruit_prob[5,],
                     ifelse(q_cells$bin =="bin_6",Recruit_prob[6,],
-                    ifelse(q_cells$bin =="bin_7",Recruit_prob[7,],
-                    Recruit_prob[8,])))))))
+                    Recruit_prob[7,]))))))
 ```
 
 Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).The file path can also be changed as needed.

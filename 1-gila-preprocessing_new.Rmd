@@ -89,60 +89,6 @@ q_bin <- c(1000, 1500, 2000, 2500, 3000, 3500, 4000)
 
 ```
 
-Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs).
-```{r}
-# 
-# q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
-#               q_bin_1 <- usgs_hydro[,4]<= q_bin[1],
-#               q_bin_2 <- q_bin[1]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[2],
-#               q_bin_3 <- q_bin[2]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[3],
-#               q_bin_4 <- q_bin[3]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[4],
-#               q_bin_5 <- q_bin[4]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[5],
-#               q_bin_6 <- q_bin[5]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[6],
-#               q_bin_7 <- q_bin[6]< usgs_hydro[,4] & usgs_hydro[,4]<=q_bin[7],
-#               q_bin_8 <- usgs_hydro[,4]>q_bin[7])
-# 
-# colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
-# 
-# q_prob_usgs_yr <- cbind(length(which(q_bin_1))/length(q_bin_1),
-#                                        length(which(q_bin_2))/length(q_bin_2),
-#                                        length(which(q_bin_3))/length(q_bin_3),
-#                                        length(which(q_bin_4))/length(q_bin_4),
-#                                        length(which(q_bin_5))/length(q_bin_5),
-#                                        length(which(q_bin_6))/length(q_bin_6),
-#                                       length(which(q_bin_7))/length(q_bin_7),
-#                                        length(which(q_bin_8))/length(q_bin_8))
-# 
-# colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
-# row.names(q_prob_usgs_yr) <- c("q_prob")
-```
-
-Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs).
-```{r}
-# q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
-#               q_bin_0 <- usgs_hydro[,4]< q_bin[1],
-#               q_bin_1 <- q_bin[1]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[2],
-#               q_bin_2 <- q_bin[2]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[3],
-#               q_bin_3 <- q_bin[3]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[4],
-#               q_bin_4 <- q_bin[4]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[5],
-#               q_bin_5 <- q_bin[5]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[6],
-#               q_bin_6 <- q_bin[6]<= usgs_hydro[,4] & usgs_hydro[,4]<q_bin[7],
-#               q_bin_7 <- usgs_hydro[,4]>q_bin[7])
-# 
-# colnames(q_bin_usgs) <- c("date","q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7","q_bin_8")
-# 
-# q_prob_usgs_yr <- cbind(sum(c(q_bin_1,q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
-#                         sum(c(q_bin_2,q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
-#                         sum(c(q_bin_3,q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
-#                         sum(c(q_bin_4,q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
-#                         sum(c(q_bin_5,q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
-#                         sum(c(q_bin_6,q_bin_7), na.rm = TRUE)/length(q_bin_1),
-#                         sum(c(q_bin_7), na.rm = TRUE)/length(q_bin_1))
-# 
-# colnames(q_prob_usgs_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_bin_5","q_bin_6","q_bin_7")
-# row.names(q_prob_usgs_yr) <- c("q_prob")
-```
-
 Calculates the annual probability of a bin flood event occuring for the historical dataset (usgs) excluding flow events less than the minimum innundation value. Essentially only capturing the probability of events that would innundate the floodplain/riparian zone by removing flow events that are less than that of the lower boundary of flow bin 1.
 ```{r}
 q_bin_usgs <-cbind.data.frame(usgs_hydro$date,
