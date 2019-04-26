@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Bayesian Network Results Analysis"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "4/5/2019"
-update: "4/24/2019"
+update: "4/25/2019"
 output: html_notebook
 ---
 

@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Preprocessing"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "11/29/2018"
-update: "4/24/2019"
+update: "4/25/2019"
 output: html_notebook
 ---
 
@@ -67,6 +67,7 @@ stage_cm_s3 <- setNames(stage_cm_s3,"stage (cm)")
 Calculates the 14-day recession rate (cm/day). Recession rate (forward) was calculated using a 14 day average based on site 1. The equation was mimicing that of Morrison & Stone (2014).
 
 *hind? 13+i - i.... is that a better representation?
+## Site 1##
 ```{r}
 # average_stage_14_day <-sum(stage_cm_s1[1:14,1])/14
 # recession_rate_14_day <- (stage_cm_s1[1,1] - stage_cm_s1[14,1])/14
@@ -80,6 +81,36 @@ usgs_recessionrate_14d <- cbind(usgs_hydro[,3],usgs_recessionrate_14d)
 usgs_recessionrate_14d <- setNames(usgs_recessionrate_14d,c("date","recessionrate (cm/d)"))
 usgs_recessionrate_14d<-na.omit(usgs_recessionrate_14d)
 ```
+
+<!-- ## Site 2## -->
+<!-- ```{r} -->
+<!-- # average_stage_14_day <-sum(stage_cm_s1[1:14,1])/14 -->
+<!-- # recession_rate_14_day <- (stage_cm_s1[1,1] - stage_cm_s1[14,1])/14 -->
+
+<!-- usgs_recessionrate_14d<- data.frame() -->
+
+<!-- for (i in 1:(nrow(stage_cm_s2)))  -->
+<!--   {usgs_recessionrate_14d <- rbind(usgs_recessionrate_14d,(stage_cm_s2[i,1]-stage_cm_s2[13+i,1])/14)} -->
+
+<!-- usgs_recessionrate_14d <- cbind(usgs_hydro[,3],usgs_recessionrate_14d) -->
+<!-- usgs_recessionrate_14d <- setNames(usgs_recessionrate_14d,c("date","recessionrate (cm/d)")) -->
+<!-- usgs_recessionrate_14d<-na.omit(usgs_recessionrate_14d) -->
+<!-- ``` -->
+
+<!-- ## Site 3## -->
+<!-- ```{r} -->
+<!-- # average_stage_14_day <-sum(stage_cm_s1[1:14,1])/14 -->
+<!-- # recession_rate_14_day <- (stage_cm_s1[1,1] - stage_cm_s1[14,1])/14 -->
+
+<!-- usgs_recessionrate_14d<- data.frame() -->
+
+<!-- for (i in 1:(nrow(stage_cm_s3)))  -->
+<!--   {usgs_recessionrate_14d <- rbind(usgs_recessionrate_14d,(stage_cm_s3[i,1]-stage_cm_s3[13+i,1])/14)} -->
+
+<!-- usgs_recessionrate_14d <- cbind(usgs_hydro[,3],usgs_recessionrate_14d) -->
+<!-- usgs_recessionrate_14d <- setNames(usgs_recessionrate_14d,c("date","recessionrate (cm/d)")) -->
+<!-- usgs_recessionrate_14d<-na.omit(usgs_recessionrate_14d) -->
+<!-- ``` -->
 
 #### Process Q-model bins ####
 Establishes model q-bins and calculates the probability of discharge range for any given entire year and discrete time state (April-May, June-July, August-September).Model Q-bins were selected so that inundation areas increased by less than 15% between the discharge associated with each bin (i.e. 1000 cfs, 1500 cfs, 2000 cfs, 2500 cfs, 3000 cfs, 3500 cfs, 4000 cfs). 
@@ -295,6 +326,8 @@ head_cm_s3 <- setNames(head_cm_s3,c("date","natural(cm)", "current_operations(cm
 ```
 
 #### Calculate recession rates ####
+
+##Site 1##
 Calculates the 14-day recession rate (cm/day). Recession rate (forward) was calculated using a 14 day average based on site 1. The equation was mimicing that of Morrison & Stone (2014).
 ```{r}
 # average_natural_stage_14_day <-sum(head_cm_s1[1:14,1])/14
@@ -317,6 +350,51 @@ recessionrate_14d <- setNames(recessionrate_14d,c("date",
 recessionrate_14d<-na.omit(recessionrate_14d)
 ```
 
+<!-- ##Site 2## -->
+<!-- Calculates the 14-day recession rate (cm/day). Recession rate (forward) was calculated using a 14 day average based on site 2. The equation was mimicing that of Morrison & Stone (2014). -->
+<!-- ```{r} -->
+<!-- # average_natural_stage_14_day <-sum(head_cm_s1[1:14,1])/14 -->
+<!-- # recession_rate_natural_14_day <- (head_cm_s1[1,1] - head_cm_s1[14,1])/14 -->
+
+<!-- recessionrate_14d<- data.frame() -->
+
+<!-- for (i in 1:(nrow(head_cm_s2))) -->
+<!--   {recessionrate_14d <- rbind(recessionrate_14d,c((head_cm_s1[i,2]-head_cm_s1[13+i,2])/14, -->
+<!--                                                   (head_cm_s1[i,3]-head_cm_s1[13+i,3])/14, -->
+<!--                                                   (head_cm_s1[i,4]-head_cm_s1[13+i,4])/14, -->
+<!--                                                   (head_cm_s1[i,5]-head_cm_s1[13+i,5])/14))} -->
+
+<!-- recessionrate_14d <- cbind(hydro[,1],recessionrate_14d) -->
+<!-- recessionrate_14d <- setNames(recessionrate_14d,c("date", -->
+<!--                                                   "natural(cm/d)", -->
+<!--                                                   "current_operations(cm/d)", -->
+<!--                                                   "combined_operations(cm/d)", -->
+<!--                                                   "combined_operations+AWSA(cm/d)")) -->
+<!-- recessionrate_14d<-na.omit(recessionrate_14d) -->
+<!-- ``` -->
+
+<!-- ##Site 3## -->
+<!-- Calculates the 14-day recession rate (cm/day). Recession rate (forward) was calculated using a 14 day average based on site 3. The equation was mimicing that of Morrison & Stone (2014). -->
+<!-- ```{r} -->
+<!-- # average_natural_stage_14_day <-sum(head_cm_s1[1:14,1])/14 -->
+<!-- # recession_rate_natural_14_day <- (head_cm_s1[1,1] - head_cm_s1[14,1])/14 -->
+
+<!-- recessionrate_14d<- data.frame() -->
+
+<!-- for (i in 1:(nrow(head_cm_s3))) -->
+<!--   {recessionrate_14d <- rbind(recessionrate_14d,c((head_cm_s1[i,2]-head_cm_s1[13+i,2])/14, -->
+<!--                                                   (head_cm_s1[i,3]-head_cm_s1[13+i,3])/14, -->
+<!--                                                   (head_cm_s1[i,4]-head_cm_s1[13+i,4])/14, -->
+<!--                                                   (head_cm_s1[i,5]-head_cm_s1[13+i,5])/14))} -->
+
+<!-- recessionrate_14d <- cbind(hydro[,1],recessionrate_14d) -->
+<!-- recessionrate_14d <- setNames(recessionrate_14d,c("date", -->
+<!--                                                   "natural(cm/d)", -->
+<!--                                                   "current_operations(cm/d)", -->
+<!--                                                   "combined_operations(cm/d)", -->
+<!--                                                   "combined_operations+AWSA(cm/d)")) -->
+<!-- recessionrate_14d<-na.omit(recessionrate_14d) -->
+<!-- ``` -->
 
 #### Process Q-model bins ####
 Establishes model q-bins and calculates the probability of discharge range for any given entire year and discrete time state (April-May, June-July, August-September).Model Q-bins were selected so that inundation areas increased by less than 15% between the discharge associated with each bin (i.e. 1000 cfs, 1500 cfs, 2000 cfs, 2500 cfs, 3000 cfs, 3500 cfs, 4000 cfs). 

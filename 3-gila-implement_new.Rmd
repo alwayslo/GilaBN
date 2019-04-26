@@ -2,7 +2,7 @@
 title: "Upper Gila Watershed Bayesian Network Implementation"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "4/2/2019"
-update: "4/24/2019"
+update: "4/25/2019"
 output: html_notebook
 ---
 
@@ -127,13 +127,13 @@ Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
                     ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
                     ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
 
-Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_natural & Evidence$q_natural<q_bin[2],"bin_1",
-                    ifelse(q_bin[2]<= Evidence$q_natural & Evidence$q_natural<q_bin[3],"bin_2",
-                    ifelse(q_bin[3]<= Evidence$q_natural & Evidence$q_natural<q_bin[4],"bin_3",
-                    ifelse(q_bin[4]<= Evidence$q_natural & Evidence$q_natural<q_bin[5],"bin_4",
-                    ifelse(q_bin[5]<= Evidence$q_natural & Evidence$q_natural<q_bin[6],"bin_5",
-                    ifelse(q_bin[6]<= Evidence$q_natural & Evidence$q_natural<q_bin[7],"bin_6",
-                    ifelse(q_bin[6]<= Evidence$q_natural,"bin_7","blah")))))))
+Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_scenario1 & Evidence$q_scenario1<q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= Evidence$q_scenario1 & Evidence$q_scenario1<q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= Evidence$q_scenario1 & Evidence$q_scenario1<q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= Evidence$q_scenario1 & Evidence$q_scenario1<q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= Evidence$q_scenario1 & Evidence$q_scenario1<q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= Evidence$q_scenario1 & Evidence$q_scenario1<q_bin[7],"bin_6",
+                    ifelse(q_bin[6]<= Evidence$q_scenario1,"bin_7","blah")))))))
 
 
 Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario1 <= recessionrate_bin[1],"bin_1",
@@ -158,13 +158,13 @@ Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
                     ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
                     ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
 
-Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_natural & Evidence$q_natural<q_bin[2],"bin_1",
-                    ifelse(q_bin[2]<= Evidence$q_natural & Evidence$q_natural<q_bin[3],"bin_2",
-                    ifelse(q_bin[3]<= Evidence$q_natural & Evidence$q_natural<q_bin[4],"bin_3",
-                    ifelse(q_bin[4]<= Evidence$q_natural & Evidence$q_natural<q_bin[5],"bin_4",
-                    ifelse(q_bin[5]<= Evidence$q_natural & Evidence$q_natural<q_bin[6],"bin_5",
-                    ifelse(q_bin[6]<= Evidence$q_natural & Evidence$q_natural<q_bin[7],"bin_6",
-                    ifelse(q_bin[6]<= Evidence$q_natural,"bin_7","blah")))))))
+Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_scenario2 & Evidence$q_scenario2<q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= Evidence$q_scenario2 & Evidence$q_scenario2<q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= Evidence$q_scenario2 & Evidence$q_scenario2<q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= Evidence$q_scenario2 & Evidence$q_scenario2<q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= Evidence$q_scenario2 & Evidence$q_scenario2<q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= Evidence$q_scenario2 & Evidence$q_scenario2<q_bin[7],"bin_6",
+                    ifelse(q_bin[6]<= Evidence$q_scenario2,"bin_7","blah")))))))
 
 
 Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario2 <= recessionrate_bin[1],"bin_1",
@@ -189,14 +189,13 @@ Evidence$TIMING <-  ifelse(months(Evidence$date) %in% month.name[4:5],"apr_may",
                     ifelse(months(Evidence$date) %in% month.name[6:7],"jun_jul",
                     ifelse(months(Evidence$date) %in% month.name[8:9],"aug_sep","blah")))
 
-Evidence$INUN <-    ifelse(Evidence$q_scenario3<= q_bin[1],"bin_1",
-                    ifelse(q_bin[1]< Evidence$q_scenario3 & Evidence$q_scenario3<=q_bin[2],"bin_2",
-                    ifelse(q_bin[2]< Evidence$q_scenario3 & Evidence$q_scenario3<=q_bin[3],"bin_3",
-                    ifelse(q_bin[3]< Evidence$q_scenario3 & Evidence$q_scenario3<=q_bin[4],"bin_4",
-                    ifelse(q_bin[4]< Evidence$q_scenario3 & Evidence$q_scenario3<=q_bin[5],"bin_5",
-                    ifelse(q_bin[5]< Evidence$q_scenario3 & Evidence$q_scenario3<=q_bin[6],"bin_6",
-                    ifelse(q_bin[6]< Evidence$q_scenario3 & Evidence$q_scenario3<=q_bin[7],"bin_7",
-                    ifelse(Evidence$q_scenario3>q_bin[7],"bin_8","blah"))))))))
+Evidence$INUN <-    ifelse(q_bin[1]<= Evidence$q_scenario3 & Evidence$q_scenario3<q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= Evidence$q_scenario3 & Evidence$q_scenario3<q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= Evidence$q_scenario3 & Evidence$q_scenario3<q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= Evidence$q_scenario3 & Evidence$q_scenario3<q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= Evidence$q_scenario3 & Evidence$q_scenario3<q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= Evidence$q_scenario3 & Evidence$q_scenario3<q_bin[7],"bin_6",
+                    ifelse(q_bin[6]<= Evidence$q_scenario3,"bin_7","blah")))))))
 
 
 Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario3 <= recessionrate_bin[1],"bin_1",
@@ -228,7 +227,7 @@ for (i in 1:(nrow(Evidence_q1)))
                                                         INUN=Evidence_q1[i,2],
                                                         RECESSION_RATE = Evidence_q1[i,3]), 
                                                         method = "lw",
-                                                        n=5000 ))}
+                                                        n=25000 ))}
 
 Recruit_q2<-data.frame()
 for (i in 1:(nrow(Evidence_q2))) 
@@ -237,7 +236,7 @@ for (i in 1:(nrow(Evidence_q2)))
                                                         INUN=Evidence_q2[i,2],
                                                         RECESSION_RATE = Evidence_q2[i,3]), 
                                                         method = "lw",
-                                                        n=5000 ))}
+                                                        n=25000 ))}
 
 Recruit_q3<-data.frame()
 for (i in 1:(nrow(Evidence_q3))) 
@@ -246,7 +245,7 @@ for (i in 1:(nrow(Evidence_q3)))
                                                         INUN=Evidence_q3[i,2],
                                                         RECESSION_RATE = Evidence_q3[i,3]), 
                                                         method = "lw",
-                                                        n=5000 ))}
+                                                        n=25000 ))}
 
 Recruit_q4<-data.frame()
 for (i in 1:(nrow(Evidence_q4))) 
@@ -254,7 +253,8 @@ for (i in 1:(nrow(Evidence_q4)))
                                         evidence = list(TIMING=Evidence_q4[i,1],
                                                         INUN=Evidence_q4[i,2],
                                                         RECESSION_RATE = Evidence_q4[i,3]), 
-                                        method = "lw"))}
+                                                        method = "lw",
+                                                        n=2500))}
 
 Recruit_q5<-data.frame()
 for (i in 1:(nrow(Evidence_q5))) 
@@ -263,7 +263,7 @@ for (i in 1:(nrow(Evidence_q5)))
                                                         INUN=Evidence_q5[i,2],
                                                         RECESSION_RATE = Evidence_q5[i,3]), 
                                                         method = "lw",
-                                                        n=5000 ))}
+                                                        n=25000 ))}
 
 Recruit_q6<-data.frame()
 for (i in 1:(nrow(Evidence_q6))) 
@@ -272,7 +272,7 @@ for (i in 1:(nrow(Evidence_q6)))
                                                         INUN=Evidence_q6[i,2],
                                                         RECESSION_RATE = Evidence_q6[i,3]), 
                                                         method = "lw",
-                                                        n=5000 ))}
+                                                        n=25000 ))}
 
 Recruit_q7<-data.frame()
 for (i in 1:(nrow(Evidence_q7))) 
@@ -281,7 +281,7 @@ for (i in 1:(nrow(Evidence_q7)))
                                                         INUN=Evidence_q7[i,2],
                                                         RECESSION_RATE = Evidence_q7[i,3]), 
                                                         method = "lw",
-                                                        n=5000 ))}
+                                                        n=25000 ))}
 
 ```
 
@@ -306,26 +306,26 @@ Two output files,(1) The recruitment probability for each q_bin and (2) the recr
 
 The code chunck below writes output files for the natural scenario.
 ```{r}
-write.csv(Recruit_prob,file = "output/nb_natural_s1_recruit_prob.csv")
-write.csv(q_cells,file = "output/nb_natural_s1_q_cells_recruit.csv",row.names= FALSE)
+write.csv(Recruit_prob,file = "output/natural_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/natural_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 The code chunck below writes output files for scenario 1.
 ```{r}
-write.csv(Recruit_prob,file = "output/nb_scenario1_s1_recruit_prob.csv")
-write.csv(q_cells,file = "output/nb_scenario1_s1_q_cells_recruit.csv",row.names= FALSE)
+write.csv(Recruit_prob,file = "output/scenario1_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/scenario1_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 The code chunck below writes output files for scenario 2.
 ```{r}
-write.csv(Recruit_prob,file = "output/nb_scenario2_s1_recruit_prob.csv")
-write.csv(q_cells,file = "output/nb_scenario2_s1_q_cells_recruit.csv",row.names= FALSE)
+write.csv(Recruit_prob,file = "output/scenario2_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/scenario2_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 The code chunck below writes output files for scenario 3.
 ```{r}
-write.csv(Recruit_prob,file = "output/new_scenario3_s1_recruit_prob.csv")
-write.csv(q_cells,file = "output/nb_scenario3_s1_q_cells_recruit.csv",row.names= FALSE)
+write.csv(Recruit_prob,file = "output/scenario3_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/scenario3_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 
