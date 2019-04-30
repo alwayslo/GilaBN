@@ -2,9 +2,9 @@
 title: "Upper Gila Watershed Bayesian Network Results Analysis"
 author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
 date: "4/5/2019"
-update: "4/25/2019"
 output: html_notebook
 ---
+create: "4/29/2019"
 
 This R notebook is used to used to analyze the results from the BN model.
 
@@ -40,7 +40,16 @@ hydro <- read.csv("data/scenarios_new.csv", skip=1,header = TRUE)
 hydro <- setNames(hydro, c("date","natural", "current_operations","combined_operations","combined_operations_AWSA"))
 hydro$date <-as.Date(hydro$date, format="%m/%d/%Y")
 hydro$julian <- format(hydro$date, "%j")
+hydro$month <- format(hydro$date,"%m")
+```
 
+```{r}
+actual_hydro <- hydro[hydro[2] >= 1000]
+diff <- cbind(hydro[2]-hydro[3],hydro[2]-hydro[4],hydro[2]-hydro[5])
+```
+
+
+```{r}
 ggplot(hydro, aes(x=julian)) + 
   geom_line(aes(y = natural, color = "natural")) + 
   geom_line(aes(y = current_operations, color = "current operations"))+
@@ -51,12 +60,23 @@ ggplot(hydro, aes(x=julian)) +
   labs(color="scenario")+
   scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
 
-ggplot(hydro, aes(x=julian)) + 
-  geom_point(aes(y = natural, color = "natural"))+
+ggplot(hydro, aes(x=month)) + 
+  geom_line(aes(y = natural, color = "natural")) + 
+  geom_line(aes(y = current_operations, color = "current operations"))+
+  geom_line(aes(y = combined_operations, color = "combined operations"))+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"))+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   labs(color="scenario")+
-  scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
+
+
+
+# ggplot(hydro, aes(x=julian)) + 
+#   geom_point(aes(y = natural, color = "natural"))+
+#   xlab("Julian day")+
+#   ylab("flow (cfs)")+
+#   labs(color="scenario")+
+#   scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
 
 ```
 
@@ -64,18 +84,32 @@ ggplot(hydro, aes(x=julian)) +
 
 Load scenario results to be used for analysis.
 ```{r}
-natural_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+natural_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
   
-scenario1_recruit <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+scenario1_recruit <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
 
-scenario2_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+scenario2_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
 
-scenario3_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+scenario3_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
 
 recruitStack <- c(natural_recruit,scenario1_recruit,scenario2_recruit,scenario3_recruit)
 
 ```
 
+
+Load scenario recruit probability results to be used for analysis.
+```{r}
+natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+  
+scenario1_recruit_prob <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+scenario2_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
+
+```
 # Calculate the mean and standard devation of probability differences between existing conditions and each scenario
 
 ```{r}
