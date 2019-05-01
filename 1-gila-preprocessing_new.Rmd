@@ -1,10 +1,10 @@
 ---
-title: "Upper Gila Watershed Preprocessing"
-author: "Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
-date: "4/29/2019"
+title: Upper Gila Watershed Preprocessing
+author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
+date: 11/29/2018
+update: 4/30/2019
 output: html_notebook
 ---
-created:11/29/2018
 
 This R notebook is used to process the existing hydrology (Gila at Gila River USGS gage No.09430500). Conditional probabilities for inundation and recession rates are calculated in this script. Recession rates were calculated using information for site 1 only for this recreation of the historical model/process. USGS data was used to generate conditional probabilities and scenario data was used to generate evidence.
 

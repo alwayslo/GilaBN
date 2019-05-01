@@ -1,10 +1,10 @@
 ---
-title: "Upper Gila Watershed Bayesian Network Results Analysis"
-author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
-date: "4/5/2019"
+title: Upper Gila Watershed Bayesian Network Results Analysis
+author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
+date: 4/5/2019
+update: 4/30/2019
 output: html_notebook
 ---
-create: "4/29/2019"
 
 This R notebook is used to used to analyze the results from the BN model.
 
@@ -43,46 +43,186 @@ hydro$julian <- format(hydro$date, "%j")
 hydro$month <- format(hydro$date,"%m")
 ```
 
+Plots the hydrologic data that is actually used in the model which is governed by the lowest minimum innundation value.
+
+Plots the mean daily flows for all four scenarios (natural,current_operations,combined_operations,combined_operations_AWSA).
 ```{r}
-actual_hydro <- hydro[hydro[2] >= 1000]
-diff <- cbind(hydro[2]-hydro[3],hydro[2]-hydro[4],hydro[2]-hydro[5])
+meanJulian <- data.frame()
+
+for (i in 1:length(unique(hydro$julian))) 
+{ julian_i <- colMeans(hydro[hydro$julian== i,2:5])
+  meanJulian <- rbind(meanJulian, julian_i)}
+
+meanJulian <- cbind( 1:length(unique(diff$julian)),meanJulian)
+meanJulian<-setNames(meanJulian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+meanJulian<-na.omit(meanJulian)
+
+ggplot(meanJulian, aes(x=julian))+ 
+  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle("Upper Gila Mean Daily Flow\n April to September 1936 - 2017")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")+
+  geom_hline(yintercept = 1000)
+
+annual_vol <- data.frame(colSums(meanJulian[2:5]*8640/43560))
+annual_vol <-setNames(annual_vol,("acre-ft/yr"))
 ```
 
 
+
+
+Plots the one standard deviation above the mean daily flows for all four scenarios (natural,current_operations,combined_operations,combined_operations_AWSA).
 ```{r}
-ggplot(hydro, aes(x=julian)) + 
-  geom_line(aes(y = natural, color = "natural")) + 
+sigma1Julian <- data.frame()
+
+for (i in 1:length(unique(hydro$julian))) 
+{ julian_i <- colMeans(hydro[hydro$julian== i,2:5])+ colStdevs(hydro[hydro$julian== i,2:5])
+  sigma1Julian <- rbind(sigma1Julian, julian_i)}
+
+sigma1Julian <- cbind( 1:length(unique(diff$julian)),sigma1Julian)
+sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+sigma1Julian<-na.omit(sigma1Julian)
+
+ggplot(sigma1Julian, aes(x=julian))+ 
+  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle("Upper Gila Standard Deviation Above Mean Daily Flow\n April to September 1936 - 2017")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")+
+  geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
+
+```
+
+Plots the one standard deviation above the mean daily flows for all four scenarios (natural,current_operations,combined_operations,combined_operations_AWSA).
+```{r}
+sigma2Julian <- data.frame()
+
+for (i in 1:length(unique(hydro$julian))) 
+{ julian_i <- colMeans(hydro[hydro$julian== i,2:5])+ 2*colStdevs(hydro[hydro$julian== i,2:5])
+  sigma2Julian <- rbind(sigma2Julian, julian_i)}
+
+sigma2Julian <- cbind( 1:length(unique(diff$julian)),sigma2Julian)
+sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+sigma2Julian<-na.omit(sigma2Julian)
+
+ggplot(sigma2Julian, aes(x=julian))+ 
+  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle("Upper Gila Two Standard Deviations Above Mean Daily Flow\n April to September 1936 - 2017")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")+
+  geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
+
+```
+
+```{r}
+q_natural <- hydro[hydro[2] >= 1000,]
+q_scenario1 <- hydro[hydro[3] >= 1000,]
+q_scenario2 <- hydro[hydro[4] >= 1000,]
+q_scenario3 <- hydro[hydro[5] >= 1000,]
+
+meanNatural <- data.frame()
+
+for (i in 1:length(unique(q_natural$julian))) 
+{ mean_i <- mean(q_natural[q_natural$julian == i,2])
+  meanNatural <- rbind(meanNatural, mean_i)}
+
+meanNatural <- cbind( 1:length(unique(q_natural$julian)),meanNatural)
+meanNatural<-setNames(meanNatural, c("julian", "natural"))
+meanNatural<-na.omit(meanNatural)
+
+meanScenario1 <- data.frame()
+
+for (i in 1:length(unique(q_scenario1$julian))) 
+{ mean_i <- mean(q_scenario1[q_scenario1$julian == i,2])
+  meanScenario1 <- rbind(meanScenario1, mean_i)}
+
+meanScenario1 <- cbind( 1:length(unique(q_scenario1$julian)),meanScenario1)
+meanScenario1<-setNames(meanScenario1, c("julian", "current_operations"))
+meanScenario1<-na.omit(meanScenario1)
+
+meanScenario2 <- data.frame()
+
+for (i in 1:length(unique(q_scenario2$julian))) 
+{ mean_i <- mean(q_scenario2[q_scenario2$julian == i,2])
+  meanScenario2 <- rbind(meanScenario2, mean_i)}
+
+meanScenario2 <- cbind( 1:length(unique(q_scenario2$julian)),meanScenario2)
+meanScenario2<-setNames(meanScenario2, c("julian", "combined_operations"))
+meanScenario2<-na.omit(meanScenario2)
+
+meanScenario3 <- data.frame()
+
+for (i in 1:length(unique(q_scenario3$julian))) 
+{ mean_i <- mean(q_scenario3[q_scenario3$julian == i,3])
+  meanScenario3 <- rbind(meanScenario3, mean_i)}
+
+meanScenario3 <- cbind( 1:length(unique(q_scenario3$julian)),meanScenario3)
+meanScenario3<-setNames(meanScenario3, c("julian", "combined_operations_AWSA"))
+meanScenario3<-na.omit(meanScenario3)
+
+ggplot(meanNatural,aes(x= julian,y = current_operations, color = "current operations"))+
+  ggplot(meanScenario1)+
+  ggplot(meanScenario2)+
+  ggplot(meanScenario3)
+  
+
+
+ggplot(meanActual, aes(x=julian))+ 
   geom_line(aes(y = current_operations, color = "current operations"))+
   geom_line(aes(y = combined_operations, color = "combined operations"))+
   geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"))+
   xlab("Julian day")+
   ylab("flow (cfs)")+
-  labs(color="scenario")+
-  scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
+  labs(color="scenario")
+```
+Plots mean daily divert flow by scenario and calculates the total volume of diverted flow in acre-ft/year. 
+```{r}
+q_diff <- cbind(hydro$julian, hydro[2]-hydro[3],hydro[2]-hydro[4],hydro[2]-hydro[5])
+q_diff <- setNames(q_diff, c("julian", "current_operations","combined_operations","combined_operations_AWSA"))
 
-ggplot(hydro, aes(x=month)) + 
-  geom_line(aes(y = natural, color = "natural")) + 
-  geom_line(aes(y = current_operations, color = "current operations"))+
-  geom_line(aes(y = combined_operations, color = "combined operations"))+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"))+
+meanJulianDiff <- data.frame()
+
+for (i in 1:length(unique(q_diff$julian))) 
+{ julian_i <- colMeans(q_diff[q_diff$julian== i,2:4])
+  meanJulianDiff <- rbind(meanJulianDiff, julian_i)}
+
+meanJulianDiff <- cbind( 1:length(unique(diff$julian)),meanJulianDiff)
+meanJulianDiff<-setNames(meanJulianDiff, c("julian", "current_operations","combined_operations","combined_operations_AWSA"))
+meanJulianDiff<-na.omit(meanJulianDiff)
+
+ggplot(meanJulianDiff, aes(x=julian))+ 
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
   xlab("Julian day")+
-  ylab("flow (cfs)")+
-  labs(color="scenario")+
+  ylab("diverted flow (cfs)")+
+  ggtitle("Upper Gila Mean Daily Diverted Flow\n April to September 1936 - 2017")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")
 
-
-
-# ggplot(hydro, aes(x=julian)) + 
-#   geom_point(aes(y = natural, color = "natural"))+
-#   xlab("Julian day")+
-#   ylab("flow (cfs)")+
-#   labs(color="scenario")+
-#   scale_x_discrete(breaks=c(50,100,150,200,250,300,350))
+scenario1_divert <- colSums(meanJulianDiff[2]*8640/43560)
+scenario2_divert <- colSums(meanJulianDiff[3]*8640/43560)
+scenario3_divert <- colSums(meanJulianDiff[4]*8640/43560)
 
 ```
 
 
 
-Load scenario results to be used for analysis.
+Load scenario results for site 1 (North) to be used for analysis.
 ```{r}
 natural_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
   
@@ -97,6 +237,35 @@ recruitStack <- c(natural_recruit,scenario1_recruit,scenario2_recruit,scenario3_
 ```
 
 
+Load scenario results for site 2 (Middle) to be used for analysis.
+```{r}
+natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+  
+scenario1_recruit_prob <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+scenario2_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
+recruit <- setNames(recruit, c("q_bin","natural","current_operations","combined_operations","combined_operations_AWSA"))
+recruit
+```
+
+Load scenario results for site 3 (South) to be used for analysis.
+```{r}
+natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+  
+scenario1_recruit_prob <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+scenario2_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+
+recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
+
+```
+
 Load scenario recruit probability results to be used for analysis.
 ```{r}
 natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
@@ -110,6 +279,7 @@ scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario
 recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
 
 ```
+
 # Calculate the mean and standard devation of probability differences between existing conditions and each scenario
 
 ```{r}

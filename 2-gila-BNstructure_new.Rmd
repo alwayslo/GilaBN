@@ -1,10 +1,10 @@
 ---
-title: "Upper Gila Watershed Bayesian Network Structure"
-author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
-date:  "4/29/2019"
+title: Upper Gila Watershed Bayesian Network Structure
+author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
+date: 1/8/2019
+update: 4/30/2019
 output: html_notebook
 ---
-created:1/8/2019
 
 This R notebook is used to used to build and Bayesian network used to infer recruitment potential. Conditional probabilities for each node are populated using results from the "1-gila-preprocessing.Rmd".**Bayesian networks** are a class of graphical models that allow a concise representation of the probabilistic dependencies between a given set of random variables as a **directed acyclic graph** where each node represents a random variable.
 
@@ -58,7 +58,7 @@ Visualization of the generated graph allows us to view and confirm the relations
 graphviz.plot(dag, highlight = NULL, layout = "dot",shape = "rectangle", main = "Gila Bayesian Network Structure", sub = NULL)
 
 ```
-###Topological Ordering and Investigating the Properities of a BN
+###Topological Ordering and Investigating the Properities of a BN###
 
 The topological ordering of the nodes is important to this project specifically because it is a causal model. The ordering can be determined using *node.ordering*.The neighborhood *nbr* and Markov blanket *mb* of a node is a synthetic discription of the local dependence structure.
 
@@ -102,7 +102,7 @@ cpt_HYDRO was populated using the expert knowledge and informed from the probabi
 
 The conditional probability tables were developed in "1-gila-preprocessing.Rmd" and are presented here.
 
-### Natural ###
+#### Natural ####
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
@@ -129,7 +129,7 @@ cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7
                               'GW'= c("<50cm", "50-200cm", "> 200cm")))
 ```
 
-### Scenario 1 ###
+#### Scenario 1 ####
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
@@ -157,7 +157,7 @@ cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7
 ```
 
 
-### Scenario 2 ###
+#### Scenario 2 ####
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
@@ -184,7 +184,7 @@ cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7
                               'GW'= c("<50cm", "50-200cm", "> 200cm")))
 ```
 
-### Scenario 3 ###
+#### Scenario 3 ####
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
@@ -223,10 +223,8 @@ bnfit = custom.fit(dag,dist = list (TIMING = upt_TIMING,
  cpquery(bnfit,event = (RECRUIT =="YES"),evidence = list(TIMING="aug_sep",INUN="bin_1",RECESSION_RATE = "bin_1"), method = "lw")
 ```
 
-####R Notebooks####
-Execute code chunks by clicking the *Run* button within the chunk or by placing the cursor inside it and pressing *Cmd+Shift+Enter*. Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*. Whenthe notebook is saved, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
 
-####References ####
+###References ###
 Gentleman R, Whalen E, Huber W and Falcon S (2017). graph: graph: A package to handle graph data structures. R package version 1.54.0.
 
 Hansen KD, Gentry J, Long L, Gentleman R, Falcon S, Hahne F and Sarkar D (2017). Rgraphviz: Provides plotting capabilities for R graph objects. R package version 2.20.0.

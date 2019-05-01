@@ -1,8 +1,8 @@
 ---
-title: "Upper Gila Watershed Bayesian Network Implementation"
-author:"Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)"
-date: "4/2/2019"
-update: "4/25/2019"
+title: Upper Gila Watershed Bayesian Network Implementation
+author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
+date: 4/2/2019
+update: 4/30/2019
 output: html_notebook
 ---
 
@@ -37,7 +37,7 @@ getwd()
 ###Import SRH-2D model results###
 This code chunck calls the txt file that includes the inundation stats for each inundated cell in the hydrodynamic model mesh. This calls the data for one of 3 sites (1-North, 2-Middle, 3-South).
 
-#####Site 1######
+####Site 1#####
 ```{r}
 q_cells <- read.table("data/SiteN_Qs.txt",skip=1,header = TRUE)
 q_cells <- setNames(q_cells, c("cell","flow"))
@@ -52,7 +52,7 @@ q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bi
 
 ```
 
-#####Site 2######
+####Site 2#####
 ```{r}
 q_cells <- read.table("data/SiteM_Qs.txt",skip=1,header = TRUE)
 q_cells <- setNames(q_cells, c("cell","flow"))
@@ -67,7 +67,7 @@ q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bi
 
 ```
 
-#####Site 3######
+####Site 3#####
 ```{r}
 q_cells <- read.table("data/SiteS_Qs.txt",skip=1,header = TRUE)
 q_cells <- setNames(q_cells, c("cell","flow"))
@@ -83,7 +83,7 @@ q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bi
 ```
 
 
-##Natural Scenario Evidence##
+####Natural Scenario Evidence####
 ```{r}
 Evidence <- c(hydro[1:nrow(recessionrate_14d),],recessionrate_14d[,2:5])
 Evidence <-data.frame(Evidence)
@@ -114,7 +114,7 @@ Evidence$RECESSION_RATE <- ifelse(Evidence$rr_natural <= recessionrate_bin[1],"b
 Evidence <- Evidence[-1:-9]
 ```
 
-##Scenario 1 Evidence##
+####Scenario 1 Evidence####
 ```{r}
 Evidence <- c(hydro[1:nrow(recessionrate_14d),],recessionrate_14d[,2:5])
 Evidence <-data.frame(Evidence)
@@ -145,7 +145,7 @@ Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario1 <= recessionrate_bin[1],
 Evidence <- Evidence[-1:-9]
 ```
 
-##Scenario 2 Evidence##
+####Scenario 2 Evidence####
 ```{r}
 Evidence <- c(hydro[1:nrow(recessionrate_14d),],recessionrate_14d[,2:5])
 Evidence <-data.frame(Evidence)
@@ -176,7 +176,7 @@ Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario2 <= recessionrate_bin[1],
 Evidence <- Evidence[-1:-9]
 ```
 
-##Scenario 3 Evidence##
+####Scenario 3 Evidence####
 ```{r}
 Evidence <- c(hydro[1:nrow(recessionrate_14d),],recessionrate_14d[,2:5])
 Evidence <-data.frame(Evidence)
@@ -207,7 +207,7 @@ Evidence$RECESSION_RATE <- ifelse(Evidence$rr_scenario3 <= recessionrate_bin[1],
 Evidence <- Evidence[-1:-9]
 ```
 
-
+Binning evidence based on flow bins and trimming data not within the discrete timing states. 
 ```{r}
 Evidence_q1 <- Evidence[Evidence[2] =="bin_1" & Evidence[1]!="blah",]
 Evidence_q2 <- Evidence[Evidence[2] =="bin_2" & Evidence[1]!="blah",]
@@ -218,7 +218,7 @@ Evidence_q6 <- Evidence[Evidence[2] =="bin_6" & Evidence[1]!="blah",]
 Evidence_q7 <- Evidence[Evidence[2] =="bin_7" & Evidence[1]!="blah",]
 ```
 
-#### Calculate recruitment probability by instantiating the BN with evidence ####
+### Calculate recruitment probability by instantiating the BN with evidence ###
 ```{r}
 Recruit_q1<-data.frame()
 for (i in 1:(nrow(Evidence_q1))) 
@@ -285,7 +285,7 @@ for (i in 1:(nrow(Evidence_q7)))
 
 ```
 
-Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).The file path can also be changed as needed.
+Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g. q_cells_natural_recruit.csv). The file path can also be changed as needed.
 
 The code chunk below created dataframe Recruit_prob which summarizes the recruitment probability for each q_bin and adds a recruitment probability column to the q_cells dataframe.
 ```{r}
@@ -302,7 +302,8 @@ q_cells$recruit <-    ifelse(q_cells$bin =="bin_1",Recruit_prob[1,],
                     Recruit_prob[7,]))))))
 ```
 
-Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g.q_cells_natural_recruit.csv ).The file path can also be changed as needed.
+Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g. q_cells_natural_recruit.csv). The file path can also be changed as needed.
+
 
 The code chunck below writes output files for the natural scenario.
 ```{r}
@@ -310,17 +311,20 @@ write.csv(Recruit_prob,file = "output/natural_s1_recruit_prob.csv")
 write.csv(q_cells,file = "output/natural_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
+
 The code chunck below writes output files for scenario 1.
 ```{r}
 write.csv(Recruit_prob,file = "output/scenario1_s1_recruit_prob.csv")
 write.csv(q_cells,file = "output/scenario1_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
+
 The code chunck below writes output files for scenario 2.
 ```{r}
 write.csv(Recruit_prob,file = "output/scenario2_s1_recruit_prob.csv")
 write.csv(q_cells,file = "output/scenario2_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
+
 
 The code chunck below writes output files for scenario 3.
 ```{r}
@@ -329,10 +333,7 @@ write.csv(q_cells,file = "output/scenario3_s1_q_cells_recruit.csv",row.names= FA
 ```
 
 
-####R Notebooks####
-Execute code chunks by clicking the *Run* button within the chunk or by placing the cursor inside it and pressing *Cmd+Shift+Enter*. Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*. Whenthe notebook is saved, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
-
-####References ####
+###References ###
 Gentleman R, Whalen E, Huber W and Falcon S (2017). graph: graph: A package to handle graph data structures. R package version 1.54.0.
 
 Hansen KD, Gentry J, Long L, Gentleman R, Falcon S, Hahne F and Sarkar D (2017). Rgraphviz: Provides plotting capabilities for R graph objects. R package version 2.20.0.
