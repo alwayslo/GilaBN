@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Bayesian Network Structure
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 1/8/2019
-update: 4/30/2019
+update: 5/3/2019
 output: html_notebook
 ---
 
@@ -108,7 +108,7 @@ upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list
 
 cpt_INUN = t(matrix(data = c(q_prob_natural_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
 
-cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_natural_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+cpt_RECESSION_RATE = t(matrix(data = c(rr_prob_natural_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
@@ -135,7 +135,7 @@ upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list
 
 cpt_INUN = t(matrix(data = c(q_prob_scenario1_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
 
-cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_scenario1_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+cpt_RECESSION_RATE = t(matrix(data = c(rr_prob_scenario1_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
@@ -163,7 +163,7 @@ upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list
 
 cpt_INUN = t(matrix(data = c(q_prob_scenario2_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
 
-cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_scenario2_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+cpt_RECESSION_RATE = t(matrix(data = c(rr_prob_scenario2_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
@@ -190,7 +190,7 @@ upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list
 
 cpt_INUN = t(matrix(data = c(q_prob_scenario3_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
 
-cpt_RECESSION_RATE = t(matrix(data = c(rr_14d_prob_scenario3_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
+cpt_RECESSION_RATE = t(matrix(data = (rr_prob_scenario3_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
