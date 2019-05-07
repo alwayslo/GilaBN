@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Bayesian Network Results Analysis
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 4/5/2019
-update: 4/30/2019
+update: 5/6/2019
 output: html_notebook
 ---
 
@@ -10,7 +10,7 @@ This R notebook is used to used to analyze the results from the BN model.
 
 ###Result Analysis###
 ```{r}
-#rm(list=ls())
+rm(list=ls())
 
 library("bnlearn")
 library("readr")
@@ -53,7 +53,7 @@ for (i in 1:length(unique(hydro$julian)))
 { julian_i <- colMeans(hydro[hydro$julian== i,2:5])
   meanJulian <- rbind(meanJulian, julian_i)}
 
-meanJulian <- cbind( 1:length(unique(diff$julian)),meanJulian)
+meanJulian <- cbind( 1:length(unique(hydro$julian)),meanJulian)
 meanJulian<-setNames(meanJulian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
 meanJulian<-na.omit(meanJulian)
 
@@ -84,7 +84,7 @@ for (i in 1:length(unique(hydro$julian)))
 { julian_i <- colMeans(hydro[hydro$julian== i,2:5])+ colStdevs(hydro[hydro$julian== i,2:5])
   sigma1Julian <- rbind(sigma1Julian, julian_i)}
 
-sigma1Julian <- cbind( 1:length(unique(diff$julian)),sigma1Julian)
+sigma1Julian <- cbind( 1:length(unique(hydro$julian)),sigma1Julian)
 sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
 sigma1Julian<-na.omit(sigma1Julian)
 
@@ -110,7 +110,7 @@ for (i in 1:length(unique(hydro$julian)))
 { julian_i <- colMeans(hydro[hydro$julian== i,2:5])+ 2*colStdevs(hydro[hydro$julian== i,2:5])
   sigma2Julian <- rbind(sigma2Julian, julian_i)}
 
-sigma2Julian <- cbind( 1:length(unique(diff$julian)),sigma2Julian)
+sigma2Julian <- cbind( 1:length(unique(hydro$julian)),sigma2Julian)
 sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
 sigma2Julian<-na.omit(sigma2Julian)
 
@@ -128,66 +128,66 @@ ggplot(sigma2Julian, aes(x=julian))+
 
 ```
 
+
+Plot only flows greater than 1000 cfs. Visualize data being used. (not working)
 ```{r}
-q_natural <- hydro[hydro[2] >= 1000,]
-q_scenario1 <- hydro[hydro[3] >= 1000,]
-q_scenario2 <- hydro[hydro[4] >= 1000,]
-q_scenario3 <- hydro[hydro[5] >= 1000,]
-
-meanNatural <- data.frame()
-
-for (i in 1:length(unique(q_natural$julian))) 
-{ mean_i <- mean(q_natural[q_natural$julian == i,2])
-  meanNatural <- rbind(meanNatural, mean_i)}
-
-meanNatural <- cbind( 1:length(unique(q_natural$julian)),meanNatural)
-meanNatural<-setNames(meanNatural, c("julian", "natural"))
-meanNatural<-na.omit(meanNatural)
-
-meanScenario1 <- data.frame()
-
-for (i in 1:length(unique(q_scenario1$julian))) 
-{ mean_i <- mean(q_scenario1[q_scenario1$julian == i,2])
-  meanScenario1 <- rbind(meanScenario1, mean_i)}
-
-meanScenario1 <- cbind( 1:length(unique(q_scenario1$julian)),meanScenario1)
-meanScenario1<-setNames(meanScenario1, c("julian", "current_operations"))
-meanScenario1<-na.omit(meanScenario1)
-
-meanScenario2 <- data.frame()
-
-for (i in 1:length(unique(q_scenario2$julian))) 
-{ mean_i <- mean(q_scenario2[q_scenario2$julian == i,2])
-  meanScenario2 <- rbind(meanScenario2, mean_i)}
-
-meanScenario2 <- cbind( 1:length(unique(q_scenario2$julian)),meanScenario2)
-meanScenario2<-setNames(meanScenario2, c("julian", "combined_operations"))
-meanScenario2<-na.omit(meanScenario2)
-
-meanScenario3 <- data.frame()
-
-for (i in 1:length(unique(q_scenario3$julian))) 
-{ mean_i <- mean(q_scenario3[q_scenario3$julian == i,3])
-  meanScenario3 <- rbind(meanScenario3, mean_i)}
-
-meanScenario3 <- cbind( 1:length(unique(q_scenario3$julian)),meanScenario3)
-meanScenario3<-setNames(meanScenario3, c("julian", "combined_operations_AWSA"))
-meanScenario3<-na.omit(meanScenario3)
-
-ggplot(meanNatural,aes(x= julian,y = current_operations, color = "current operations"))+
-  ggplot(meanScenario1)+
-  ggplot(meanScenario2)+
-  ggplot(meanScenario3)
-  
-
-
-ggplot(meanActual, aes(x=julian))+ 
-  geom_line(aes(y = current_operations, color = "current operations"))+
-  geom_line(aes(y = combined_operations, color = "combined operations"))+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"))+
-  xlab("Julian day")+
-  ylab("flow (cfs)")+
-  labs(color="scenario")
+# q_natural <- hydro[hydro[2] >= 1000,]
+# q_scenario1 <- hydro[hydro[3] >= 1000,]
+# q_scenario2 <- hydro[hydro[4] >= 1000,]
+# q_scenario3 <- hydro[hydro[5] >= 1000,]
+# 
+# meanNatural <- data.frame()
+# 
+# for (i in 1:length(unique(q_natural$julian))) 
+# { mean_i <- mean(q_natural[q_natural$julian == i,2])
+#   meanNatural <- rbind(meanNatural, mean_i)}
+# 
+# meanNatural <- cbind( 1:length(unique(q_natural$julian)),meanNatural)
+# meanNatural<-setNames(meanNatural, c("julian", "natural"))
+# meanNatural<-na.omit(meanNatural)
+# 
+# meanScenario1 <- data.frame()
+# 
+# for (i in 1:length(unique(q_scenario1$julian))) 
+# { mean_i <- mean(q_scenario1[q_scenario1$julian == i,2])
+#   meanScenario1 <- rbind(meanScenario1, mean_i)}
+# 
+# meanScenario1 <- cbind( 1:length(unique(q_scenario1$julian)),meanScenario1)
+# meanScenario1<-setNames(meanScenario1, c("julian", "current_operations"))
+# meanScenario1<-na.omit(meanScenario1)
+# 
+# meanScenario2 <- data.frame()
+# 
+# for (i in 1:length(unique(q_scenario2$julian))) 
+# { mean_i <- mean(q_scenario2[q_scenario2$julian == i,2])
+#   meanScenario2 <- rbind(meanScenario2, mean_i)}
+# 
+# meanScenario2 <- cbind( 1:length(unique(q_scenario2$julian)),meanScenario2)
+# meanScenario2<-setNames(meanScenario2, c("julian", "combined_operations"))
+# meanScenario2<-na.omit(meanScenario2)
+# 
+# meanScenario3 <- data.frame()
+# 
+# for (i in 1:length(unique(q_scenario3$julian))) 
+# { mean_i <- mean(q_scenario3[q_scenario3$julian == i,3])
+#   meanScenario3 <- rbind(meanScenario3, mean_i)}
+# 
+# meanScenario3 <- cbind( 1:length(unique(q_scenario3$julian)),meanScenario3)
+# meanScenario3<-setNames(meanScenario3, c("julian", "combined_operations_AWSA"))
+# meanScenario3<-na.omit(meanScenario3)
+# 
+# ggplot(meanNatural,aes(x= julian,y = current_operations, color = "current operations"))+
+#   ggplot(meanScenario1)+
+#   ggplot(meanScenario2)+
+#   ggplot(meanScenario3)
+#   
+# ggplot(meanActual, aes(x=julian))+ 
+#   geom_line(aes(y = current_operations, color = "current operations"))+
+#   geom_line(aes(y = combined_operations, color = "combined operations"))+
+#   geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"))+
+#   xlab("Julian day")+
+#   ylab("flow (cfs)")+
+#   labs(color="scenario")
 ```
 Plots mean daily divert flow by scenario and calculates the total volume of diverted flow in acre-ft/year. 
 ```{r}
@@ -200,7 +200,7 @@ for (i in 1:length(unique(q_diff$julian)))
 { julian_i <- colMeans(q_diff[q_diff$julian== i,2:4])
   meanJulianDiff <- rbind(meanJulianDiff, julian_i)}
 
-meanJulianDiff <- cbind( 1:length(unique(diff$julian)),meanJulianDiff)
+meanJulianDiff <- cbind( 1:length(unique(q_diff$julian)),meanJulianDiff)
 meanJulianDiff<-setNames(meanJulianDiff, c("julian", "current_operations","combined_operations","combined_operations_AWSA"))
 meanJulianDiff<-na.omit(meanJulianDiff)
 
@@ -224,85 +224,98 @@ scenario3_divert <- colSums(meanJulianDiff[4]*8640/43560)
 
 Load scenario results for site 1 (North) to be used for analysis.
 ```{r}
-natural_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
-  
-scenario1_recruit <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+r_cells_natural_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_q_cells_recruit.csv", header=TRUE, sep=",", 
+                               col.names =  c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario1_s1 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario2_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario3_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_q_cells_recruit.csv", header=TRUE, sep=",",
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
 
-scenario2_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+r_cells_s1 <- cbind(r_cells_natural_s1[,1], r_cells_natural_s1[,5],r_cells_scenario1_s1[,5],r_cells_scenario2_s1[,5],r_cells_scenario3_s1[,5])
+colnames(r_cells_s1) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
 
-scenario3_recruit <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_q_cells_recruit.csv", header=TRUE, sep=",", col.names = c("cell","flow","bin","recruit"))
+r_prob_natural_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario1_s1 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario2_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario3_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",")
 
-recruitStack <- c(natural_recruit,scenario1_recruit,scenario2_recruit,scenario3_recruit)
+r_prob_s1 <- cbind(r_prob_natural_s1[,2], r_prob_scenario1_s1[,2],r_prob_scenario2_s1[,2],r_prob_scenario3_s1[,2])
+colnames(r_prob_s1)<- c("natural","current_operations","combined_operations","combined_operations_AWSA")  
+rownames(r_prob_s1)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7")
 
 ```
 
 
 Load scenario results for site 2 (Middle) to be used for analysis.
 ```{r}
-natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
-  
-scenario1_recruit_prob <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+r_cells_natural_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                               col.names =  c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario1_s2 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario2_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario3_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
 
-scenario2_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+r_cells_s2 <- cbind(r_cells_natural_s2[,1],r_cells_natural_s2[,5], r_cells_scenario1_s2[,5],r_cells_scenario2_s2[,5],r_cells_scenario3_s2[,5])
+colnames(r_cells_s2) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
 
-scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+r_prob_natural_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s2_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario1_s2 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s2_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario2_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s2_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario3_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s2_recruit_prob.csv", header=TRUE, sep=",")
 
-recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
-recruit <- setNames(recruit, c("q_bin","natural","current_operations","combined_operations","combined_operations_AWSA"))
-recruit
+r_prob_s2 <- cbind(r_prob_natural_s2[,2], r_prob_scenario1_s2[,2],r_prob_scenario2_s2[,2],r_prob_scenario3_s2[,2])
+colnames(r_prob_s2)<- c("natural","current_operations","combined_operations","combined_operations_AWSA")  
+rownames(r_prob_s2)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7")
+
 ```
 
 Load scenario results for site 3 (South) to be used for analysis.
 ```{r}
-natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
-  
-scenario1_recruit_prob <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+r_cells_natural_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s3_q_cells_recruit.csv", header=TRUE, sep=",", 
+                               col.names =  c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario1_s3 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s3_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario2_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s3_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario3_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s3_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
 
-scenario2_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+r_cells_s3 <- cbind(r_cells_natural_s3[,1],r_cells_natural_s3[,5], r_cells_scenario1_s3[,5],r_cells_scenario2_s3[,5], r_cells_scenario3_s3[,5])
+colnames(r_cells_s3) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
 
-scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
+r_prob_natural_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s3_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario1_s3 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s3_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario2_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s3_recruit_prob.csv", header=TRUE, sep=",")
+r_prob_scenario3_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s3_recruit_prob.csv", header=TRUE, sep=",")
 
-recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
-
+r_prob_s3 <- cbind(r_prob_natural_s3[,2], r_prob_scenario1_s3[,2],r_prob_scenario2_s3[,2],r_prob_scenario3_s3[,2])
+colnames(r_prob_s3)<- c("natural","current_operations","combined_operations","combined_operations_AWSA")  
+rownames(r_prob_s3)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7")
 ```
 
-Load scenario recruit probability results to be used for analysis.
-```{r}
-natural_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
-  
-scenario1_recruit_prob <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
-
-scenario2_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
-
-scenario3_recruit_prob <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",", col.names = c("bin","recruit"))
-
-recruit <- cbind(natural_recruit_prob[1], natural_recruit_prob[2],scenario1_recruit_prob[2],scenario2_recruit_prob[2],scenario3_recruit_prob[2])
-
-```
 
 # Calculate the mean and standard devation of probability differences between existing conditions and each scenario
+summarize default boxplot
 
 ```{r}
-scenario1_recruit$mean_diff <- mean(natural_recruit$recruit - scenario1_recruit$recruit)
-scenario2_recruit$mean_diff <- mean(natural_recruit$recruit - scenario2_recruit$recruit)
-  
-scenario1_recruit$std_diff <- stdev(natural_recruit$recruit - scenario1_recruit$recruit)
-scenario2_recruit$std_diff <- stdev(natural_recruit$recruit - scenario2_recruit$recruit)
 
-max(scenario1_recruit$mean_diff)
-min(scenario1_recruit$mean_diff)
+par(mfrow=c(1,3))
 
-max(scenario2_recruit$mean_diff)
-min(scenario2_recruit$mean_diff)
+boxplot(r_cells_s1[,3:5],main="Site 1 \n North", ylim=c(0, 0.7),names = c("1","2","3"))
+boxplot(r_cells_s2[,3:5],main="Site 2 \n Middle", ylim=c(0, 0.7),names = c("1","2","3"))
+boxplot(r_cells_s3[,3:5],main="Site 3 \n South", ylim=c(0, 0.7),names = c("1","2","3"))
 
-max(scenario1_recruit$std_diff)
-min(scenario1_recruit$std_diff)
+# title("Posterior Probability of Recruitment")
+# ylab("posterior probability of recruitment")
+# xlab("scenario")
 
-max(scenario2_recruit$std_diff)
-min(scenario2_recruit$std_diff)
-
-
+par(mfrow=c(1,1))
 ```
+
 
 # Plot mean and standard devation of changes in probabilities for each scenario
 
@@ -346,7 +359,6 @@ hist(natural_recruit,
      col="yellow")
 ```
 
-```
 
 # Plot the mean probability at each site
 
