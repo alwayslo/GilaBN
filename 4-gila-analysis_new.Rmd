@@ -233,7 +233,8 @@ r_cells_scenario2_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_
 r_cells_scenario3_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_q_cells_recruit.csv", header=TRUE, sep=",",
                                  col.names = c("cell","flow","bin","recruit_q","recruit"))
 
-r_cells_s1 <- cbind(r_cells_natural_s1[,1], r_cells_natural_s1[,5],r_cells_scenario1_s1[,5],r_cells_scenario2_s1[,5],r_cells_scenario3_s1[,5])
+r_cells_s1 <- data.frame(cbind(r_cells_natural_s1[,1],r_cells_natural_s1[,5],r_cells_scenario1_s1[,5],r_cells_scenario2_s1[,5],
+                               r_cells_scenario3_s1[,5]))
 colnames(r_cells_s1) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
 
 r_prob_natural_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",")
@@ -259,7 +260,8 @@ r_cells_scenario2_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_
 r_cells_scenario3_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
                                  col.names = c("cell","flow","bin","recruit_q","recruit"))
 
-r_cells_s2 <- cbind(r_cells_natural_s2[,1],r_cells_natural_s2[,5], r_cells_scenario1_s2[,5],r_cells_scenario2_s2[,5],r_cells_scenario3_s2[,5])
+r_cells_s2 <- data.frame(cbind(r_cells_natural_s2[,1],r_cells_natural_s2[,5],r_cells_scenario1_s2[,5],r_cells_scenario2_s2[,5],
+                               r_cells_scenario3_s2[,5]))
 colnames(r_cells_s2) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
 
 r_prob_natural_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s2_recruit_prob.csv", header=TRUE, sep=",")
@@ -284,7 +286,8 @@ r_cells_scenario2_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_
 r_cells_scenario3_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s3_q_cells_recruit.csv", header=TRUE, sep=",", 
                                  col.names = c("cell","flow","bin","recruit_q","recruit"))
 
-r_cells_s3 <- cbind(r_cells_natural_s3[,1],r_cells_natural_s3[,5], r_cells_scenario1_s3[,5],r_cells_scenario2_s3[,5], r_cells_scenario3_s3[,5])
+r_cells_s3 <- data.frame(cbind(r_cells_natural_s3[,1],r_cells_natural_s3[,5], r_cells_scenario1_s3[,5],r_cells_scenario2_s3[,5],
+                               r_cells_scenario3_s3[,5]))
 colnames(r_cells_s3) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
 
 r_prob_natural_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s3_recruit_prob.csv", header=TRUE, sep=",")
@@ -302,16 +305,35 @@ rownames(r_prob_s3)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin
 summarize default boxplot
 
 ```{r}
-
 par(mfrow=c(1,3))
 
-boxplot(r_cells_s1[,3:5],main="Site 1 \n North", ylim=c(0, 0.7),names = c("1","2","3"))
-boxplot(r_cells_s2[,3:5],main="Site 2 \n Middle", ylim=c(0, 0.7),names = c("1","2","3"))
-boxplot(r_cells_s3[,3:5],main="Site 3 \n South", ylim=c(0, 0.7),names = c("1","2","3"))
+boxplot(r_cells_s1[,3:5],main="Site 1 - North", ylim=c(0, 0.7),names = c("1","2","3"),ylab="posterior probability of recruitment")
+boxplot(r_cells_s2[,3:5],main="Site 2 - Middle", ylim=c(0, 0.7),names = c("1","2","3"),xlab = "scenarios")
+boxplot(r_cells_s3[,3:5],main="Site 3 - South", ylim=c(0, 0.7),names = c("1","2","3")) 
 
-# title("Posterior Probability of Recruitment")
-# ylab("posterior probability of recruitment")
-# xlab("scenario")
+ggplot(data = r_cells_s1[,3:5]) + 
+  geom_boxplot(aes(x=1,y=current_operations))+
+  geom_boxplot(aes(x=2,y=combined_operations))+
+  geom_boxplot(aes(x=3,y=combined_operations_AWSA))+
+  xlab("scenarios")+
+  ylab("posterior probability of recruitment")+
+  ggtitle("Site 1 - North")
+
+ggplot(data = r_cells_s2[,3:5]) + 
+  geom_boxplot(aes(x=1,y=current_operations))+
+  geom_boxplot(aes(x=2,y=combined_operations))+
+  geom_boxplot(aes(x=3,y=combined_operations_AWSA))+
+  xlab("scenarios")+
+  ylab("posterior probability of recruitment")+
+  ggtitle("Site 2 - Middle")
+
+ggplot(data = r_cells_s3[,3:5]) + 
+  geom_boxplot(aes(x=1,y=current_operations))+
+  geom_boxplot(aes(x=2,y=combined_operations))+
+  geom_boxplot(aes(x=3,y=combined_operations_AWSA))+
+  xlab("scenarios")+
+  ylab("prosterior probability of recruitment")+
+  ggtitle("Site 3 - South")
 
 par(mfrow=c(1,1))
 ```
