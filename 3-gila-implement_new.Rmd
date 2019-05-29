@@ -37,20 +37,20 @@ getwd()
 ###Import SRH-2D model results###
 This code chunck calls the txt file that includes the inundation stats for each inundated cell in the hydrodynamic model mesh. This calls the data for one of 3 sites (1-North, 2-Middle, 3-South).
 
-<!-- ####Site 1##### -->
-<!-- ```{r} -->
-<!-- q_cells <- read.table("data/SiteN_Qs.txt",skip=1,header = TRUE) -->
-<!-- q_cells <- setNames(q_cells, c("cell","flow")) -->
+####Site 1#####
+```{r}
+q_cells <- read.table("data/SiteN_Qs.txt",skip=1,header = TRUE)
+q_cells <- setNames(q_cells, c("cell","flow"))
 
-<!-- q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1", -->
-<!--                     ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2", -->
-<!--                     ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3", -->
-<!--                     ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4", -->
-<!--                     ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5", -->
-<!--                     ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6", -->
-<!--                     ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah")))))))                  -->
+q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
+                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
+                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
+                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
+                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
+                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
+                    ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah")))))))
 
-<!-- ``` -->
+```
 
 <!-- ####Site 2##### -->
 <!-- ```{r} -->
@@ -67,20 +67,20 @@ This code chunck calls the txt file that includes the inundation stats for each 
 
 <!-- ``` -->
 
-####Site 3#####
-```{r}
-q_cells <- read.table("data/SiteS_Qs.txt",skip=1,header = TRUE)
-q_cells <- setNames(q_cells, c("cell","flow"))
+<!-- ####Site 3##### -->
+<!-- ```{r} -->
+<!-- q_cells <- read.table("data/SiteS_Qs.txt",skip=1,header = TRUE) -->
+<!-- q_cells <- setNames(q_cells, c("cell","flow")) -->
 
-q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
-                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
-                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
-                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
-                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
-                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
-                    ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah")))))))
+<!-- q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1", -->
+<!--                     ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2", -->
+<!--                     ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3", -->
+<!--                     ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4", -->
+<!--                     ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5", -->
+<!--                     ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6", -->
+<!--                     ifelse(q_bin[7]<= q_cells$flow,"bin_7","blah"))))))) -->
 
-```
+<!-- ``` -->
 
 
 ####Natural Scenario Evidence####
@@ -414,8 +414,8 @@ write.csv(q_cells,file = "output/scenario2_s3_q_cells_recruit.csv",row.names= FA
 
 The code chunck below writes output files for scenario 3.
 ```{r}
-write.csv(recruit_scenario3,file = "output/scenario3_s3_recruit_prob.csv")
-write.csv(q_cells,file = "output/scenario3_s3_q_cells_recruit.csv",row.names= FALSE)
+write.csv(recruit_scenario3,file = "output/scenario3_s1_recruit_prob.csv")
+write.csv(q_cells,file = "output/scenario3_s1_q_cells_recruit.csv",row.names= FALSE)
 ```
 
 

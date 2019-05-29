@@ -70,14 +70,14 @@ South, Depth = 0.0003Q + 1.2
 
 SPECIFY SITE
 
-<!-- ###Site 1### -->
-<!-- ```{r} -->
-<!-- head_conv <- data.frame(hydro$date,0.0003*hydro[2]+2, 0.0003*hydro[3]+2,0.0003*hydro[4]+2,0.0003*hydro[5]+2) -->
-<!-- head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)")) -->
+###Site 1###
+```{r}
+head_conv <- data.frame(hydro$date,0.0003*hydro[2]+2, 0.0003*hydro[3]+2,0.0003*hydro[4]+2,0.0003*hydro[5]+2)
+head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)"))
 
-<!-- head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48) -->
-<!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)")) -->
-<!-- ``` -->
+head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48)
+head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)"))
+```
 
 
 <!-- ###Site 2### -->
@@ -89,14 +89,14 @@ SPECIFY SITE
 <!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)")) -->
 <!-- ``` -->
 
-###Site 3###
-```{r}
-head_conv <- data.frame(hydro[1],0.0003*hydro[2]+1.2, 0.0003*hydro[3]+1.2,0.0003*hydro[4]+1.2,0.0003*hydro[5]+1.2)
-head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)"))
+<!-- ###Site 3### -->
+<!-- ```{r} -->
+<!-- head_conv <- data.frame(hydro[1],0.0003*hydro[2]+1.2, 0.0003*hydro[3]+1.2,0.0003*hydro[4]+1.2,0.0003*hydro[5]+1.2) -->
+<!-- head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)")) -->
 
-head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48)
-head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)"))
-```
+<!-- head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48) -->
+<!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)")) -->
+<!-- ``` -->
 
 #### Calculate recession rates ####
 Calculates the 14-day recession rate (cm/day). Recession rate (forward) was calculated using a 14 day average based on the site specified above). The equation was mimicing that of Morrison & Stone (2014).

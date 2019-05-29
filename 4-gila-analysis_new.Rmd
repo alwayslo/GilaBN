@@ -30,6 +30,8 @@ library("dplyr")
 library("methods")
 require("BiocGenerics")
 require("graph")
+library("sf")
+library("maps")
 
 getwd()
 ```
@@ -304,12 +306,19 @@ rownames(r_prob_s3)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin
 # Calculate the mean and standard devation of probability differences between existing conditions and each scenario
 summarize default boxplot
 
+The solid bar is the median and the whiskers are the first and third quartile
+discussion/explanation of the whiskers in r:https://www.r-bloggers.com/whisker-of-boxplot/
+
+upper whisker = min(max(x), Q_3 + 1.5 * IQR) 
+lower whisker = max(min(x), Q_1 – 1.5 * IQR)
+
 ```{r}
 par(mfrow=c(1,3))
 
-boxplot(r_cells_s1[,3:5],main="Site 1 - North", ylim=c(0, 0.7),names = c("1","2","3"),ylab="posterior probability of recruitment")
-boxplot(r_cells_s2[,3:5],main="Site 2 - Middle", ylim=c(0, 0.7),names = c("1","2","3"),xlab = "scenarios")
-boxplot(r_cells_s3[,3:5],main="Site 3 - South", ylim=c(0, 0.7),names = c("1","2","3")) 
+boxplot(r_cells_s1[,3:5],range = 1.5, main="Site 1 - North", ylim=c(0, 0.7),names = c("1","2","3"),
+        ylab="posterior probability of recruitment")
+boxplot(r_cells_s2[,3:5],range = 1.5, main="Site 2 - Middle", ylim=c(0, 0.7),names = c("1","2","3"),xlab = "scenarios")
+boxplot(r_cells_s3[,3:5],range = 1.5, main="Site 3 - South", ylim=c(0, 0.7),names = c("1","2","3")) 
 
 ggplot(data = r_cells_s1[,3:5]) + 
   geom_boxplot(aes(x=1,y=current_operations))+
@@ -371,10 +380,10 @@ par(mfrow=c(1,1))
 #Plot the mean probability at each site
 
 ```{r}
-ncell(natural_recruit)
+ncell(r_cells_s1)
 
-hist(natural_recruit, 
-     maxpixels=ncell(natural_recruit),
+hist(r_cells_natural_s1, 
+     maxpixels=ncell(r_cells_natural_s1[,2]),
      main="Distribution of DSM Values\n All Pixel Values Included\n NEON Harvard Forest Field Site",
      xlab="DSM Elevation Value (m)",
      ylab="Frequency",
@@ -387,6 +396,83 @@ hist(natural_recruit,
 ```{r}
 
 
+```
+
+Load cell coordinates for site 1,2,and 3 (North, Middle, and South). Pair the recruitment probability with the coordinates and plot.
+*middle coordinate file is wrong
+```{r}
+north_coord <- read.csv("data/SiteN_xyz.txt" , header=FALSE, sep= "", col.names =  c("cell","x","y","z"))
+middle_coord <- read.csv("data/SiteM_xyz.txt" , header=FALSE, sep="", col.names =  c("cell","x","y","z"))
+south_coord <- read.csv("data/SiteS_xyz.txt" , header=FALSE, sep="", col.names =  c("cell","x","y","z"))
+
+north_rloc <- merge(r_cells_s1,north_coord,by = "cell")
+middle_rloc <- merge(r_cells_s2,middle_coord,by = "cell")
+south_rloc <- merge(r_cells_s3, south_coord,by = "cell")
+
+panel.mapplot(north_rloc$x,north_rloc$y,map,colramp, exact=TRUE)
+
+panel.mapplot(x, y, map, breaks, colramp, exact = FALSE, lwd = 0.5, ...)
+
+
+
+```
+
+The code chunk below adds all the .tif raster files for the LiDAR and displays the crs, extent, and resolution.
+```{r}
+north_DEM <- raster("LiDAR_Processed/GilaNGnd.tif")
+middle_DEM <- raster("LiDAR_Processed/GilaMGnd.tif")
+south_DEM <- raster("LiDAR_Processed/GilaSGnd.tif")
+
+crs(north)
+extent(north)
+yres(north)
+xres(north)
+maxValue(north)
+minValue(north)
+
+crs(middle)
+extent(middle)
+yres(middle)
+xres(middle)
+maxValue(middle)
+minValue(middle)
+
+crs(south)
+extent(south)
+yres(south)
+xres(south)
+maxValue(south)
+minValue(south)
+
+```
+
+Plots/maps the sites (North, Middle, and South) based on 2018 LiDAR and maps the recruitment potential.
+```{r}
+plot(north, col=greyPalette(25), main="Upper Gila North")
++plot.xy(pl)
+```
+```
+
+Plots/maps the sites (North, Middle, and South) based on 2018 LiDAR and maps the recruitment potential.
+```{r}
+plot(north, col=greyPalette(25), main="Upper Gila North")
+plot(middle, col=greyPalette(25), main="Upper Gila Middle")
+plot(south, col=greyPalette(25), main="Upper Gila South")
+```
+
+Plots/maps the sites (North, Middle, and South) based on 2018 LiDAR and maps the recruitment potential.
+```{r}
+plot(north, col=greyPalette(25), main="Upper Gila North")
+plot(middle, col=greyPalette(25), main="Upper Gila Middle")
+plot(south, col=greyPalette(25), main="Upper Gila South")
+```
+Plots that shows the topography of the sites and profiles. 
+```{r}
+cols <- colorRampPalette(brewer.pal(9,"BrBG"))
+
+levelplot(north, col.regions=cols, main="2018 LiDAR \nUpper Gila North")
+levelplot(middle, col.regions=cols, main="2018 LiDAR \nUpper Gila Middle")
+levelplot(south, col.regions=cols, main="2018 LiDAR \nUpper Gila South")
 ```
 
 ##References##
