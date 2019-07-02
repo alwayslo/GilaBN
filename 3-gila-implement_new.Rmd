@@ -442,4 +442,3 @@ example - https://stackoverflow.com/questions/34127885/bnlearn-wrong-dimensions-
 cpquery - http://www.bnlearn.com/documentation/man/cpquery.html
 
 soft/hard evidence - https://pdfs.semanticscholar.org/13f5/795c9d4075d4468131fe9405bae5ec3e3857.pdf
-

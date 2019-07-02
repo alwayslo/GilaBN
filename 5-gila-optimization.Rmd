@@ -1,0 +1,350 @@
+---
+title: Upper Gila Watershed Bayesian Network Optimization
+author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu) & Jonathan Carter Hebert
+date: 6/26/2019
+update: 7/1/2019
+output: html_notebook
+---
+
+This R notebook is used to used to optimize the BN model.
+
+###Optimization###
+```{r}
+rm(list=ls())
+
+library("bnlearn")
+library("readr")
+library("Rgraphviz")
+library("xts")
+library("prob")
+library("TTR")
+library("bigmemory")
+library("zoo")
+library("raster")
+library("sp")
+library("rgdal")
+library("rasterVis")
+library("ggplot2")
+library("rgdal")
+library("dplyr")
+library("methods")
+require("BiocGenerics")
+require("graph")
+library("maps")
+library("RColorBrewer")
+library("stats")
+library("stringi")
+
+options("scipen" = 100, "digits"=4)
+
+getwd()
+```
+
+Load and plot all flow scenarios modeled.
+```{r}
+hydro <- read.csv("data/scenarios_new.csv", skip=1,header = TRUE)
+hydro <- setNames(hydro, c("date","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+hydro$date <-as.Date(hydro$date, format="%m/%d/%Y")
+hydro$julian <- format(hydro$date, "%j")
+hydro$julian <-stri_replace_all_regex(hydro$julian, "\\b0*(\\d+)\\b", "$1")
+hydro$month <- format(hydro$date,"%m")
+```
+
+Plots the hydrologic data that is actually used in the model which is governed by the lowest minimum innundation value.
+
+Plots the mean daily flows for all four scenarios (natural,current_operations,combined_operations,combined_operations_AWSA).
+```{r}
+meanJulian <- data.frame()
+
+for (i in 1:length(unique(hydro$julian))) 
+{ julian_i <- colMeans(hydro[hydro$julian== i,2:5])
+  meanJulian <- rbind(meanJulian, julian_i)}
+
+meanJulian <- cbind( 1:length(unique(hydro$julian)),meanJulian)
+meanJulian<-setNames(meanJulian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+meanJulian<-na.omit(meanJulian)
+
+ggplot(meanJulian, aes(x=julian))+ 
+  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  geom_vline(xintercept = 92, linetype="dotted",  color = "black", size=0.5)+
+  geom_vline(xintercept = 274, linetype="dotted",  color = "black", size=0.5)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle("Upper Gila Mean Daily Flow\n April to September 1936 - 2017")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")
+
+#geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
+```
+
+```{r}
+sigma1Julian <- data.frame()
+
+for (i in 1:length(unique(hydro$julian))) 
+{ julian_i <- colMeans(hydro[hydro$julian== i,2:5])+ colStdevs(hydro[hydro$julian== i,2:5])
+  sigma1Julian <- rbind(sigma1Julian, julian_i)}
+
+sigma1Julian <- cbind( 1:length(unique(hydro$julian)),sigma1Julian)
+sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+sigma1Julian<-na.omit(sigma1Julian)
+
+ggplot(sigma1Julian, aes(x=julian))+ 
+  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle(expression(paste("Upper Gila 1", sigma, " Above Mean Daily Flow\n April to September 1936 - 2017")))+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")+
+  geom_vline(xintercept = 92, linetype="dotted",  color = "black", size=0.5)+
+  geom_vline(xintercept = 274, linetype="dotted",  color = "black", size=0.5)+
+  geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
+
+```
+
+
+```{r}
+sigma2Julian <- data.frame()
+
+for (i in 1:length(unique(hydro$julian))) 
+{ julian_i <- colMeans(hydro[hydro$julian== i,2:5])+ 2*colStdevs(hydro[hydro$julian== i,2:5])
+  sigma2Julian <- rbind(sigma2Julian, julian_i)}
+
+sigma2Julian <- cbind( 1:length(unique(hydro$julian)),sigma2Julian)
+sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+sigma2Julian<-na.omit(sigma2Julian)
+
+
+ggplot(sigma2Julian, aes(x=julian))+ 
+  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
+  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle(expression(paste("Upper Gila 2", sigma, " Above Mean Daily Flow\n April to September 1936 - 2017")))+
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_vline(xintercept = 92, linetype="dotted",  color = "black", size=0.5)+
+  geom_vline(xintercept = 274, linetype="dotted",  color = "black", size=0.5)+
+  labs(color="scenario")+
+  geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
+
+
+
+```
+
+##Histogram##
+
+Histogram of flows for each scenario (scenario 1, scenario 2, and scenario 3) for the mean, sigma1, and sigma2.
+mar=c(bottom, left, top, right)
+oma = c(bottom, left, top, right) 
+```{r}
+
+par(mfrow=c(4,3), mai = c(.25,.25,.25,.25),mar=c(4,4,.75,.5),oma = c(1,1,1,1) )
+
+hist(meanJulian$current_operations,
+     main =  expression(paste(bar(x))),
+     xlab = NULL,
+     col = "blue")
+hist(meanJulian$combined_operations,
+     main = expression(paste(bar(x))), 
+     xlab = NULL,
+     ylab = NULL,
+     col = "green")
+hist(meanJulian$combined_operations_AWSA,
+     main = expression(paste(bar(x))), 
+     xlab = NULL,
+     ylab = NULL,
+     col = "orange")
+
+hist(sigma1Julian$current_operations,
+     main = expression(paste( sigma, "=1")), 
+     xlab = NULL,
+     col = "blue")
+hist(sigma1Julian$combined_operations,
+     main = expression(paste( sigma, "=1")), 
+     xlab = NULL,
+     ylab = NULL,
+     col = "green")
+hist(sigma1Julian$combined_operations_AWSA,
+     main = expression(paste( sigma, "=1")), 
+     xlab = NULL,
+     ylab = NULL,
+     col = "orange")
+
+hist(sigma2Julian$current_operations,
+     main = expression(paste( sigma, "=2")), 
+     xlab = "flow (cfs)",
+     col = "blue")
+hist(sigma2Julian$combined_operations,
+     main = expression(paste( sigma, "=2")), 
+     xlab = "flow (cfs)",
+     ylab = NULL,
+     col = "green")
+hist(sigma2Julian$combined_operations_AWSA,
+     main = expression(paste( sigma, "=2")), 
+     xlab = "flow (cfs)",
+     ylab = NULL,
+     col = "orange")
+
+plot(3, type = "n", axes=FALSE, xlab="", ylab="")
+legend("left",
+       legend=c("current operations", "combined operations", "combined operations + AWSA"), 
+       col = c("blue","green","orange"),
+       xpd=NA, 
+       pch = c(15, 15, 15))
+
+par(mfrow=c(1,1))
+
+```
+
+Histogram of Differences 
+
+Histogram of differences for each scenario (scenario 1, scenario 2, and scenario 3) for the mean, sigma1, and sigma2.
+mar=c(bottom, left, top, right)
+oma = c(bottom, left, top, right) 
+```{r}
+
+par(mfrow=c(4,3), mai = c(.25,.25,.25,.25),mar=c(4,4,.75,.5),oma = c(1,1,1,1) )
+
+hist(meanJulian$natural - meanJulian$current_operations,
+     main =  expression(paste(bar(x))),
+     xlab = "diversion (cfs)",
+     col = "blue")
+hist(meanJulian$natural - meanJulian$combined_operations,
+     main = expression(paste(bar(x))), 
+     xlab = "diversion (cfs)",
+     ylab = NULL,
+     col = "green")
+hist(meanJulian$natural - meanJulian$combined_operations_AWSA,
+     main = expression(paste(bar(x))), 
+     xlab = "diversion (cfs)",
+     ylab = NULL,
+     col = "orange")
+
+hist(sigma1Julian$natural - sigma1Julian$current_operations,
+     main = expression(sigma),
+     xlab = "diversion (cfs)",
+     col = "blue")
+hist(sigma1Julian$natural - sigma1Julian$combined_operations,
+     main = expression(sigma), 
+     xlab = "diversion (cfs)",
+     ylab = NULL,
+     col = "green")
+hist(sigma1Julian$natural - sigma1Julian$combined_operations_AWSA,
+     main = expression(sigma), 
+     xlab = "diversion (cfs)",
+     ylab = NULL,
+     col = "orange")
+
+hist(sigma2Julian$natural - sigma2Julian$current_operations,
+     main = expression(paste(sigma,"=2")),
+     xlab = "diversion (cfs)",
+     col = "blue")
+hist(sigma2Julian$natural - sigma2Julian$combined_operations,
+     main = expression(paste(sigma,"=2")), 
+     xlab = "diversion (cfs)",
+     ylab = NULL,
+     col = "green")
+hist(sigma2Julian$natural - sigma2Julian$combined_operations_AWSA,
+     main = expression(paste(sigma,"=2")), 
+     xlab = "diversion (cfs)",
+     ylab = NULL,
+     col = "orange")
+
+plot(3, type = "n", axes=FALSE, xlab="", ylab="")
+legend("left",
+       legend=c("current operations", "combined operations", "combined operations + AWSA"), 
+       col = c("blue","green","orange"),
+       xpd=NA, 
+       pch = c(15, 15, 15))
+
+par(mfrow=c(1,1))
+
+```
+
+
+Difference Plot
+
+Difference Signal
+
+This plots the difference between each scenario and the 'natural' scenario. 
+```{r}
+ggplot(meanJulian, aes(x=julian))+ 
+  geom_line(aes(y = natural - current_operations, color = "current operations"),linetype = 1)+
+  geom_line(aes(y = natural - combined_operations, color = "combined operations"),linetype = 2)+
+  geom_line(aes(y = natural - combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  xlab("Julian day")+
+  ylab("flow (cfs)")+
+  ggtitle("Upper Gila Difference in Mean Daily Flow\n April to September 1936 - 2017")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="scenario")
+  #geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
+```
+
+
+
+
+
+###FFT (IGNORE - NOT COMPLETE)### 
+
+Computes the Discrete Fourier Transform (DFT) of an array with a fast algorithm, the “Fast Fourier Transform” (FFT) and plots the results for each scenario.
+```{r}
+
+diff_scenario1 <- abs(fft(hydro$natural - hydro$current_operations, inverse= FALSE))
+diff_scenario2 <- abs(fft(hydro$natural - hydro$combined_operations, inverse= FALSE))
+diff_scenario3 <- abs(fft(hydro$natural - hydro$combined_operations_AWSA, inverse= FALSE))
+
+plot(diff_scenario1)
+plot(diff_scenario2)
+plot(diff_scenario3)
+
+```
+
+Computes the Discrete Fourier Transform (DFT) of an array (annualized mean flow) with a fast algorithm, the “Fast Fourier Transform” (FFT) and plots the results for each scenario. meanJulian
+```{r}
+
+mj_diff_scenario1 <- fft(meanJulian$natural - meanJulian$current_operations, inverse= FALSE)
+mj_diff_scenario2 <- fft(meanJulian$natural - meanJulian$combined_operations, inverse= FALSE)
+mj_diff_scenario3 <- fft(meanJulian$natural - meanJulian$combined_operations_AWSA, inverse= FALSE)
+
+plot(mj_diff_scenario1)
+plot(mj_diff_scenario2)
+plot(mj_diff_scenario3)
+```
+
+frequence
+
+
+```{r}
+library(dplyr)
+library(useful)
+
+freq1<-data.frame(cart2pol(Re(mj_diff_scenario1), Im(mj_diff_scenario1),degrees = FALSE))
+freq1$rownumber = 1:nrow(freq1)
+
+
+freq1$koverN <- freq1$theta/(2*pi)*(1/freq1$rownumber)
+
+
+
+
+```
+
+###bandwidth###
+
+
+#References#
+
+https://stat.ethz.ch/R-manual/R-devel/library/stats/html/fft.html
+
+https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/bandwidth
+
+http://www.di.fc.ul.pt/~jpn/r/fourier/fourier.html
+
+
