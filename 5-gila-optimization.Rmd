@@ -325,14 +325,18 @@ frequence
 library(dplyr)
 library(useful)
 
-freq1<-data.frame(cart2pol(Re(mj_diff_scenario1), Im(mj_diff_scenario1),degrees = FALSE))
-freq1$rownumber = 1:nrow(freq1)
+Xk<-data.frame(cart2pol(Re(mj_diff_scenario1), Im(mj_diff_scenario1),degrees = FALSE))
+Xk$n = 1:nrow(Xk)
 
 
-freq1$koverN <- freq1$theta/(2*pi)*(1/freq1$rownumber)
+Xk$k <- Xk$theta/(2*pi)*(366/Xk$n)
 
+mj_diff_scenario1_inv <- fft(mj_diff_scenario1, inverse= TRUE)/366
+xn <-data.frame(cart2pol(Re(mj_diff_scenario1_inv), Im(mj_diff_scenario1_inv),degrees = FALSE))
+xn$n = 1:nrow(xn)
+xn$k <- xn$theta/(2*pi)*(366/xn$n)
 
-
+plot(xn$x,xn$y)
 
 ```
 
