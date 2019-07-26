@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Bayesian Network Structure
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 1/8/2019
-update: 5/3/2019
+update: 7/23/2019
 output: html_notebook
 ---
 
@@ -27,7 +27,6 @@ library("rgdal")
 library("rasterVis")
 library("ggplot2")
 library("rgdal")
-library("dplyr")
 library("methods")
 require("BiocGenerics")
 require("graph")
@@ -106,20 +105,29 @@ The conditional probability tables were developed in "1-gila-preprocessing.Rmd" 
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
-cpt_INUN = t(matrix(data = c(q_prob_natural_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
+cpt_INUN = t(matrix(data = c(q_prob_natural_discrete) , nrow = 3 , ncol = 15, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7","bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"))))
 
 cpt_RECESSION_RATE = t(matrix(data = c(rr_prob_natural_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
-cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+                           
+                           0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
                            0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
+                           
+                           0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
                            0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
+                           
+                           0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
                            0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
+                           
+                           0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,
                            0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1),
-              dim = c(2,7,5), 
+              dim = c(2,15,5), 
               dimnames =list('HYDRO'= c("LOW","HIGH"),
-                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"),
+                           'INUN' = c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7",
+                                    "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"),
                            'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5")))
   
 cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7, 0.3), 
@@ -133,20 +141,31 @@ cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
-cpt_INUN = t(matrix(data = c(q_prob_scenario1_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
+cpt_INUN = t(matrix(data = c(q_prob_scenario1_discrete) , nrow = 3 , ncol = 15, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"),
+          'INUN'=c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7","bin_8","bin_9",
+                   "bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"))))
 
 cpt_RECESSION_RATE = t(matrix(data = c(rr_prob_scenario1_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
-cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+                           
+                           0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
                            0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
+                           
+                           0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
                            0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
+                           
+                           0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
                            0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
+                           
+                           0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,
                            0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1),
-              dim = c(2,7,5), 
+              dim = c(2,15,5), 
               dimnames =list('HYDRO'= c("LOW","HIGH"),
-                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"),
+                           'INUN' = c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7",
+                                    "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"),
                            'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5")))
   
 cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7, 0.3), 
@@ -161,20 +180,31 @@ cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
-cpt_INUN = t(matrix(data = c(q_prob_scenario2_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
+cpt_INUN = t(matrix(data = c(q_prob_scenario2_discrete) , nrow = 3 , ncol = 15, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"),
+          'INUN'=c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7","bin_8","bin_9",
+                   "bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"))))
 
 cpt_RECESSION_RATE = t(matrix(data = c(rr_prob_scenario2_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
-cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+                           
+                           0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
                            0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
+                           
+                           0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
                            0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
+                           
+                           0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
                            0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
+                           
+                           0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,
                            0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1),
-              dim = c(2,7,5), 
+              dim = c(2,15,5), 
               dimnames =list('HYDRO'= c("LOW","HIGH"),
-                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"),
+                           'INUN' = c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7",
+                                    "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"),
                            'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5")))
   
 cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7, 0.3), 
@@ -188,20 +218,31 @@ cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7
 ```{r}
 upt_TIMING = matrix(data = c(0.65,.25,0.1), nrow = 1 , ncol = 3, dimnames = list(NULL,'TIMING'=c("apr_may", "jun_jul", "aug_sep")))
 
-cpt_INUN = t(matrix(data = c(q_prob_scenario3_discrete) , nrow = 3 , ncol = 7, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'INUN'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"))))
+cpt_INUN = t(matrix(data = c(q_prob_scenario3_discrete) , nrow = 3 , ncol = 15, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 
+          'INUN'=c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7","bin_8","bin_9",
+                   "bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"))))
 
 cpt_RECESSION_RATE = t(matrix(data = (rr_prob_scenario3_discrete) , nrow = 3 , ncol = 5, dimnames = list('TIMING'=c("apr_may", "jun_jul", "aug_sep"), 'RECESSION_RATE'=c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5"))))
 
 cpt_GW  = matrix(c(0.33,0.33,0.34), nrow = 1, ncol = 3, dimnames = list(NULL,c("<50cm", "50-200cm", "> 200cm")))
 
-cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+cpt_HYDRO = array(data = c(1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
+                           
+                           0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
                            0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,0.95,0.05,
+                           
+                           0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
                            0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,
+                           
+                           0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
                            0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,0.3,0.7,
+                           
+                           0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,
                            0.9,0.1, 0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1,0.9,0.1),
-              dim = c(2,7,5), 
+              dim = c(2,15,5), 
               dimnames =list('HYDRO'= c("LOW","HIGH"),
-                           'INUN' = c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7"),
+                           'INUN' = c("bin_1", "bin_2","bin_3","bin_4","bin_5","bin_6","bin_7",
+                                    "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15"),
                            'RECESSION_RATE'= c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5")))
   
 cpt_RECRUIT = array(data=c(0.5, 0.5, 0.7, 0.3, 0.5, 0.5, 0.9, 0.1, 0.5, 0.5, 0.7, 0.3), 
