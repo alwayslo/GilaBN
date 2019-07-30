@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Preprocessing
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 11/29/2018
-update: 7/23/2019
+update: 7/30/2019
 output: html_notebook
 ---
 
@@ -53,14 +53,14 @@ recessionrate_bin <- c(0,1,3,6)
 ```
 
 #### Process CUFA hydrology data ####
-The hydrologic historical data for the Gila River is located in scenario_new.csv and includes the natural, current operations, combined operations (Upper Gila + Fort West & Cliff-Gila Ditch), and combined operations + AWSA (Arizona Water Settlement Act). This code chunk loads scenario_new.csv and uses it to create a dataframe called hydro.
+The hydrologic historical data for the Gila River is located in scenario_new.csv and includes the 1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)). This code chunk loads scenario_new.csv and uses it to create a dataframe called hydro.
 ```{r}
-hydro <- read.csv("data/scenarios_new.csv", skip=1,header = TRUE)
-hydro <- setNames(hydro, c("date","natural", "current_operations","combined_operations","combined_operations+AWSA"))
+hydro <- read.csv("data/scenarios_revised.csv", skip=1,header = TRUE)
+hydro <- setNames(hydro, c("date","natural", "Alt_E","Alt_B","Alt_A"))
 hydro$date<-as.Date(hydro$date, format="%m/%d/%Y")
 ```
 
-This project includes three study sites. This code chunck adds the stage (both ft and cm) for each site based on the flowrate and previously developed regression equations for each site (1-North,2- Middle,3- South). The hydro column called must correspond with each scenario (i.e.1-natural, 2-current operations, 3-combined operations (Upper Gila + Fort West & Cliff-Gila Ditch), and 4-combined operations + AWSA (Arizona Water Settlement Act).
+This project includes three study sites. This code chunck adds the stage (both ft and cm) for each site based on the flowrate and previously developed regression equations for each site (1-North,2- Middle,3- South). The hydro column called must correspond with each scenario (i.e.1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)).
 
 North, Depth = 0.0003Q + 2
 Middle, Depth = 0.0004Q + 2.1
@@ -72,29 +72,29 @@ SPECIFY SITE
 <!-- ###Site 1### -->
 <!-- ```{r} -->
 <!-- head_conv <- data.frame(hydro$date,0.0003*hydro[2]+2, 0.0003*hydro[3]+2,0.0003*hydro[4]+2,0.0003*hydro[5]+2) -->
-<!-- head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)")) -->
+<!-- head_conv <- setNames(head_conv, c("date","natural(ft)", "Alt_E(ft)","Alt_B(ft)","Alt_A(ft)")) -->
 
 <!-- head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48) -->
-<!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)")) -->
+<!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "Alt_E(cm)","Alt_B(cm)","Alt_A(cm)")) -->
 <!-- ``` -->
 
 
 ###Site 2###
 ```{r}
 head_conv <- data.frame(hydro$date,0.0004*hydro[2]+2.1, 0.0004*hydro[3]+2.1,0.0004*hydro[4]+2.1,0.0004*hydro[5]+2.1)
-head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)"))
+head_conv <- setNames(head_conv, c("date","natural(ft)", "Alt_E(ft)","Alt_B(ft)","Alt_A(ft)"))
 
 head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48)
-head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)"))
+head_cm <- setNames(head_cm,c("date","natural(cm)", "Alt_E(cm)","Alt_B(cm)","Alt_A(cm)"))
 ```
 
 <!-- ###Site 3### -->
 <!-- ```{r} -->
 <!-- head_conv <- data.frame(hydro[1],0.0003*hydro[2]+1.2, 0.0003*hydro[3]+1.2,0.0003*hydro[4]+1.2,0.0003*hydro[5]+1.2) -->
-<!-- head_conv <- setNames(head_conv, c("date","natural(ft)", "current_operations(ft)","combined_operations(ft)","combined_operations+AWSA(ft)")) -->
+<!-- head_conv <- setNames(head_conv, c("date","natural(ft)", "Alt_E(ft)","Alt_B(ft)","Alt_A(ft)")) -->
 
 <!-- head_cm <- data.frame(hydro$date,head_conv[2]*30.48,head_conv[3]*30.48,head_conv[4]*30.48,head_conv[5]*30.48) -->
-<!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "current_operations(cm)","combined_operations(cm)","combined_operations+AWSA(cm)")) -->
+<!-- head_cm <- setNames(head_cm,c("date","natural(cm)", "Alt_E(cm)","Alt_B(cm)","Alt_A(cm)")) -->
 <!-- ``` -->
 
 #### Calculate recession rates ####
@@ -114,9 +114,9 @@ for (i in 1:(nrow(head_cm)))
 recessionrate_14d <- cbind(hydro[,1],recessionrate_14d)
 recessionrate_14d <- setNames(recessionrate_14d,c("date",
                                                   "natural(cm/d)",
-                                                  "current_operations(cm/d)",
-                                                  "combined_operations(cm/d)",
-                                                  "combined_operations+AWSA(cm/d)"))
+                                                  "Alt_E(cm/d)",
+                                                  "Alt_B(cm/d)",
+                                                  "Alt_A(cm/d)"))
 recessionrate_14d<-na.omit(recessionrate_14d)
 ```
 
@@ -164,7 +164,7 @@ rr_14d_prob_yr <-rbind(rr_14d_prob_yr, (cbind(length(which(rr_14d_bin$rr_bin_1_s
                                        length(which(rr_14d_bin$rr_bin_5_scenario3))/length(rr_14d_bin$rr_bin_5_scenario3))))
 
 colnames(rr_14d_prob_yr) <- c("recessionrate_bin_1","recessionrate_bin_2", "recessionrate_bin_3","recessionrate_bin_4","recessionrate_bin_5")
-rownames(rr_14d_prob_yr) <- c("natural(cm/d)","current_operations(cm/d)", "combined_operations(cm/d)", "combined_operations+AWSA(cm/d)")
+rownames(rr_14d_prob_yr) <- c("natural(cm/d)","Alt_E(cm/d)", "Alt_B(cm/d)", "Alt_A(cm/d)")
 rr_14d_prob_yr <- rr_14d_prob_yr/rowSums(rr_14d_prob_yr)
 ```
 
@@ -299,7 +299,7 @@ rr_prob_scenario3_discrete <- rr_prob_scenario3_discrete/rowSums(rr_prob_scenari
 #### Process Q-model bins ####
 Establishes model q-bins and calculates the probability of discharge range for any given entire year and discrete time state (April-May, June-July, August-September).Model Q-bins were origninal selected so that inundation areas increased by less than 15% between the discharge associated with each bin (i.e. 1000 cfs, 1500 cfs, 2000 cfs, 2500 cfs, 3000 cfs, 3500 cfs, 4000 cfs). The number of bins were then increased based on a frequency analysis adding 8 more bins for a total of 15 bins (i.e.200 cfs,225 cfs,250 cfs,275 cfs,300 cfs,350 cfs,400 cfs,500 cfs,1000 cfs, 1500 cfs, 2000 cfs, 2500 cfs, 3000 cfs, 3500 cfs, 4000 cfs).
 
-Calculates the annual probability of a bin flood event occuring for all four flow scenarios(i.e.1-natural, 2-current operations, 3-combined operations (Upper Gila + Fort West & Cliff-Gila Ditch), and 4-combined operations + AWSA (Arizona Water Settlement Act).
+Calculates the annual probability of a bin flood event occuring for all four flow scenarios(i.e.1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)).
 ```{r}
 q_bin_natural <-cbind.data.frame(hydro$date,
               q_bin_0 <- hydro[,2]< q_bin[1],
@@ -466,7 +466,7 @@ colnames(q_prob_scenario3_yr) <- c("q_bin_1", "q_bin_2","q_bin_3","q_bin_4","q_b
 row.names(q_prob_scenario3_yr) <- c("q_prob")
 
 q_prob_yr <- rbind(q_prob_natural_yr,q_prob_scenario2_yr,q_prob_scenario2_yr,q_prob_scenario3_yr)
-row.names(q_prob_yr) <- c("natural", "current_operations", "combined_operations", "scenario3")
+row.names(q_prob_yr) <- c("natural", "Alt_E", "Alt_B", "scenario3")
 q_prob_yr <- q_prob_yr/rowSums(q_prob_yr)
 ```
 

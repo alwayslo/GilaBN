@@ -1,0 +1,336 @@
+---
+title: "Raster Demo - Raster 00 01 02"
+output: html_notebook
+---
+Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
+
+September 28,2017 
+
+The following is a series of tutorials presented by NEON Data Skills and can be accessed at http://neondataskills.org/tutorial-series/raster-data-series/
+
+This first code chunck installs all the necessary packages to execute the raster exersices.
+
+```{r}
+library("raster")
+library("rgdal")
+library("rasterVis")
+library("ggplot2")
+```
+
+Sets working directory
+```{r}
+setwd("/Users/lohebert/Documents/Research/Peralta Canyon/BN/Raster Demo")
+```
+
+##Raster 00: Intro to Raster Data in R##
+Authors: Leah A. Wasser, Megan A. Jones, Zack Brym, Kristina Riemer, Jason Williams, Jeff Hollister, Mike Smorul
+
+In this tutorial, we will review the fundamental principles, packages and metadata/raster attributes that are needed to work with raster data in R. We discuss the three core metadata elements that we need to understand to work with rasters in R: CRS, extent and resolution. It also explores missing and bad data values as stored in a raster and how R handles these elements. Finally, it introduces the GeoTiff file format.
+
+GeoTiffs (denoted: .tif) can store a variety of information including:
+1.A Coordinate Reference System (CRS)
+2.Spatial Extent (extent)
+3.Values that represent missing data (NoDataValue)
+4.The resolution of the data
+
+This code chunck loads the raster and names it DSM_HARV (Digital Surface Model), views the raster structure, and plots the raster.
+```{r}
+DSM_HARV<-raster("NEON-DS-Airborne-Remote-Sensing/HARV/DSM/HARV_dsmCrop.tif")
+DSM_HARV
+plot(DSM_HARV, main="NEON Digital Surface Model\nHarvard Forest")
+```
+
+This code chunk views the rasters CRS (Coordinate Reference System) string and assigns it to an object in r for potential reprojection and other tasks. 
+```{r}
+crs(DSM_HARV)
+myCRS <- crs(DSM_HARV)
+myCRS
+```
+
+*Extent and Resolution*
+The spatial extent (includes points, lines, and polygons) is the geographic area that the raster data covers.
+
+A raster has horizontal (x and y) resolution. This resolution represents the area on the ground that each pixel covers. The units for our data are in meters. Given our data resolution is 1 x 1, this means that each pixel represents a 1 x 1 meter area on the ground.
+
+resolution  : 1, 1  (x, y)
+extent      : 731453, 733150, 4712471, 4713838  (xmin, xmax, ymin, ymax)
+
+Raster statistics are often calculated and embedded in a geotiff for us. However if they weren’t already calculated, we can calculate them using the setMinMax() function. This code chunck calculates the min/max value and views the min value and max value, which for this data set represent elevation.
+```{r}
+DSM_HARV <- setMinMax(DSM_HARV) 
+
+minValue(DSM_HARV)
+maxValue(DSM_HARV)
+```
+
+*No Data Values and Bad Data Values*
+The assigned NoDataValue varies across disciplines; -9999 is a common value used in both the remote sensing field and the atmospheric fields. It is also the standard used by the National Ecological Observatory Network (NEON).
+
+If we are lucky, our GeoTIFF file has a tag that tells us what is the NoDataValue. If we are less lucky, we can find that information in the raster’s metadata. If a NoDataValue was stored in the GeoTIFF tag, when R opens up the raster, it will assign each instance of the value to NA. Values of NA will be ignored by R as demonstrated above.
+
+If NoDataValue cells have been assigned, R doesn’t render pixels that contain a specified NoDataValue. R assigns missing data with the NoDataValue as NA.
+
+Bad data values are different from NoDataValues. Bad data values are values that fall outside of the applicable range of a dataset. Sometimes a raster’s metadata will tell us the range of expected values for a raster. Values outside of this range are suspect and we need to consider than when we analyze the data. Sometimes, we need to use some common sense and scientific insight as we examine the data - just as we would for field data to identify questionable values.
+
+This code chunk produces a sample histogram for our raster.Note: a warning message is thrown when R creates the histogram.This warning is caused by the default maximum pixels value of 100,000 associated with the hist function. This maximum value is to ensure processing efficiency as our data become larger!
+
+We can define the max pixels to ensure that all pixel values are included in the histogram. USE THIS WITH CAUTION as forcing R to plot all pixel values in a histogram can be problematic when dealing with very large datasets.
+```{r}
+hist(DSM_HARV,main="Distribution of Digital Surface Model Values\n Histogram Default: 100,000 pixels\n NEON Harvard Forest", xlab="DSM Elevation Value (m)", ylab="Frequency", col="orange")
+
+
+```
+
+This code chunch displaces the number of pixels (cells) in the raster and produces a histogram with all the cells in the raster.
+```{r}
+
+ncell(DSM_HARV)
+
+hist(DSM_HARV, 
+     maxpixels=ncell(DSM_HARV),
+     main="Distribution of DSM Values\n All Pixel Values Included\n NEON Harvard Forest Field Site",
+     xlab="DSM Elevation Value (m)",
+     ylab="Frequency",
+     col="yellow")
+```
+
+*Raster Bands*
+The Digital Surface Model object (DSM_HARV) that we’ve been working with is a single band raster. This means that there is only one dataset stored in the raster: surface elevation in meters for one time period.
+
+A raster dataset can contain one or more bands. We can use the raster() function to import one single band from a single OR multi-band raster. We can view the number of bands in a raster using the nlayers() function. 
+
+This code chunk determins the number raster bands (layers) and displace the raster file attributes.
+```{r}
+nlayers(DSM_HARV)
+GDALinfo("NEON-DS-Airborne-Remote-Sensing/HARV/DSM/HARV_dsmCrop.tif")
+```
+##Raster 01: Plot Raster Data in R##
+Authors: Leah A. Wasser, Megan A. Jones, Zack Brym, Kristina Riemer, Jason Williams, Jeff Hollister, Mike Smorul
+
+The code chunk below plots the raster histogram with user-defined breaks and displaying the points of the breaks and the counts for each bin.
+```{r}
+DSMhist<-hist(DSM_HARV,
+     breaks=6,
+     main="Histogram Digital Surface Model\n NEON Harvard Forest Field Site",
+     col="lightblue",  # changes bin color
+     xlab= "Elevation (m)")  # label the x-axis
+
+
+DSMhist$breaks
+
+DSMhist$counts
+
+(maxValue(DSM_HARV)-minValue(DSM_HARV))/6
+
+seq(305,417,18.5)
+```
+Below plots the raster data using the user-defined breaks. Inorder to display the legend with the cell elevation values, the breaks must be specified. The color pallete options can be specified with predetermined color palettes in r and you can set up your own color pallete to be changed with ease. Lables can be added using xlab and ylab. Labels and axes can be turned off using 'axes=FALSE'.
+```{r}
+
+myColors <- topo.colors(6)
+
+plot(DSM_HARV, 
+     breaks = c(300,320,340,360,380,400,420), 
+     col = myColors,
+     main="Digital Surface Model (DSM)\n NEON Harvard Forest Field Site",
+     xlab = "UTM Westing Coordinate (m)", 
+     ylab = "UTM Northing Coordinate (m)")
+```
+
+
+```{r}
+myColors <- topo.colors(6)
+
+plot(DSM_HARV, 
+     breaks = c(305.0,323.5,342.0,360.5,379.0,397.5,416.0), 
+     col = myColors,
+     main="Digital Surface Model (DSM)\n NEON Harvard Forest Field Site",
+     xlab = "UTM Westing Coordinate (m)", 
+     ylab = "UTM Northing Coordinate (m)")
+```
+
+We can layer raster on top of a hillshade raster for the same area, and use a transparency factor to created a 3-dimensional shaded effect. A hillshade is a raster that maps the shadows and texture that you would see from above when viewing terrain.
+
+The code chunk below imports DSM hillshade and plots hillshade using a grayscale color ramp that looks like shadows.
+```{r}
+DSM_hill_HARV <- 
+  raster("NEON-DS-Airborne-Remote-Sensing/HARV/DSM/HARV_DSMhill.tif")
+  
+plot(DSM_hill_HARV,
+    col=gray(1:100/100),
+    legend=FALSE,
+    main="Hillshade - DSM\n NEON Harvard Forest Field Site",
+    axes=FALSE)
+```
+
+The code chunck below plots hillshade using the a grey color ramp and adds the DSM (Digital Surface Model) to the top of the hill shade. Alpha adjusts the transparency, add=T builds on the current plot.
+```{r}
+
+plot(DSM_hill_HARV,
+    col=grey(1:100/100),  #create a color ramp of grey colors
+    legend=F,
+    main="DSM with Hillshade \n NEON Harvard Forest Field Site",
+    axes=FALSE)
+
+
+plot(DSM_HARV,
+     col=topo.colors(100),
+     alpha=0.5,
+     add=T,
+     legend=T)
+```
+
+*Create a Digital Terrain Model DTM for SJER*
+
+```{r}
+DTM_SJERhill <- raster("NEON-DS-Airborne-Remote-Sensing/SJER/DTM/SJER_dtmHill.tif")
+
+DTM_SJER<-raster("NEON-DS-Airborne-Remote-Sensing/SJER/DTM/SJER_dtmCrop.tif")
+
+plot(DTM_SJERhill, col=grey(1:100/100),legend=FALSE,main="DTM SJER",axes=TRUE)
+
+plot(DTM_SJER,
+     col=terrain.colors(100),
+     alpha=0.5,
+     add=T,
+     legend=T)
+```
+```{r}
+DSM_SJERhill <- raster("NEON-DS-Airborne-Remote-Sensing/SJER/DSM/SJER_dsmHill.tif")
+
+DSM_SJER<-raster("NEON-DS-Airborne-Remote-Sensing/SJER/DSM/SJER_dsmCrop.tif")
+
+plot(DSM_SJERhill, col=grey(1:100/100),legend=FALSE,main="DSM SJER",axes=TRUE)
+
+plot(DSM_SJER,
+     col=terrain.colors(100),
+     alpha=0.5,
+     add=T,
+     legend=T)
+```
+##Raster 02: When Rasters Don't Line Up - Reproject Raster Data in R##
+Authors: Leah A. Wasser, Megan A. Jones, Zack Brym, Kristina Riemer, Jason Williams, Jeff Hollister, Mike Smorul
+
+Sometimes we encounter raster datasets that do not “line up” when plotted or analyzed. Rasters that don’t line up are most often in different Coordinate Reference Systems (CRS).
+
+This tutorial explains how to deal with rasters in different, known CRSs. It will walk though reprojecting rasters in R using the projectRaster() function in the raster package.
+
+This code chunk loads a (Digital Terrain Model) DTM raster file and it's hillshade file and plots them on top of eachother. Note the hillshade plotted, but not the DTM.
+```{r}
+DTM_HARV <- raster("NEON-DS-Airborne-Remote-Sensing/HARV/DTM/HARV_dtmCrop.tif")
+DTM_hill_HARV <- 
+  raster("NEON-DS-Airborne-Remote-Sensing/HARV/DTM/HARV_DTMhill_WGS84.tif")
+
+plot(DTM_hill_HARV,
+    col=grey(1:100/100),
+    legend=FALSE,
+    main="DTM Hillshade\n NEON Harvard Forest Field Site")
+
+plot(DTM_HARV,
+     col=topo.colors(10),
+     alpha=0.6,
+     add=TRUE,
+     legend=FALSE)
+```
+
+Checking the DTM
+```{r}
+plot(DTM_HARV,
+     col=terrain.colors(10),
+     alpha=1,
+     legend=F,
+     main="Digital Terrain Model\n NEON Harvard Forest Field Site")
+```
+Our DTM seems to contain data and plots just fine. Let’s next check the Coordinate Reference System (CRS) and compare it to our hillshade.
+
+```{r}
+crs(DTM_HARV)
+crs(DTM_hill_HARV)
+```
+Aha! DTM_HARV is in the UTM projection. DTM_hill_HARV is in Geographic WGS84 - which is represented by latitude and longitude values. Because the two rasters are in different CRSs, they don’t line up when plotted in R. We need to reproject DTM_hill_HARV into the UTM CRS. Alternatively, we could project DTM_HARV into WGS84.
+
+*Reprojection*
+We can use the projectRaster function to reproject a raster into a new CRS. Keep in mind that reprojection only works when you first have a defined CRS for the raster object that you want to reproject. It cannot be used if no CRS is defined. Lucky for us, the DTM_hill_HARV has a defined CRS.
+
+Data Tip: When we reproject a raster, we move it from one “grid” to another. Thus, we are modifying the data! Keep this in mind as we work with raster data.
+
+To use the projectRaster function, we need to define two things:
+1.the object we want to reproject and
+2.the CRS that we want to reproject it to.
+
+The syntax is projectRaster(RasterObject,crs=CRSToReprojectTo)
+We want the CRS of our hillshade to match the DTM_HARV raster. We can thus assign the CRS of our DTM_HARV to our hillshade within the projectRaster() function as follows: crs=crs(DTM_HARV).
+
+This code chunk reprojects DTM_hill_HARV to the crs (Coordinate Reference System) of DTM_HARV.Then displays the crs and extent for DTM_hill_UTMZ18N_HARV and DTM_hill_HARV.
+```{r}
+DTM_hill_UTMZ18N_HARV <- projectRaster(DTM_hill_HARV,crs=crs(DTM_HARV))
+
+crs(DTM_hill_UTMZ18N_HARV)
+crs(DTM_hill_HARV)
+
+extent(DTM_hill_UTMZ18N_HARV)
+extent(DTM_hill_HARV)
+```
+*Raster Resolution*
+We can compare the resoultion for the hillshade and DTM. Below we can see that the resolution of the hillshade is less than 1x1 as its suppose to be. When reprojecting we can specify the resolution requirement. 
+```{r}
+res(DTM_hill_UTMZ18N_HARV)
+res(DTM_HARV)
+
+DTM_hill_UTMZ18N_HARV <- projectRaster(DTM_hill_HARV, 
+                                  crs=crs(DTM_HARV),
+                                  res=1)
+
+res(DTM_hill_UTMZ18N_HARV)
+```
+
+Now we can plot our reprojected hillshade and overlay the DTM_HARV.
+
+```{r}
+plot(DTM_hill_UTMZ18N_HARV,
+    col=grey(1:100/100),
+    legend=F,
+    main="DTM with Hillshade\n NEON Harvard Forest Field Site")
+
+
+plot(DTM_HARV,
+     col=topo.colors(100),
+     alpha=0.4,
+     add=T,
+     legend=T)
+```
+
+*Reproject, then Plot a Digital Terrain Model*
+
+Create a map of the San Joaquin Experimental Range field site using the SJER_DSMhill_WGS84.tif and SJER_dsmCrop.tif files.
+```{r}
+crs(DSM_SJER)
+
+DSM_SJERhill_84 <-raster("NEON-DS-Airborne-Remote-Sensing/SJER/DSM/SJER_DSMhill_WGS84.tif")
+crs(DSM_SJERhill_84)
+
+DSM_SJERhill_84<-projectRaster(DSM_SJERhill_84,crs=crs(DSM_SJER),res=1)
+crs(DSM_SJERhill_84)
+res(DSM_SJERhill_84)
+
+plot(DSM_SJERhill_84,
+    col=grey(1:100/100),
+    legend=F,
+    main="DSM with Hillshade\n NEON San Joaquin Experimental Range Field Site")
+
+plot(DSM_SJER,
+     col=rainbow(100),
+     alpha=0.5,
+     add=T,
+     legend=T)
+```
+
+##R Notebook##
+ 
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*.

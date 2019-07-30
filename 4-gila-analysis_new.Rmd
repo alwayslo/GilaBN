@@ -38,8 +38,8 @@ getwd()
 
 Load and plot all flow scenarios modeled.
 ```{r}
-hydro <- read.csv("data/scenarios_new.csv", skip=1,header = TRUE)
-hydro <- setNames(hydro, c("date","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+hydro <- read.csv("data/scenarios_revised.csv", skip=1,header = TRUE)
+hydro <- setNames(hydro, c("date","natural", "Alt. E","Alt. B","Alt. A"))
 hydro$date <-as.Date(hydro$date, format="%m/%d/%Y")
 hydro$julian <- format(hydro$date, "%j")
 hydro$julian <-stri_replace_all_regex(hydro$julian, "\\b0*(\\d+)\\b", "$1")
@@ -57,14 +57,14 @@ for (i in 1:length(unique(hydro$julian)))
   meanJulian <- rbind(meanJulian, julian_i)}
 
 meanJulian <- cbind( 1:length(unique(hydro$julian)),meanJulian)
-meanJulian<-setNames(meanJulian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+meanJulian<-setNames(meanJulian, c("julian","natural", "Alt. E","Alt. B","Alt. A"))
 meanJulian<-na.omit(meanJulian)
 
 ggplot(meanJulian, aes(x=julian))+ 
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
-  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
-  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  geom_line(aes(y = current_operations, color = "Alt. A"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "Alt. B"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "Alt. A"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle("Upper Gila Mean Daily Flow\n April to September 1936 - 2017")+
@@ -88,14 +88,14 @@ for (i in 1:length(unique(hydro$julian)))
   sigma1Julian <- rbind(sigma1Julian, julian_i)}
 
 sigma1Julian <- cbind( 1:length(unique(hydro$julian)),sigma1Julian)
-sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "Alt. E","Alt. B","Alt. A"))
 sigma1Julian<-na.omit(sigma1Julian)
 
 ggplot(sigma1Julian, aes(x=julian))+ 
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
-  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
-  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  geom_line(aes(y = current_operations, color = "Alt. A"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "Alt. B"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "Alt. A"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle("Upper Gila Standard Deviation Above Mean Daily Flow\n April to September 1936 - 2017")+
@@ -117,14 +117,14 @@ for (i in 1:length(unique(hydro$julian)))
   sigma2Julian <- rbind(sigma2Julian, julian_i)}
 
 sigma2Julian <- cbind( 1:length(unique(hydro$julian)),sigma2Julian)
-sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "Alt. E","Alt. B","Alt. A"))
 sigma2Julian<-na.omit(sigma2Julian)
 
 ggplot(sigma2Julian, aes(x=julian))+ 
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
-  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
-  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  geom_line(aes(y = current_operations, color = "Alt. A"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "Alt. B"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "Alt. A"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle("Upper Gila Two Standard Deviations Above Mean Daily Flow\n April to September 1936 - 2017")+
@@ -149,15 +149,15 @@ for (i in 1:length(unique(scenario3HI$julian)))
   mean_qHI <- rbind(mean_qHI, julian_i)}
 
 mean_qHI <- cbind( 1:length(unique(scenario3HI$julian)),mean_qHI)
-mean_qHI<-setNames(mean_qHI, c("julian","natural", "current_operations","combined_operations","combined_operations_AWSA"))
+mean_qHI<-setNames(mean_qHI, c("julian","natural", "Alt. E","Alt. B","Alt. A"))
 mean_qHI<-na.omit(mean_qHI)
 
 
 ggplot(mean_naturalHI, aes(x=julian))+ 
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
-  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
-  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  geom_line(aes(y = current_operations, color = "Alt. A"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "Alt. B"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "Alt. A"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle("Upper Gila Mean Daily Flow\n April to September 1936 - 2017")+
@@ -171,7 +171,7 @@ ggplot(mean_naturalHI, aes(x=julian))+
 Plots mean daily divert flow by scenario and calculates the total volume of diverted flow in acre-ft/year. 
 ```{r}
 q_diff <- cbind(hydro$julian, hydro[2]-hydro[3],hydro[2]-hydro[4],hydro[2]-hydro[5])
-q_diff <- setNames(q_diff, c("julian", "current_operations","combined_operations","combined_operations_AWSA"))
+q_diff <- setNames(q_diff, c("julian", "Alt. E","Alt. B","Alt. A"))
 
 meanJulianDiff <- data.frame()
 
@@ -180,13 +180,13 @@ for (i in 1:length(unique(q_diff$julian)))
   meanJulianDiff <- rbind(meanJulianDiff, julian_i)}
 
 meanJulianDiff <- cbind( 1:length(unique(q_diff$julian)),meanJulianDiff)
-meanJulianDiff<-setNames(meanJulianDiff, c("julian", "current_operations","combined_operations","combined_operations_AWSA"))
+meanJulianDiff<-setNames(meanJulianDiff, c("julian", "Alt. E","Alt. B","Alt. A"))
 meanJulianDiff<-na.omit(meanJulianDiff)
 
 ggplot(meanJulianDiff, aes(x=julian))+ 
-  geom_line(aes(y = current_operations, color = "current operations"),linetype = 1)+
-  geom_line(aes(y = combined_operations, color = "combined operations"),linetype = 2)+
-  geom_line(aes(y = combined_operations_AWSA, color = "combined operations & AWSA"),linetype = 4)+
+  geom_line(aes(y = current_operations, color = "Alt. A"),linetype = 1)+
+  geom_line(aes(y = combined_operations, color = "Alt. B"),linetype = 2)+
+  geom_line(aes(y = combined_operations_AWSA, color = "Alt. A"),linetype = 4)+
   geom_vline(xintercept = 92, linetype="dotted",  color = "black", size=0.5)+
   geom_vline(xintercept = 274, linetype="dotted",  color = "black", size=0.5)+
   xlab("Julian day")+
@@ -216,7 +216,7 @@ r_cells_scenario3_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_
 
 r_cells_s1 <- data.frame(cbind(r_cells_natural_s1[,1],r_cells_natural_s1[,5],r_cells_scenario1_s1[,5],r_cells_scenario2_s1[,5],
                                r_cells_scenario3_s1[,5]))
-colnames(r_cells_s1) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
+colnames(r_cells_s1) <- c("cell","natural","Alt. E","Alt. B","Alt. A")
 
 r_prob_natural_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s1_recruit_prob.csv", header=TRUE, sep=",")
 r_prob_scenario1_s1 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s1_recruit_prob.csv", header=TRUE, sep=",")
@@ -224,7 +224,7 @@ r_prob_scenario2_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s
 r_prob_scenario3_s1 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s1_recruit_prob.csv", header=TRUE, sep=",")
 
 r_prob_s1 <- cbind(r_prob_natural_s1[,2], r_prob_scenario1_s1[,2],r_prob_scenario2_s1[,2],r_prob_scenario3_s1[,2])
-colnames(r_prob_s1)<- c("natural","current_operations","combined_operations","combined_operations_AWSA")  
+colnames(r_prob_s1)<- c("natural","Alt. E","Alt. B","Alt. A")  
 rownames(r_prob_s1)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7")
 
 ```
@@ -243,7 +243,7 @@ r_cells_scenario3_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_
 
 r_cells_s2 <- data.frame(cbind(r_cells_natural_s2[,1],r_cells_natural_s2[,5],r_cells_scenario1_s2[,5],r_cells_scenario2_s2[,5],
                                r_cells_scenario3_s2[,5]))
-colnames(r_cells_s2) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
+colnames(r_cells_s2) <- c("cell","natural","Alt. E","Alt. B","Alt. A")
 
 r_prob_natural_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s2_recruit_prob.csv", header=TRUE, sep=",")
 r_prob_scenario1_s2 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s2_recruit_prob.csv", header=TRUE, sep=",")
@@ -251,7 +251,7 @@ r_prob_scenario2_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s
 r_prob_scenario3_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s2_recruit_prob.csv", header=TRUE, sep=",")
 
 r_prob_s2 <- cbind(r_prob_natural_s2[,2], r_prob_scenario1_s2[,2],r_prob_scenario2_s2[,2],r_prob_scenario3_s2[,2])
-colnames(r_prob_s2)<- c("natural","current_operations","combined_operations","combined_operations_AWSA")  
+colnames(r_prob_s2)<- c("natural","Alt. E","Alt. B","Alt. A")  
 rownames(r_prob_s2)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7")
 
 ```
@@ -269,7 +269,7 @@ r_cells_scenario3_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_
 
 r_cells_s3 <- data.frame(cbind(r_cells_natural_s3[,1],r_cells_natural_s3[,5], r_cells_scenario1_s3[,5],r_cells_scenario2_s3[,5],
                                r_cells_scenario3_s3[,5]))
-colnames(r_cells_s3) <- c("cell","natural","current_operations","combined_operations","combined_operations_AWSA")
+colnames(r_cells_s3) <- c("cell","natural","Alt. E","Alt. B","Alt. A")
 
 r_prob_natural_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s3_recruit_prob.csv", header=TRUE, sep=",")
 r_prob_scenario1_s3 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s3_recruit_prob.csv", header=TRUE, sep=",")
@@ -277,7 +277,7 @@ r_prob_scenario2_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s
 r_prob_scenario3_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s3_recruit_prob.csv", header=TRUE, sep=",")
 
 r_prob_s3 <- cbind(r_prob_natural_s3[,2], r_prob_scenario1_s3[,2],r_prob_scenario2_s3[,2],r_prob_scenario3_s3[,2])
-colnames(r_prob_s3)<- c("natural","current_operations","combined_operations","combined_operations_AWSA")  
+colnames(r_prob_s3)<- c("natural","Alt. E","Alt. B","Alt. A")  
 rownames(r_prob_s3)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7")
 ```
 

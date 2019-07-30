@@ -1,0 +1,392 @@
+---
+title: "Raster Demo - Raster 05, 06, 07 "
+output: html_notebook
+---
+Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
+
+October 2, 2017 (finished October 5,2017)
+
+The following is a series of tutorials presented by NEON Data Skills and can be accessed at http://neondataskills.org/tutorial-series/raster-data-series/
+
+This first code chunck installs all the necessary packages to execute the raster exersices.
+
+```{r}
+rm(list=ls())
+library("raster")
+library("rgdal")
+library("rasterVis")
+library("ggplot2")
+```
+
+Sets working directory
+```{r}
+setwd("/Users/lohebert/Documents/Research/Peralta Canyon/BN/Raster Demo")
+```
+##Raster 05: Raster Time Series Data in R##
+Authors: Leah A. Wasser, Megan A. Jones, Zack Brym, Kristina Riemer, Jason Williams, Jeff Hollister, Mike Smorul
+
+The code chunk below adds all the .tif raster files for the NDVI, combines them into a single object and displays the crs, extent, and resolution.
+```{r}
+a <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/005_HARV_ndvi_crop.tif")
+b <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/037_HARV_ndvi_crop.tif")
+c <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/085_HARV_ndvi_crop.tif")
+d <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/133_HARV_ndvi_crop.tif")
+e <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/181_HARV_ndvi_crop.tif")
+f <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/197_HARV_ndvi_crop.tif")
+g <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/213_HARV_ndvi_crop.tif")
+h <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/229_HARV_ndvi_crop.tif")
+i <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/245_HARV_ndvi_crop.tif")
+j <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/261_HARV_ndvi_crop.tif")
+k <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/277_HARV_ndvi_crop.tif")
+l <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/293_HARV_ndvi_crop.tif")
+m <- raster("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/NDVI/309_HARV_ndvi_crop.tif")
+
+all_NDVI_HARV <- c(a,b,c,d,e,f,g,h,i,j,k,l,m)
+
+NDVI_HARV_stack <- stack(all_NDVI_HARV)
+crs(NDVI_HARV_stack)
+extent(NDVI_HARV_stack)
+yres(NDVI_HARV_stack)
+xres(NDVI_HARV_stack)
+maxValue(NDVI_HARV_stack)
+minValue(NDVI_HARV_stack)
+```
+We can use the plot() command to quickly plot a RasterStack.zlim specifies the range of values displayed in the plot and  nc specified the number of columns for the plots. The first plot is based on tutorial established values. The second series of plots are based on viewing the maxValue and minValue for all the rasters in the stack (returned in code chunk above).
+```{r}
+plot(NDVI_HARV_stack, 
+     zlim = c(1500, 10000), 
+     nc = 5)
+
+plot(NDVI_HARV_stack, 
+     zlim = c(350, 9250), 
+     nc = 5)
+
+```
+
+*Scale Factor*
+The graphs above are specified at a scale of 10,000 (as stated by the metadata), this is done sometimes to reduce file size.This can be corrected using raster math.
+
+```{r}
+
+NDVI_HARV_stack <- NDVI_HARV_stack/10000
+maxValue(NDVI_HARV_stack)
+minValue(NDVI_HARV_stack)
+
+plot(NDVI_HARV_stack,
+     zlim = c(.01, 1),  
+     nc = 5)
+```
+
+We can view the histograms for each raster using the code chunk below.
+```{r}
+histogram(NDVI_HARV_stack)
+```
+
+```{r}
+names(NDVI_HARV_stack)
+```
+
+The code chunk below looks at RGB .tif files for 4 Julian Days. This can be used to understand variances or annomalies in NDVI. When plotting RGB you can use stretch="hist" or "lin".
+```{r}
+Julian277_RGB_HARV<-stack("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/RGB/277_HARV_landRGB.tif")
+Julian293_RGB_HARV<-stack("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/RGB/293_HARV_landRGB.tif")
+Julian133_RGB_HARV<-stack("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/RGB/133_HARV_landRGB.tif")
+Julian197_RGB_HARV<-stack("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/RGB/197_HARV_landRGB.tif")
+
+all_RGB_HARV<- stack(Julian133_RGB_HARV,Julian197_RGB_HARV,Julian293_RGB_HARV,Julian277_RGB_HARV)
+
+par(mfrow=c(2,2))
+
+plotRGB(Julian133_RGB_HARV,  stretch="lin")
+plotRGB(Julian197_RGB_HARV, stretch="lin")
+plotRGB(Julian293_RGB_HARV, stretch="lin")
+plotRGB(Julian277_RGB_HARV, stretch="lin")
+
+par(mfrow=c(1,1))
+```
+
+##Raster 06:  Plot Raster Time Series Data in R Using RasterVis and Levelplot##
+Authors: Leah A. Wasser, Megan A. Jones, Zack Brym, Kristina Riemer, Jason Williams, Jeff Hollister, Mike Smorul
+
+levelplot from the from the rasterVis package makes the NDVI plots more readable and comparable as shown below. We can also use the function gsub to modify the file names to more understandable attribute names for the plots.
+
+The list of color ramps available in r are listed here: http://www.datavis.ca/sasmac/brewerpal.html
+```{r}
+cols <- colorRampPalette(brewer.pal(9,"BrBG"))
+
+names(NDVI_HARV_stack)
+rasterNames  <- gsub("X","Day ", names(NDVI_HARV_stack))
+rasterNames  <- gsub("_HARV_ndvi_crop","",rasterNames)
+rasterNames
+
+levelplot(NDVI_HARV_stack,
+          layout=c(5, 3), 
+          col.regions=cols,
+          main="Landsat NDVI - Julian Days \nHarvard Forest 2011",
+          names.attr=rasterNames,
+          scales=list(draw=F )) 
+
+```
+
+**Raster 07: Extract NDVI Summary Values from a Raster Time Series**
+Authors: Leah A. Wasser, Megan A. Jones, Zack Brym, Kristina Riemer, Jason Williams, Jeff Hollister, Mike Smorul
+
+In this tutorial, we will extract NDVI values from a raster time series dataset in R and plot them using ggplot. Below calculates the mean NDVI for each raster in the user-defined stack using using cellStats and as.data.frame. The code chunk below creates a data frame of the average NDVI values for the raster stack and calls the value from row n column n.
+```{r}
+avg_NDVI_HARV <- as.data.frame(cellStats(NDVI_HARV_stack,mean))
+
+avg_NDVI_HARV
+
+avg_NDVI_HARV[1,1]
+```
+
+The data frame name column can be renamed and information can be added such as site and year using $new column name. head() displays the data frame.
+```{r}
+
+names(avg_NDVI_HARV)<-"meanNDVI"
+names(avg_NDVI_HARV)
+
+avg_NDVI_HARV$site <- "HARV"
+avg_NDVI_HARV$year <- "2011"
+
+head(avg_NDVI_HARV)
+```
+*Extract julian days from row.names*
+To produce a plot where Julian days (the numeric day of the year, 0 - 365/366) is on the x-axis and NDVI is on the y-axis, we need to extract the julian day value from the row.names using gsub().Note the use of the vertical bar character ( | ) is equivalent to "or". This allows us to search for more than one pattern in our text strings. We can also print the class (type) of the column using class().
+```{r}
+
+julianDays <- gsub(pattern = "X|_HARV_ndvi_crop", #the pattern to find 
+            x = row.names(avg_NDVI_HARV), #the object containing the strings
+            replacement = "") #what to replace each instance of the pattern with
+
+head(julianDays)
+avg_NDVI_HARV$julianDay <- julianDays
+class(avg_NDVI_HARV$julianDay)
+```
+We can convert the class from a character to an integer or date.
+```{r}
+# set the origin for the julian date (1 Jan 2011)
+origin <- as.Date("2010-12-31")
+
+# convert "julianDay" from class character to integer
+avg_NDVI_HARV$julianDay <- as.integer(avg_NDVI_HARV$julianDay)
+
+avg_NDVI_HARV$Date<- origin + (avg_NDVI_HARV$julianDay)
+head(avg_NDVI_HARV$Date)
+
+class(avg_NDVI_HARV$Date)
+class(avg_NDVI_HARV$julianDay)
+
+```
+The code chunk below plots the meanNDVI vs. Julian Days for the HARV Site using ggplot.
+```{r}
+ggplot(avg_NDVI_HARV, aes(julianDay, meanNDVI), na.rm=TRUE) +
+  geom_point(size=4,colour = "orange") + 
+  ggtitle("Landsat Derived NDVI - 2011\n NEON Harvard Forest Field Site") +
+  xlab("Julian Days") + ylab("Mean NDVI") +
+  theme(text = element_text(size=15))
+```
+
+Below is the plot of the meanNDVI vs julian Days for SJER.
+```{r}
+
+NDVI_SJER_path<- "NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/SJER/2011/NDVI"
+
+all_NDVI_SJER <- list.files(NDVI_SJER_path, full.names = TRUE, pattern = ".tif$")
+all_NDVI_SJER
+
+NDVI_SJER_stack <-stack(all_NDVI_SJER)
+NDVI_SJER_stack <- NDVI_SJER_stack/10000
+
+avg_NDVI_SJER <- as.data.frame(cellStats(NDVI_SJER_stack,mean))
+avg_NDVI_SJER <-avg_NDVI_SJER
+
+names(avg_NDVI_SJER)<-"meanNDVI"
+avg_NDVI_SJER$site <- "SJER"
+avg_NDVI_SJER$year <- "2011"
+
+julianDays <- gsub(pattern = "X|_SJER_ndvi_crop", #the pattern to find 
+            x = row.names(avg_NDVI_SJER), #the object containing the strings
+            replacement = "") #what to replace each instance of the pattern with
+
+avg_NDVI_SJER$julianDay <- julianDays
+origin <- as.Date("2010-12-31")
+avg_NDVI_SJER$julianDay <- as.integer(avg_NDVI_SJER$julianDay)
+avg_NDVI_SJER$Date<- origin + (avg_NDVI_SJER$julianDay)
+
+names(avg_NDVI_SJER)
+
+avg_NDVI_SJER
+
+ggplot(avg_NDVI_SJER, aes(julianDay, meanNDVI), na.rm=TRUE) +
+  geom_point(size=4,colour = "green4") + 
+  ggtitle("Landsat Derived NDVI - 2011\n San Joaquin Experimental Research Field Site") +
+  xlab("Julian Days") + ylab("Mean NDVI") +
+  theme(text = element_text(size=15))
+
+
+```
+
+*Compare NDVI from Two Different Sites in One Plot*
+Comparison of plots is often easiest when both plots are side by side. Or, even better, if both sets of data are plotted in the same plot. We can do this by binding the two data sets together. The date frames must have the same number of columns and exact same column names to be bound.
+The code chunk below merges the two data frames (HARV and SJER) and plots them on the same graph.
+```{r}
+
+avg_NDVI_HARV
+avg_NDVI_SJER
+NDVI_HARV_SJER <- rbind2(avg_NDVI_HARV,avg_NDVI_SJER) 
+
+NDVI_HARV_SJER
+  
+ggplot(NDVI_HARV_SJER, aes(julianDay, meanNDVI, colour=site)) +
+  geom_point(size=4,aes(group=site)) + 
+  geom_line(aes(group=site)) +
+  ggtitle("Landsat Derived NDVI - 2011\n Harvard Forest vs San Joaquin \n NEON Field Sites") +
+  xlab("Julian Day") + ylab("Mean NDVI") +
+  scale_colour_manual(values=c("PeachPuff4", "SpringGreen4"))+   
+	# scale_colour : match previous plots
+  theme(text = element_text(size=15))
+```
+The code chunk below plots Mean NDVI vs Date.
+```{r}
+ggplot(NDVI_HARV_SJER, aes(Date, meanNDVI, colour=site)) +
+  geom_point(size=4,aes(group=site)) + 
+  geom_line(aes(group=site)) +
+  ggtitle("Landsat Derived NDVI - 2011\n Harvard Forest vs San Joaquin \n NEON Field Sites") +
+  xlab("Date") + ylab("Mean NDVI") +
+  scale_colour_manual(values=c("PeachPuff4", "SpringGreen4"))+   
+	# scale_colour : match previous plots
+  theme(text = element_text(size=15))
+```
+
+*Remove Outlier Data*
+As we look at these plots we see variation in greenness across the year. However, the pattern is interrupted by a few points where NDVI quickly drops towards 0 during a time period when we might expect the vegetation to have a larger greenness value. Is the vegetation truly senescent or gone or are these outlier values that should be removed from the data?
+Let’s look at the RGB images from Harvard Forest.
+NOTE: the code below uses loops which we will not teach in this tutorial. However the code demonstrates one way to plot multiple RGB rasters in a grid.
+```{r}
+# open up RGB imagery
+
+rgb.allCropped <-list.files("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/HARV/2011/RGB/", full.names=TRUE,  pattern = ".tif$")
+
+par(mfrow=c(4,4))
+# super efficient code
+
+for (aFile in rgb.allCropped){
+  NDVI.rastStack<-stack(aFile)
+  plotRGB(NDVI.rastStack,stretch="lin")}
+
+par(mfrow=c(1,1))
+```
+Notice that the data points with very low NDVI values can be associated with images that are filled with clouds. Thus, we can attribute the low NDVI values to high levels of cloud cover.
+
+We can see the same thing is happening below with the SJER. The code chunk below plots all the .tif files associated with RGB.
+```{r}
+# open up the cropped files
+rgb.allCropped.SJER <-  list.files("NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/SJER/2011/RGB/",   full.names=TRUE, pattern = ".tif$")
+# create a layout
+par(mfrow=c(5,4))
+
+# Super efficient code
+# note that there is an issue with one of the rasters
+# NEON-DS-Landsat-NDVI/SJER/2011/RGB/254_SJER_landRGB.tif has a blue band with no range
+# thus you can't apply a stretch to it. The code below skips the stretch for
+# that one image. You could automate this by testing the range of each band in each image
+
+for (aFile in rgb.allCropped.SJER)
+  {NDVI.rastStack <- stack(aFile)
+  if (aFile =="NEON-DS-Airborne-Remote-Sensing/NEON-DS-Landsat-NDVI/SJER/2011/RGB//254_SJER_landRGB.tif")
+    {plotRGB(NDVI.rastStack) }
+  else { plotRGB(NDVI.rastStack, stretch="lin") }
+}
+
+# reset layout
+par(mfrow=c(1,1))
+```
+Without significant additional processing, we will not be able to retrieve a strong reflection from vegetation, from a remotely sensed image that is predominantly cloud covered. Thus, these points are likely bad data points. Let’s remove them.
+
+First, we will identify the good data points - that should be retained. One way to do this is by identifying a threhold value. All values below that threshold will be removed from our analysis. We will use 0.1 as an example for this tutorials. We can then use the subset function to remove outlier datapoints (below our identified threshold).
+```{r}
+# retain only rows with meanNDVI>0.1
+avg_NDVI_HARV_clean<-subset(avg_NDVI_HARV, meanNDVI>0.1)
+
+# Did it work?
+avg_NDVI_HARV_clean$meanNDVI<0.1
+```
+Now we can create another plot without the suspect data.
+```{r}
+ggplot(avg_NDVI_HARV_clean, aes(julianDay, meanNDVI)) +
+  geom_point(size=4,colour = "SpringGreen4") + 
+  ggtitle("Landsat Derived NDVI - 2011\n NEON Harvard Forest Field Site") +
+  xlab("Julian Days") + ylab("Mean NDVI") +
+  theme(text = element_text(size=20))
+```
+Now our outlier data points are removed and the pattern of “green-up” and “brown-down” makes a bit more sense.
+*Write NDVI data to a .csv File*
+We can write our final NDVI data.frame out to a text format, to quickly share with a colleague or to resuse for analysis or visualization purposes. We will export in Comma Seperated Value (.csv) file format given it is usable in many different tools and across platforms (MAC, PC, etc).
+
+We will use write.csv() to write a specified data.frame to a .csv file. Unless you designate a different directory, the output file will be saved in your working directory.
+
+Before saving our file, let’s quickly view the format to make sure it is what we want as an output format.
+```{r}
+head(avg_NDVI_HARV_clean)
+# create new df(data frame) to prevent changes to avg_NDVI_HARV
+NDVI_HARV_toWrite<-avg_NDVI_HARV_clean
+
+# drop the row.names column 
+row.names(NDVI_HARV_toWrite)<-NULL
+
+# check data frame
+head(NDVI_HARV_toWrite)
+
+##   meanNDVI site year julianDay       Date
+## 1 0.365150 HARV 2011         5 2011-01-05
+## 2 0.242645 HARV 2011        37 2011-02-06
+## 3 0.251390 HARV 2011        85 2011-03-26
+## 4 0.599300 HARV 2011       133 2011-05-13
+## 5 0.878725 HARV 2011       181 2011-06-30
+## 6 0.893250 HARV 2011       197 2011-07-16
+
+# create a .csv of mean NDVI values being sure to give descriptive name
+# write.csv(DateFrameName, file="NewFileName")
+write.csv(NDVI_HARV_toWrite, file="meanNDVI_HARV_2011.csv")
+```
+Create a NDVI .csv file for the NEON SJER field site that is comparable with the one we just created for the Harvard Forest. Be sure to inspect for questionable values before writing any data to a .csv file.
+Create a NDVI .csv file that stacks data from both field sites.
+```{r}
+avg_NDVI_SJER_clean<-subset(avg_NDVI_SJER, meanNDVI>0.1)
+avg_NDVI_SJER_clean$meanNDVI<0.1
+
+ggplot(avg_NDVI_SJER_clean, aes(julianDay, meanNDVI)) +
+  geom_point(size=4,colour = "SpringGreen4") + 
+  ggtitle("Landsat Derived NDVI - 2011\n NEON San Joaquin Field Site") +
+  xlab("Julian Days") + ylab("Mean NDVI") +
+  theme(text = element_text(size=20))
+
+head(avg_NDVI_SJER_clean)
+NDVI_SJER_toWrite<-avg_NDVI_SJER_clean
+row.names(NDVI_SJER_toWrite)<-NULL
+head(NDVI_HARV_toWrite)
+
+# write.csv(DateFrameName, file="NewFileName")
+write.csv(NDVI_SJER_toWrite, file="meanNDVI_SJER_2011.csv")
+
+avg_NDVI_HARV_SJER_clean<- rbind2(avg_NDVI_HARV_clean, avg_NDVI_SJER_clean)
+avg_NDVI_HARV_SJER_clean
+
+NDVI_HARV_SJER_toWrite<-avg_NDVI_HARV_SJER_clean
+row.names(NDVI_HARV_SJER_toWrite)<-NULL
+head(NDVI_HARV_SJER_toWrite)
+
+write.csv(NDVI_HARV_SJER_toWrite, file="meanNDVI_HARV_SJER_2011.csv")
+
+```
+
+##R Notebook##
+ 
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*.
