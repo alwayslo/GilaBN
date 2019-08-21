@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Bayesian Network Implementation
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 4/2/2019
-update: 7/23/2019
+update: 8/20/2019
 output: html_notebook
 ---
 
@@ -36,28 +36,28 @@ getwd()
 ###Import SRH-2D model results###
 This code chunck calls the txt file that includes the inundation stats for each inundated cell in the hydrodynamic model mesh. This calls the data for one of 3 sites (1-North, 2-Middle, 3-South).
 
-####Site 1#####
-```{r}
-q_cells <- read.table("data/SiteN_Qs.txt",skip=1,header = TRUE)
-q_cells <- setNames(q_cells, c("cell","flow"))
+<!-- ####Site 1##### -->
+<!-- ```{r} -->
+<!-- q_cells <- read.table("data/SiteN_Qs.txt",skip=1,header = TRUE) -->
+<!-- q_cells <- setNames(q_cells, c("cell","flow")) -->
 
-q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
-                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
-                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
-                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
-                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
-                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
-                    ifelse(q_bin[7]<= q_cells$flow  & q_cells$flow <q_bin[8],"bin_7",
-                    ifelse(q_bin[8]<= q_cells$flow  & q_cells$flow <q_bin[9],"bin_8",
-                    ifelse(q_bin[9]<= q_cells$flow  & q_cells$flow <q_bin[10],"bin_9",
-                    ifelse(q_bin[10]<= q_cells$flow  & q_cells$flow <q_bin[11],"bin_10",
-                    ifelse(q_bin[11]<= q_cells$flow  & q_cells$flow <q_bin[12],"bin_11",
-                    ifelse(q_bin[12]<= q_cells$flow  & q_cells$flow <q_bin[13],"bin_12",
-                    ifelse(q_bin[13]<= q_cells$flow  & q_cells$flow <q_bin[14],"bin_13",
-                    ifelse(q_bin[14]<= q_cells$flow  & q_cells$flow <q_bin[15],"bin_14",
-                    ifelse(q_bin[15]<= q_cells$flow,"bin_15","blah")))))))))))))))
+<!-- q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1", -->
+<!--                     ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2", -->
+<!--                     ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3", -->
+<!--                     ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4", -->
+<!--                     ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5", -->
+<!--                     ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6", -->
+<!--                     ifelse(q_bin[7]<= q_cells$flow  & q_cells$flow <q_bin[8],"bin_7", -->
+<!--                     ifelse(q_bin[8]<= q_cells$flow  & q_cells$flow <q_bin[9],"bin_8", -->
+<!--                     ifelse(q_bin[9]<= q_cells$flow  & q_cells$flow <q_bin[10],"bin_9", -->
+<!--                     ifelse(q_bin[10]<= q_cells$flow  & q_cells$flow <q_bin[11],"bin_10", -->
+<!--                     ifelse(q_bin[11]<= q_cells$flow  & q_cells$flow <q_bin[12],"bin_11", -->
+<!--                     ifelse(q_bin[12]<= q_cells$flow  & q_cells$flow <q_bin[13],"bin_12", -->
+<!--                     ifelse(q_bin[13]<= q_cells$flow  & q_cells$flow <q_bin[14],"bin_13", -->
+<!--                     ifelse(q_bin[14]<= q_cells$flow  & q_cells$flow <q_bin[15],"bin_14", -->
+<!--                     ifelse(q_bin[15]<= q_cells$flow,"bin_15","blah"))))))))))))))) -->
 
-```
+<!-- ``` -->
 
 ####Site 2#####
 ```{r}
@@ -82,28 +82,28 @@ q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bi
 
 ```
 
-####Site 3#####
-```{r}
-q_cells <- read.table("data/SiteS_Qs.txt",skip=1,header = TRUE)
-q_cells <- setNames(q_cells, c("cell","flow"))
+<!-- ####Site 3##### -->
+<!-- ```{r} -->
+<!-- q_cells <- read.table("data/SiteS_Qs.txt",skip=1,header = TRUE) -->
+<!-- q_cells <- setNames(q_cells, c("cell","flow")) -->
 
-q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1",
-                    ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2",
-                    ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3",
-                    ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4",
-                    ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5",
-                    ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6",
-                    ifelse(q_bin[7]<= q_cells$flow  & q_cells$flow <q_bin[8],"bin_7",
-                    ifelse(q_bin[8]<= q_cells$flow  & q_cells$flow <q_bin[9],"bin_8",
-                    ifelse(q_bin[9]<= q_cells$flow  & q_cells$flow <q_bin[10],"bin_9",
-                    ifelse(q_bin[10]<= q_cells$flow  & q_cells$flow <q_bin[11],"bin_10",
-                    ifelse(q_bin[11]<= q_cells$flow  & q_cells$flow <q_bin[12],"bin_11",
-                    ifelse(q_bin[12]<= q_cells$flow  & q_cells$flow <q_bin[13],"bin_12",
-                    ifelse(q_bin[13]<= q_cells$flow  & q_cells$flow <q_bin[14],"bin_13",
-                    ifelse(q_bin[14]<= q_cells$flow  & q_cells$flow <q_bin[15],"bin_14",
-                    ifelse(q_bin[15]<= q_cells$flow,"bin_15","blah")))))))))))))))
+<!-- q_cells$bin <-      ifelse(q_bin[1]<= q_cells$flow  & q_cells$flow <q_bin[2],"bin_1", -->
+<!--                     ifelse(q_bin[2]<= q_cells$flow  & q_cells$flow <q_bin[3],"bin_2", -->
+<!--                     ifelse(q_bin[3]<= q_cells$flow  & q_cells$flow <q_bin[4],"bin_3", -->
+<!--                     ifelse(q_bin[4]<= q_cells$flow  & q_cells$flow <q_bin[5],"bin_4", -->
+<!--                     ifelse(q_bin[5]<= q_cells$flow  & q_cells$flow <q_bin[6],"bin_5", -->
+<!--                     ifelse(q_bin[6]<= q_cells$flow  & q_cells$flow <q_bin[7],"bin_6", -->
+<!--                     ifelse(q_bin[7]<= q_cells$flow  & q_cells$flow <q_bin[8],"bin_7", -->
+<!--                     ifelse(q_bin[8]<= q_cells$flow  & q_cells$flow <q_bin[9],"bin_8", -->
+<!--                     ifelse(q_bin[9]<= q_cells$flow  & q_cells$flow <q_bin[10],"bin_9", -->
+<!--                     ifelse(q_bin[10]<= q_cells$flow  & q_cells$flow <q_bin[11],"bin_10", -->
+<!--                     ifelse(q_bin[11]<= q_cells$flow  & q_cells$flow <q_bin[12],"bin_11", -->
+<!--                     ifelse(q_bin[12]<= q_cells$flow  & q_cells$flow <q_bin[13],"bin_12", -->
+<!--                     ifelse(q_bin[13]<= q_cells$flow  & q_cells$flow <q_bin[14],"bin_13", -->
+<!--                     ifelse(q_bin[14]<= q_cells$flow  & q_cells$flow <q_bin[15],"bin_14", -->
+<!--                     ifelse(q_bin[15]<= q_cells$flow,"bin_15","blah"))))))))))))))) -->
 
-```
+<!-- ``` -->
 
 ####Natural Scenario Evidence####
 ```{r}
@@ -454,14 +454,15 @@ q_cells$recruit_q <-    ifelse(q_cells$bin =="bin_1",recruit_prob[1,],
 
 recruit_natural<-data.frame()
 for (i in 1:length(q_prob_natural_yr))
-{recruit_natural <-rbind(recruit_natural, sum(q_prob_natural_yr[,i:15]*recruit_prob[i:15,1]))
+{recruit_natural <-rbind(recruit_natural, sum(q_prob_yr[1,i:15]*recruit_prob[i:15,1]))
 print(recruit_natural)}
 recruit_natural<-cbind(recruit_natural, recruit_prob)
 rownames(recruit_natural) <- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7",
                                "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15")
 colnames(recruit_natural) <- c("P(R)", "P(R|q)")
 
-q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_natural[2,1],
+q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_natural[1,1],
+                    ifelse(q_cells$bin =="bin_2",recruit_natural[2,1],
                     ifelse(q_cells$bin =="bin_3",recruit_natural[3,1],
                     ifelse(q_cells$bin =="bin_4",recruit_natural[4,1],
                     ifelse(q_cells$bin =="bin_5",recruit_natural[5,1],
@@ -474,7 +475,7 @@ q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_natural[2,1],
                     ifelse(q_cells$bin =="bin_12",recruit_natural[12,1],
                     ifelse(q_cells$bin =="bin_13",recruit_natural[13,1],
                     ifelse(q_cells$bin =="bin_14",recruit_natural[14,1],
-                           "blah")))))))))))))
+                           "blah"))))))))))))))
 ```
 
 
@@ -483,7 +484,7 @@ q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_natural[2,1],
 
 recruit_scenario1<-data.frame()
 for (i in 1:length(q_prob_scenario1_yr))
-{recruit_scenario1 <-rbind(recruit_scenario1, sum(q_prob_scenario1_yr[,i:15]*recruit_prob[i:7,15]))
+{recruit_scenario1 <-rbind(recruit_scenario1, sum(q_prob_scenario1_yr[,i:15]*recruit_prob[i:15,1]))
 print(recruit_scenario1)}
 recruit_scenario1<-cbind(recruit_scenario1, recruit_prob)
 rownames(recruit_scenario1) <- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin_7",
@@ -520,7 +521,8 @@ rownames(recruit_scenario2) <- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bi
                                "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15")
 colnames(recruit_scenario2) <- c("P(R)", "P(R|q)")
 
-q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_scenario2[2,1],
+q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_scenario1[1,1],
+                    ifelse(q_cells$bin =="bin_2",recruit_scenario2[2,1],
                     ifelse(q_cells$bin =="bin_3",recruit_scenario2[3,1],
                     ifelse(q_cells$bin =="bin_4",recruit_scenario2[4,1],
                     ifelse(q_cells$bin =="bin_5",recruit_scenario2[5,1],
@@ -534,7 +536,7 @@ q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_scenario2[2,1],
                     ifelse(q_cells$bin =="bin_13",recruit_scenario2[13,1],
                     ifelse(q_cells$bin =="bin_14",recruit_scenario2[14,1],
                     ifelse(q_cells$bin =="bin_15",recruit_scenario2[15,1],
-                           "blah"))))))))))))))
+                           "blah")))))))))))))))
 ```
 
 #Scenario3#
@@ -549,7 +551,8 @@ rownames(recruit_scenario3) <- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bi
                                "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15")
 colnames(recruit_scenario3) <- c("P(R)", "P(R|q)")
 
-q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_scenario3[2,1],
+q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_scenario1[1,1],
+                    ifelse(q_cells$bin =="bin_2",recruit_scenario3[2,1],
                     ifelse(q_cells$bin =="bin_3",recruit_scenario3[3,1],
                     ifelse(q_cells$bin =="bin_4",recruit_scenario3[4,1],
                     ifelse(q_cells$bin =="bin_5",recruit_scenario3[5,1],
@@ -563,7 +566,7 @@ q_cells$recruit <-  ifelse(q_cells$bin =="bin_2",recruit_scenario3[2,1],
                     ifelse(q_cells$bin =="bin_13",recruit_scenario3[13,1],
                     ifelse(q_cells$bin =="bin_14",recruit_scenario3[14,1],
                     ifelse(q_cells$bin =="bin_15",recruit_scenario3[15,1],
-                           "blah"))))))))))))))
+                           "blah")))))))))))))))
 ```
 Two output files,(1) The recruitment probability for each q_bin and (2) the recruitment probability for each cell, are generated, written, and saved in the output folder. Result/output files can be re-written to specify which scenario is being written to .csv for clarity (e.g. q_cells_natural_recruit.csv). The file path can also be changed as needed.
 

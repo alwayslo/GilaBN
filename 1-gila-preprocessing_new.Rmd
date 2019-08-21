@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Preprocessing
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 11/29/2018
-update: 7/30/2019
+update: 8/20/2019
 output: html_notebook
 ---
 
@@ -53,9 +53,9 @@ recessionrate_bin <- c(0,1,3,6)
 ```
 
 #### Process CUFA hydrology data ####
-The hydrologic historical data for the Gila River is located in scenario_new.csv and includes the 1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)). This code chunk loads scenario_new.csv and uses it to create a dataframe called hydro.
+The hydrologic historical data for the Gila River is located in scenario_revised.csv and includes the 1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)). This code chunk loads scenario_revised.csv (excluding the flow columns for downstream at Riverside) and uses it to create a dataframe called hydro.
 ```{r}
-hydro <- read.csv("data/scenarios_revised.csv", skip=1,header = TRUE)
+hydro <- read.csv("data/scenarios_revised.csv", skip=1,header = TRUE)[ ,1:5]
 hydro <- setNames(hydro, c("date","natural", "Alt_E","Alt_B","Alt_A"))
 hydro$date<-as.Date(hydro$date, format="%m/%d/%Y")
 ```
