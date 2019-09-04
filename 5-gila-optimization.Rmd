@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Bayesian Network Optimization
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu) & Jonathan Carter Hebert
 date: 6/26/2019
-update: 7/30/2019
+update: 8/21/2019
 output: html_notebook
 ---
 
@@ -10,7 +10,7 @@ This R notebook is used to used to optimize the BN model.
 
 ###Optimization###
 ```{r}
-rm(list=ls())
+# rm(list=ls())
 
 library("bnlearn")
 library("readr")
@@ -26,7 +26,6 @@ library("rgdal")
 library("rasterVis")
 library("ggplot2")
 library("rgdal")
-library("dplyr")
 library("methods")
 require("BiocGenerics")
 require("graph")
@@ -34,6 +33,7 @@ library("maps")
 library("RColorBrewer")
 library("stats")
 library("stringi")
+library ("hydroTSM")
 
 options("scipen" = 100, "digits"=4)
 
@@ -42,15 +42,30 @@ getwd()
 
 Load and plot all flow scenarios modeled.
 ```{r}
-hydro <- read.csv("data/scenarios_revised.csv", skip=1,header = TRUE)
+
+hydro <- read.csv("data/scenarios_revised.csv", skip=0,header = TRUE)[ ,1:4]
+hydro <- setNames(hydro, c("date", "Alt_E","Alt_B","Alt_A"))
+hydro$date<-as.Date(hydro$date, format="%m/%d/%Y")
+hydro <- cbind(hydro[1],usgs_hydro[4],hydro[2:4])
 hydro <- setNames(hydro, c("date","natural", "Alt_E","Alt_B","Alt_A"))
-hydro$date <-as.Date(hydro$date, format="%m/%d/%Y")
 hydro$julian <- format(hydro$date, "%j")
 hydro$julian <-stri_replace_all_regex(hydro$julian, "\\b0*(\\d+)\\b", "$1")
 hydro$month <- format(hydro$date,"%m")
 ```
 
 Plots the hydrologic data that is actually used in the model which is governed by the lowest minimum innundation value.
+
+Flow Duration Curve
+```{r}
+
+fdc(hydro[3:5], lQ.thr=0.7, hQ.thr=0.2, plot=TRUE, log="y",
+     main= "Flow Duration Curve", xlab="% Time flow equalled or exceeded",
+     ylab="Q, [ft3/s]",  yat=c(1,10,50,100,250,500,750,1000), xat=c(0.01, 0.025, 0.05),
+     col=c("blue","green","orange"), pch=1:ncol(hydro), lwd=rep(1, ncol(hydro)),
+     lty=1:ncol(hydro), cex=0.4, cex.axis=1.2, cex.lab=1.2, leg.txt=NULL,
+     leg.cex=1, leg.pos="topright", verbose=TRUE, thr.shw=TRUE, new=TRUE)
+
+```
 
 Plots the mean daily flows for all four scenarios (natural,Alt_E,Alt_B,Alt_A).
 ```{r}
@@ -65,17 +80,18 @@ meanJulian<-setNames(meanJulian, c("julian","natural", "Alt_E","Alt_B","Alt_A"))
 meanJulian<-na.omit(meanJulian)
 
 ggplot(meanJulian, aes(x=julian))+ 
-  geom_line(aes(y = natural, color = "natural"),linetype = 1)+
   geom_line(aes(y = Alt_E, color = "Alt. E"),linetype = 1)+
-  geom_line(aes(y = Alt_B, color = "Alt. B"),linetype = 2)+
-  geom_line(aes(y = Alt_A, color = "Alt. B"),linetype = 4)+
+  geom_line(aes(y = Alt_B, color = "Alt. B"),linetype = 1)+
+  geom_line(aes(y = Alt_A, color = "Alt. A"),linetype = 1)+
   geom_vline(xintercept = 92, linetype="dotted",  color = "black", size=0.5)+
   geom_vline(xintercept = 274, linetype="dotted",  color = "black", size=0.5)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle("Upper Gila Mean Daily Flow\n April to September 1936 - 2017")+
   theme(plot.title = element_text(hjust = 0.5))+
+  scale_color_manual(values=c("blue","green","orange"))+
   labs(color="scenario")
+  
 
 #geom_hline(yintercept = c(1000, 1500, 2000, 2500, 3000, 3500, 4000))
 ```
@@ -88,14 +104,14 @@ for (i in 1:length(unique(hydro$julian)))
   sigma1Julian <- rbind(sigma1Julian, julian_i)}
 
 sigma1Julian <- cbind( 1:length(unique(hydro$julian)),sigma1Julian)
-sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "Alt. E","Alt. B","Alt. A"))
+sigma1Julian<-setNames(sigma1Julian, c("julian","natural", "Alt_E","Alt_B","Alt_A"))
 sigma1Julian<-na.omit(sigma1Julian)
 
 ggplot(sigma1Julian, aes(x=julian))+ 
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
   geom_line(aes(y = Alt_E, color = "Alt. E"),linetype = 1)+
   geom_line(aes(y = Alt_B, color = "Alt. B"),linetype = 2)+
-  geom_line(aes(y = Alt_A, color = "Alt. B"),linetype = 4)+
+  geom_line(aes(y = Alt_A, color = "Alt. A"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle(expression(paste("Upper Gila 1", sigma, " Above Mean Daily Flow\n April to September 1936 - 2017")))+
@@ -116,7 +132,7 @@ for (i in 1:length(unique(hydro$julian)))
   sigma2Julian <- rbind(sigma2Julian, julian_i)}
 
 sigma2Julian <- cbind( 1:length(unique(hydro$julian)),sigma2Julian)
-sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "Alt. E","Alt. B","Alt. A"))
+sigma2Julian<-setNames(sigma2Julian, c("julian","natural", "Alt_E","Alt_B","Alt_A"))
 sigma2Julian<-na.omit(sigma2Julian)
 
 
@@ -124,7 +140,7 @@ ggplot(sigma2Julian, aes(x=julian))+
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
   geom_line(aes(y = Alt_E, color = "Alt. E"),linetype = 1)+
   geom_line(aes(y = Alt_B, color = "Alt. B"),linetype = 2)+
-  geom_line(aes(y = Alt_A, color = "Alt. B"),linetype = 4)+
+  geom_line(aes(y = Alt_A, color = "Alt. A"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle(expression(paste("Upper Gila 2", sigma, " Above Mean Daily Flow\n April to September 1936 - 2017")))+
@@ -351,4 +367,11 @@ https://www.rdocumentation.org/packages/stats/versions/3.6.0/topics/bandwidth
 
 http://www.di.fc.ul.pt/~jpn/r/fourier/fourier.html
 
+Vogel, R., and N. M. Fennessey (1994), Flow duration curves I: A new interpretation and confidence intervals, ASCE, Journal of Water Resources Planning and Management, 120(4). 
+
+Vogel, R., and N. Fennessey (1995), Flow duration curves II: A review of applications in water resources planning, Water Resources Bulletin, 31(6), 1029-1039, doi:10.1111/j.1752-1688.1995.tb03419.x. 
+
+Yilmaz, K. K., H. V. Gupta, and T. Wagener (2008), A process-based diagnostic approach to model evaluation: Application to the NWS distributed hydrologic model, Water Resour. Res., 44, W09417, doi:10.1029/2007WR006716.
+
+https://www.rforge.net/doc/packages/hydroTSM/fdc.html
 

@@ -63,9 +63,9 @@ meanJulian<-na.omit(meanJulian)
 
 ggplot(meanJulian, aes(x=julian))+ 
   geom_line(aes(y = natural, color = "natural"),linetype = 1)+
-  geom_line(aes(y = Alt_E, color = "Alt. E"),linetype = 1)+
-  geom_line(aes(y = Alt_B, color = "Alt. B"),linetype = 2)+
-  geom_line(aes(y = Alt_A, color = "Alt. A"),linetype = 4)+
+  geom_line(aes(y = Alt_E, color = "blue"),linetype = 1)+
+  geom_line(aes(y = Alt_B, color = "green"),linetype = 2)+
+  geom_line(aes(y = Alt_A, color = "orange"),linetype = 4)+
   xlab("Julian day")+
   ylab("flow (cfs)")+
   ggtitle("Upper Gila Mean Daily Flow\n April to September 1936 - 2017")+
@@ -258,6 +258,36 @@ rownames(r_prob_s2)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin
 
 ```
 
+Load and plot TEST
+```{r}
+
+r_cells_scenario1_s2 <-read.csv(file ="/Users/lohebert/GilaBN/output/scenario1_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario2_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario2_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
+r_cells_scenario3_s2 <- read.csv(file ="/Users/lohebert/GilaBN/output/scenario3_s2_q_cells_recruit.csv", header=TRUE, sep=",", 
+                                 col.names = c("cell","flow","bin","recruit_q","recruit"))
+
+r_cells_s2 <- data.frame(cbind(r_cells_scenario1_s2[,1],r_cells_scenario1_s2[,5],r_cells_scenario2_s2[,5],
+                               r_cells_scenario3_s2[,5]))
+colnames(r_cells_s2) <- c("cell","Alt. E","Alt. B","Alt. A")
+
+diff3_s2 <- cbind(r_cells_s2[1],(r_cells_s2[,2:3]-r_cells_s2[,4])*100)
+
+colnames(diff3_s2) <- c("cell", "diffA_AltE","diffA_AltB" )
+
+boxplot(diff3_s2[,2:3],range = 1.5, main="Site 2 - Middle- Diff. from Alt.A", ylim=c(-6, .5),names = c("Alt.E","Alt.B"),xlab = "scenarios",
+        ylab= (expression(paste(Delta," posterior probability of recruitment (%)"))))
+
+hydrodiff3_s2 <- cbind(hydro[1],(hydro[,3:4]-hydro[,5]))
+colnames(hydrodiff3_s2) <- c("date", "diffA_AltE","diffA_AltB" )
+
+boxplot(hydrodiff3_s2[,2:3],range = 1.5, main="Site 2 - Middle- Diff. from Alt.A", ylim=c(-200, 10),names = c("Alt.E","Alt.B"),xlab = "scenarios",
+        ylab= (expression(paste(Delta," instream flow (cfs)"))))
+
+
+```
+
 <!-- Load scenario results for site 3 (South) to be used for analysis. -->
 <!-- ```{r} -->
 <!-- r_cells_natural_s3 <- read.csv(file ="/Users/lohebert/GilaBN/output/natural_s3_q_cells_recruit.csv", header=TRUE, sep=",",  -->
@@ -287,11 +317,17 @@ rownames(r_prob_s2)<- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bin_6","bin
 #Calculate the differences between current conditions (scenario 1) and scenario 2 and scenario 3# (not working)
 ```{r}
 
-diffN_s2 <- cbind(r_cells_s2[1],(r_cells_s2[,3:5]-r_cells_s2[,2])*100)
-diff3_s2 <- cbind(r_cells_s2[1],(r_cells_s2[,3:4]-r_cells_s2[,5])*100)
 
-colnames(diffN_s2) <- c("cell","diffN_AltE","diffN_AltB","diffN_AltA" )
+#diffN_s2 <- cbind(r_cells_s2[1],(r_cells_s2[,2:3]-r_cells_s2[,4]))
+diff3_s2 <- cbind(r_cells_s2[1],(r_cells_s2[,2:3]-r_cells_s2[,4])*100)
+diff3_s2 <- cbind(r_cells_s2[1],(r_cells_s2[,3]-r_cells_s2[,4])*100,(r_cells_s2[,3]-r_cells_s2[,4])*100)
+
+
+#colnames(diffN_s2) <- c("cell","diffN_AltE","diffN_AltB","diffN_AltA" )
 colnames(diff3_s2) <- c("cell", "diffA_AltE","diffA_AltB" )
+
+boxplot(diff3_s2[,2:3],range = 1.5, main="Site 2 - Middle- Diff. from Alt.A", ylim=c(-0.1, 0.1),names = c("Alt.E","Alt.B"),xlab = "scenarios",
+        ylab= (expression(paste(Delta," posterior probability of recruitment (%)"))))
     
 ```
 
@@ -311,7 +347,7 @@ Box Plot for all scenarios for site 2.
 
 par(mfrow=c(1,1))
 
-boxplot(r_cells_s2[,2:5],range = 1.5, main="Site 2 - Middle", ylim=c(0, 0.7),names = c("natural","Alt.E","Alt.B","Alt.A"),xlab = "scenarios",
+boxplot(r_cells_s2[,2:4],range = 1.5, main="Site 2 - Middle", ylim=c(0, 0.6),names = c("Alt.E","Alt.B","Alt.A"),xlab = "scenarios",
         ylab="posterior probability of recruitment")
 par(mfrow=c(1,1))
 ```
@@ -324,7 +360,7 @@ par(mfrow=c(1,2))
 # boxplot(diffN_s2[,2:4],range = 1.5, main="Site 2 - Middle- Diff. from Natural", ylim=c(0, 0.7),names = c("Alt.E","Alt.B","Alt.A"),xlab = "scenarios",
 #         ylab="change in posterior probability of recruitment")
 
-boxplot(diff3_s2[,2:3],range = 1.5, main="Site 2 - Middle- Diff. from Alt.A", ylim=c(0, 0.3),names = c("Alt.E","Alt.B"),xlab = "scenarios",
+boxplot(diff3_s2[,2:3],range = 1.5, main="Site 2 - Middle- Diff. from Alt.A", ylim=c(-0.5, 5),names = c("Alt.E","Alt.B"),xlab = "scenarios",
         ylab= (expression(paste(Delta," posterior probability of recruitment (%)"))))
 
 par(mfrow=c(1,1))

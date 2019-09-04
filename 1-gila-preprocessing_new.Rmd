@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Preprocessing
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 11/29/2018
-update: 8/20/2019
+update: 8/21/2019
 output: html_notebook
 ---
 
@@ -30,7 +30,7 @@ getwd()
 #### Process USGS hydrology data ####
 The hydrologic historical data for the Gila River is located in usgs_09430500_daily.txt. Units are cfs. This code chunk loads usgs_09430500_daily.txt and uses it to create a dataframe called usgs_hydro.
 ```{r}
-usgs_hydro <- read.csv("data/usgs_09430500_daily.txt", skip=27,header = TRUE, sep = "")
+usgs_hydro <- read.csv("data/usgs_09430500_daily.txt", skip=28,header = TRUE, sep = "")
 usgs_hydro <- setNames(usgs_hydro,c("agency","site_no","date","flowrate (cfs)","code"))
 usgs_hydro$date<-as.Date(usgs_hydro$date, format="%Y-%m-%d")
 ```
@@ -54,11 +54,20 @@ recessionrate_bin <- c(0,1,3,6)
 
 #### Process CUFA hydrology data ####
 The hydrologic historical data for the Gila River is located in scenario_revised.csv and includes the 1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)). This code chunk loads scenario_revised.csv (excluding the flow columns for downstream at Riverside) and uses it to create a dataframe called hydro.
+
 ```{r}
-hydro <- read.csv("data/scenarios_revised.csv", skip=1,header = TRUE)[ ,1:5]
+hydro <- read.csv("data/scenarios_revised.csv", skip=0,header = TRUE)[ ,1:5]
 hydro <- setNames(hydro, c("date","natural", "Alt_E","Alt_B","Alt_A"))
 hydro$date<-as.Date(hydro$date, format="%m/%d/%Y")
+hydro <- cbind(hydro[1],usgs_hydro[4],hydro[2:4])
+hydro <- setNames(hydro, c("date","natural", "Alt_E","Alt_B","Alt_A"))
 ```
+
+
+###TEST####
+# ```{r}
+# hydro <- cbind(hydro[1:2],hydro[3]/2,hydro[4]/1,hydro[5])
+# ```
 
 This project includes three study sites. This code chunck adds the stage (both ft and cm) for each site based on the flowrate and previously developed regression equations for each site (1-North,2- Middle,3- South). The hydro column called must correspond with each scenario (i.e.1-natural, 2-Alt. E, 3-Alt.B , and 4-Alt.A (no action)).
 

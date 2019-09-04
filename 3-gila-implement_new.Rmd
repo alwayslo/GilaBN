@@ -2,7 +2,7 @@
 title: Upper Gila Watershed Bayesian Network Implementation
 author: Lauren Victoria Jaramillo, UNM (alwayslo@unm.edu)
 date: 4/2/2019
-update: 8/20/2019
+update: 8/21/2019
 output: html_notebook
 ---
 
@@ -521,7 +521,7 @@ rownames(recruit_scenario2) <- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bi
                                "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15")
 colnames(recruit_scenario2) <- c("P(R)", "P(R|q)")
 
-q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_scenario1[1,1],
+q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_scenario2[1,1],
                     ifelse(q_cells$bin =="bin_2",recruit_scenario2[2,1],
                     ifelse(q_cells$bin =="bin_3",recruit_scenario2[3,1],
                     ifelse(q_cells$bin =="bin_4",recruit_scenario2[4,1],
@@ -551,7 +551,7 @@ rownames(recruit_scenario3) <- c("bin_1", "bin_2", "bin_3", "bin_4", "bin_5","bi
                                "bin_8", "bin_9","bin_10","bin_11","bin_12","bin_13","bin_14","bin_15")
 colnames(recruit_scenario3) <- c("P(R)", "P(R|q)")
 
-q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_scenario1[1,1],
+q_cells$recruit <-  ifelse(q_cells$bin =="bin_1",recruit_scenario3[1,1],
                     ifelse(q_cells$bin =="bin_2",recruit_scenario3[2,1],
                     ifelse(q_cells$bin =="bin_3",recruit_scenario3[3,1],
                     ifelse(q_cells$bin =="bin_4",recruit_scenario3[4,1],
@@ -573,8 +573,8 @@ Two output files,(1) The recruitment probability for each q_bin and (2) the recr
 
 The code chunck below writes output files for the natural scenario.
 ```{r}
-write.csv(recruit_natural,file = "output/natural_s2_recruit_prob.csv")
-write.csv(q_cells, file = "output/natural_s2_q_cells_recruit.csv",row.names= FALSE)
+write.csv(recruit_natural,file = "output/natural_s2_recruit_prob_TEST.csv")
+write.csv(q_cells, file = "output/natural_s2_q_cells_recruit_TEST.csv",row.names= FALSE)
 ```
 
 
